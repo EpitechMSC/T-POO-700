@@ -38,6 +38,42 @@ defmodule TimeManager.TimeTracker do
   def get_user!(id), do: Repo.get!(User, id)
 
   @doc """
+  Finds a user by email or username.
+
+  Returns:
+    - {:ok, user} if found
+    - {:error, :not_found} if no user matches
+    - {:error, :bad_request} if both email and username are nil
+  """
+  def find_user_by_email_or_username(email, username) do
+    cond do
+      is_nil(email) and is_nil(username) ->
+        {:error, :bad_request}
+
+      not is_nil(email) and is_nil(username) ->
+        Repo.one(from u in User, where: u.email == ^email)
+        |> case do
+          nil -> {:error, :not_found}
+          user -> {:ok, user}
+        end
+
+      is_nil(email) and not is_nil(username) ->
+        Repo.one(from u in User, where: u.username == ^username)
+        |> case do
+          nil -> {:error, :not_found}
+          user -> {:ok, user}
+        end
+
+      not is_nil(email) and not is_nil(username) ->
+        Repo.one(from u in User, where: u.email == ^email or u.username == ^username)
+        |> case do
+          nil -> {:error, :not_found}
+          user -> {:ok, user}
+        end
+    end
+  end
+
+  @doc """
   Creates a user.
 
   ## Examples

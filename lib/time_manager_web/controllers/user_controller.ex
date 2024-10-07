@@ -11,6 +11,26 @@ defmodule TimeManagerWeb.UserController do
     render(conn, :index, users: users)
   end
 
+  def search_by_email_or_username(conn, params) do
+    email = Map.get(params, "email")
+    username = Map.get(params, "username")
+
+    case TimeTracker.find_user_by_email_or_username(email, username) do
+      {:ok, user} ->
+        render(conn, :show, user: user)
+
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "User not found"})
+
+      {:error, :bad_request} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "Either 'email' or 'username' must be provided."})
+    end
+  end
+
   def create(conn, %{"user" => user_params}) do
     with {:ok, %User{} = user} <- TimeTracker.create_user(user_params) do
       conn
