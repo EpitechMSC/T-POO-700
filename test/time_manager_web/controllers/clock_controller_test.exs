@@ -1,17 +1,17 @@
 defmodule TimeManagerWeb.ClockControllerTest do
   use TimeManagerWeb.ConnCase
 
-  import TimeManager.TimeTrackerFixtures
+  import TimeManager.ClocksFixtures
 
-  alias TimeManager.TimeTracker.Clock
+  alias TimeManager.Clocks.Clock
 
   @create_attrs %{
     status: true,
-    time: ~N[2024-10-06 11:57:00]
+    time: ~N[2024-10-07 07:44:00]
   }
   @update_attrs %{
     status: false,
-    time: ~N[2024-10-07 11:57:00]
+    time: ~N[2024-10-08 07:44:00]
   }
   @invalid_attrs %{status: nil, time: nil}
 
@@ -36,7 +36,7 @@ defmodule TimeManagerWeb.ClockControllerTest do
       assert %{
                "id" => ^id,
                "status" => true,
-               "time" => "2024-10-06T11:57:00"
+               "time" => "2024-10-07T07:44:00"
              } = json_response(conn, 200)["data"]
     end
 
@@ -58,7 +58,7 @@ defmodule TimeManagerWeb.ClockControllerTest do
       assert %{
                "id" => ^id,
                "status" => false,
-               "time" => "2024-10-07T11:57:00"
+               "time" => "2024-10-08T07:44:00"
              } = json_response(conn, 200)["data"]
     end
 

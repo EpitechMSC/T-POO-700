@@ -17,7 +17,7 @@ config :time_manager, TimeManager.Repo,
 # you can enable the server option below.
 config :time_manager, TimeManagerWeb.Endpoint,
   http: [ip: {127, 0, 0, 1}, port: 4002],
-  secret_key_base: "6KszmrjDwvUjUeY3lu2+VV6GYcVf59jBDsE7ryecFUy9GjoVVEjOoytlvW/BMnmj",
+  secret_key_base: "R4y7Cx98Lx+vOCpWenxCki7mrgyiFM2Cqlv1+sG5lF+z5sbd8DMPrERtTva190nt",
   server: false
 
 # In test we don't send emails

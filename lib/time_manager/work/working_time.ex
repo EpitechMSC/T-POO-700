@@ -1,18 +1,18 @@
-defmodule TimeManager.TimeTracker.WorkinTime do
+defmodule TimeManager.Work.WorkingTime do
   use Ecto.Schema
   import Ecto.Changeset
 
-  schema "workingtime" do
-    field :end, :naive_datetime
+  schema "workingtimes" do
     field :start, :naive_datetime
-    field :user_id, :id
+    field :end, :naive_datetime
+    field :user, :id
 
     timestamps(type: :utc_datetime)
   end
 
   @doc false
-  def changeset(workin_time, attrs) do
-    workin_time
+  def changeset(working_time, attrs) do
+    working_time
     |> cast(attrs, [:start, :end])
     |> validate_required([:start, :end])
   end

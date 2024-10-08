@@ -1,5 +1,5 @@
 defmodule TimeManagerWeb.UserJSON do
-  alias TimeManager.TimeTracker.User
+  alias TimeManager.Accounts.User
 
   @doc """
   Renders a list of users.

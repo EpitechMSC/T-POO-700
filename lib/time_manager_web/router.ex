@@ -9,7 +9,7 @@ defmodule TimeManagerWeb.Router do
     pipe_through :api
 
     get "/users/search", UserController, :search_by_email_or_username
-    resources "/workingtimes", WorkinTimeController, except: [:new, :edit]
+    resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
     resources "/clocks", ClockController, except: [:new, :edit]
   end

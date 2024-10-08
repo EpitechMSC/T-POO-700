@@ -20,7 +20,7 @@ config :time_manager, TimeManagerWeb.Endpoint,
     layout: false
   ],
   pubsub_server: TimeManager.PubSub,
-  live_view: [signing_salt: "2IRCkkmB"]
+  live_view: [signing_salt: "fl8TKrb0"]
 
 # Configures the mailer
 #

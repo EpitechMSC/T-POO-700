@@ -7,7 +7,7 @@ defmodule TimeManagerWeb.Endpoint do
   @session_options [
     store: :cookie,
     key: "_time_manager_key",
-    signing_salt: "+VxN+eGb",
+    signing_salt: "Iby4djDl",
     same_site: "Lax"
   ]
 

@@ -1,18 +1,18 @@
 defmodule TimeManagerWeb.ClockController do
   use TimeManagerWeb, :controller
 
-  alias TimeManager.TimeTracker
-  alias TimeManager.TimeTracker.Clock
+  alias TimeManager.Clocks
+  alias TimeManager.Clocks.Clock
 
   action_fallback TimeManagerWeb.FallbackController
 
   def index(conn, _params) do
-    clocks = TimeTracker.list_clocks()
+    clocks = Clocks.list_clocks()
     render(conn, :index, clocks: clocks)
   end
 
   def create(conn, %{"clock" => clock_params}) do
-    with {:ok, %Clock{} = clock} <- TimeTracker.create_clock(clock_params) do
+    with {:ok, %Clock{} = clock} <- Clocks.create_clock(clock_params) do
       conn
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/clocks/#{clock}")
@@ -21,22 +21,22 @@ defmodule TimeManagerWeb.ClockController do
   end
 
   def show(conn, %{"id" => id}) do
-    clock = TimeTracker.get_clock!(id)
+    clock = Clocks.get_clock!(id)
     render(conn, :show, clock: clock)
   end
 
   def update(conn, %{"id" => id, "clock" => clock_params}) do
-    clock = TimeTracker.get_clock!(id)
+    clock = Clocks.get_clock!(id)
 
-    with {:ok, %Clock{} = clock} <- TimeTracker.update_clock(clock, clock_params) do
+    with {:ok, %Clock{} = clock} <- Clocks.update_clock(clock, clock_params) do
       render(conn, :show, clock: clock)
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    clock = TimeTracker.get_clock!(id)
+    clock = Clocks.get_clock!(id)
 
-    with {:ok, %Clock{}} <- TimeTracker.delete_clock(clock) do
+    with {:ok, %Clock{}} <- Clocks.delete_clock(clock) do
       send_resp(conn, :no_content, "")
     end
   end

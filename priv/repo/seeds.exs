@@ -7,7 +7,6 @@
 #
 #     TimeManager.Repo.insert!(%TimeManager.SomeSchema{})
 #
-# TimeManager.TimeTracker.WorkinTime
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
@@ -33,25 +32,3 @@ Repo.insert!(%User{
   email: "test_2@test.fr",
   username: "test2"
 })
-
-#insert WorkinTime
-
-#Repo.insert!(%WorkinTime{
-#  user_id: 1,
-#  start: "2021-09-01 08:00:00",
-#  end: "2021-09-01 12:00:00"
-#})
-#
-#Repo.insert!(%WorkinTime{
-#  user_id: 1,
-#  start: "2021-09-01 13:00:00",
-#  end: "2021-09-01 17:00:00"
-#})
-#
-##insert clock
-#
-#Repo.insert!(%Clock{
-#  user_id: 1,
-#  time: DateTime.utc_now(),
-#  status: 0
-#})

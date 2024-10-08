@@ -1,19 +1,19 @@
 defmodule TimeManagerWeb.UserControllerTest do
   use TimeManagerWeb.ConnCase
 
-  import TimeManager.TimeTrackerFixtures
+  import TimeManager.AccountsFixtures
 
-  alias TimeManager.TimeTracker.User
+  alias TimeManager.Accounts.User
 
   @create_attrs %{
-    email: "some email",
-    username: "some username"
+    username: "some username",
+    email: "some email"
   }
   @update_attrs %{
-    email: "some updated email",
-    username: "some updated username"
+    username: "some updated username",
+    email: "some updated email"
   }
-  @invalid_attrs %{email: nil, username: nil}
+  @invalid_attrs %{username: nil, email: nil}
 
   setup %{conn: conn} do
     {:ok, conn: put_req_header(conn, "accept", "application/json")}

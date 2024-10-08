@@ -1,5 +1,5 @@
 defmodule TimeManagerWeb.ClockJSON do
-  alias TimeManager.TimeTracker.Clock
+  alias TimeManager.Clocks.Clock
 
   @doc """
   Renders a list of clocks.
