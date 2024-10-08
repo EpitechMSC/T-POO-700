@@ -54,3 +54,9 @@ Repo.insert!(%WorkingTime{
   end: "2024-09-03 12:00:00",
   user: 1
 })
+
+Repo.insert!(%WorkingTime{
+  start: "2024-09-03 014:00:00",
+  end: "2024-09-03 18:00:00",
+  user: 1
+})
