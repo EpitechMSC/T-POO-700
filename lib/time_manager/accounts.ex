@@ -21,41 +21,45 @@ defmodule TimeManager.Accounts do
     Repo.all(User)
   end
 
-   @doc """
-  Finds a user by email or username.
+  @doc """
+  Finds users by partial email or username match.
 
   Returns:
-    - {:ok, user} if found
-    - {:error, :not_found} if no user matches
+    - {:ok, users} if one or more users are found
+    - {:error, :not_found} if no users match
     - {:error, :bad_request} if both email and username are nil
   """
-  def find_user_by_email_or_username(email, username) do
+  def find_users_by_email_or_username(email, username) do
     cond do
       is_nil(email) and is_nil(username) ->
         {:error, :bad_request}
 
       not is_nil(email) and is_nil(username) ->
-        Repo.one(from u in User, where: u.email == ^email)
-        |> case do
-          nil -> {:error, :not_found}
-          user -> {:ok, user}
+        users = Repo.all(from u in User, where: ilike(u.email, ^("#{email}%")))
+        case users do
+          [] -> {:error, :not_found}
+          _ -> {:ok, users}
         end
 
       is_nil(email) and not is_nil(username) ->
-        Repo.one(from u in User, where: u.username == ^username)
-        |> case do
-          nil -> {:error, :not_found}
-          user -> {:ok, user}
+        users = Repo.all(from u in User, where: ilike(u.username, ^("#{username}%")))
+        case users do
+          [] -> {:error, :not_found}
+          _ -> {:ok, users}
         end
 
       not is_nil(email) and not is_nil(username) ->
-        Repo.one(from u in User, where: u.email == ^email or u.username == ^username)
-        |> case do
-          nil -> {:error, :not_found}
-          user -> {:ok, user}
+        users = Repo.all(
+          from u in User,
+          where: ilike(u.email, ^("#{email}%")) or ilike(u.username, ^("#{username}%"))
+        )
+        case users do
+          [] -> {:error, :not_found}
+          _ -> {:ok, users}
         end
     end
   end
+
 
   @doc """
   Gets a single user.

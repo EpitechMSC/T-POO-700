@@ -15,14 +15,14 @@ defmodule TimeManagerWeb.UserController do
     email = Map.get(params, "email")
     username = Map.get(params, "username")
 
-    case Accounts.find_user_by_email_or_username(email, username) do
-      {:ok, user} ->
-        render(conn, :show, user: user)
+    case Accounts.find_users_by_email_or_username(email, username) do
+      {:ok, users} ->
+        render(conn, :index, users: users)
 
       {:error, :not_found} ->
         conn
         |> put_status(:not_found)
-        |> json(%{error: "User not found"})
+        |> json(%{error: "No users found"})
 
       {:error, :bad_request} ->
         conn
@@ -30,6 +30,7 @@ defmodule TimeManagerWeb.UserController do
         |> json(%{error: "Either 'email' or 'username' must be provided."})
     end
   end
+
 
   def create(conn, %{"user" => user_params}) do
     with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
