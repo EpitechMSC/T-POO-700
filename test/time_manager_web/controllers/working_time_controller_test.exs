@@ -48,10 +48,7 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
     end
 
     test "renders working time when user and working time exist", %{conn: conn, user: user} do
-      IO.inspect(user, label: "User Before Working Time Creation")
       working_time = working_time_fixture(%{user_id: user.id})
-
-      IO.inspect(working_time, label: "Working Time After Creation")
 
       conn = get(conn, ~p"/api/workingtimes/#{user.id}/#{working_time.id}")
 
@@ -61,7 +58,6 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
         "end" => working_time.end |> NaiveDateTime.to_iso8601()
       }
 
-      # Vérifier que la réponse JSON est celle attendue
       assert json_response(conn, 200)["data"] == expected_response
     end
 
