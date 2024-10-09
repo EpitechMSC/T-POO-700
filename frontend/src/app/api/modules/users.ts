@@ -6,7 +6,8 @@ const Users = {
     const queryParams: string[] = [];
     if (email) queryParams.push(`email=${encodeURIComponent(email)}`);
     if (username) queryParams.push(`username=${encodeURIComponent(username)}`);
-    const queryString = queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
+    const queryString =
+      queryParams.length > 0 ? `?${queryParams.join('&')}` : '';
 
     return requests.get<User[]>(`users/search${queryString}`);
   },

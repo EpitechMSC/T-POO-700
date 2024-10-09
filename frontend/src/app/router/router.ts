@@ -1,15 +1,17 @@
-import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import HomePage from '../../pages/Home/HomePage.vue'; // Assurez-vous que le chemin est correct
-// import User from '../pages/User.vue'; // Importez votre page d'utilisateur
-// import Clock from '../pages/Clock.vue'; // Importez votre page d'horloge
-// import WorkingTime from '../pages/WorkingTime.vue'; // Importez votre page de temps de travail
+import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import HomePageComponent from '../../pages/Home/HomePage.vue';
 
 const routes: Array<RouteRecordRaw> = [
-  { path: '/home', name: 'Home', component: HomePage },
+  { path: '/home', name: 'Home', component: HomePageComponent },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../../pages/Login/LoginPage.vue'),
+  },
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes,
 });
 
