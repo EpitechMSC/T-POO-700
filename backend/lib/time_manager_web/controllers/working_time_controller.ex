@@ -11,6 +11,26 @@ defmodule TimeManagerWeb.WorkingTimeController do
     render(conn, :index, workingtimes: workingtimes)
   end
 
+  def user_working_time(conn, %{"userID" => user_id, "id" => id}) do
+    case Work.get_user(user_id) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "User not found"})
+
+      _user ->
+        case Work.get_working_time_for_user(user_id, id) do
+          nil ->
+            conn
+            |> put_status(:not_found)
+            |> json(%{error: "Working time not found for this user"})
+
+          working_time ->
+            render(conn, :show, working_time: working_time)
+        end
+    end
+  end
+
   def create(conn, %{"working_time" => working_time_params}) do
     with {:ok, %WorkingTime{} = working_time} <- Work.create_working_time(working_time_params) do
       conn
