@@ -7,6 +7,7 @@ defmodule TimeManager.WorkTest do
     alias TimeManager.Work.WorkingTime
 
     import TimeManager.WorkFixtures
+    import TimeManager.AccountsFixtures
 
     @invalid_attrs %{start: nil, end: nil}
 
@@ -56,6 +57,44 @@ defmodule TimeManager.WorkTest do
     test "change_working_time/1 returns a working_time changeset" do
       working_time = working_time_fixture()
       assert %Ecto.Changeset{} = Work.change_working_time(working_time)
+    end
+
+    test "returns error when user_id is nil" do
+      assert Work.find_working_time_for_user_and_date_range(nil, ~N[2024-09-01 08:00:00], nil) ==
+               {:error, :bad_request}
+    end
+
+    test "returns error when start_date is nil" do
+      assert Work.find_working_time_for_user_and_date_range(1, nil, ~N[2024-09-01 08:00:00]) ==
+               {:error, :bad_request}
+    end
+
+    test "returns works when only start date is provided and user has matching working times" do
+      # Insert a sample working time into the database
+      start_date = ~N[2024-09-01 08:00:00]
+      user = user_fixture(username: "testUser", email: "test@example.com")
+
+      %WorkingTime{user: user.id, start: ~N[2024-08-31 09:00:00]}
+      |> Repo.insert!()
+
+      result = Work.find_working_time_for_user_and_date_range(user.id, start_date, nil)
+
+      assert {:ok, works} = result
+      assert length(works) > 0
+    end
+
+    test "returns works when start_date and end_date are provided and match working times" do
+      user = user_fixture(username: "testUser", email: "test@example.com")
+      start_date = ~N[2024-09-01 08:00:00]
+      end_date = ~N[2024-09-02 10:30:00]
+
+      %WorkingTime{user: user.id, start: ~N[2024-08-31 09:00:00], end: ~N[2024-09-03 09:00:00]}
+      |> Repo.insert!()
+
+      result = Work.find_working_time_for_user_and_date_range(user.id, start_date, end_date)
+
+      assert {:ok, works} = result
+      assert length(works) > 0
     end
   end
 end

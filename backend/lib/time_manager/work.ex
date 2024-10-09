@@ -101,4 +101,24 @@ defmodule TimeManager.Work do
   def change_working_time(%WorkingTime{} = working_time, attrs \\ %{}) do
     WorkingTime.changeset(working_time, attrs)
   end
+
+  def find_working_time_for_user_and_date_range(user_id, start_date, end_date) do
+    cond do
+      is_nil(user_id) or is_nil(start_date) ->
+        {:error, :bad_request}
+
+      not is_nil(start_date) and is_nil(end_date) ->
+        Repo.all(from w in WorkingTime, where: w.user == ^user_id and w.start <= ^start_date)
+        |> case do
+          nil -> {:error, :not_found}
+          works -> {:ok, works}
+        end
+      not is_nil(start_date) and not is_nil(end_date) ->
+        Repo.all(from w in WorkingTime, where: w.user == ^user_id and w.start <= ^start_date and field(w, :end) >= ^end_date)
+        |> case do
+          nil -> {:error, :not_found}
+          works -> {:ok, works}
+        end
+    end
+  end
 end
