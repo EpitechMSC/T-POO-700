@@ -5,7 +5,7 @@ import HomePage from '../../pages/Home/HomePage.vue'; // Assurez-vous que le che
 // import WorkingTime from '../pages/WorkingTime.vue'; // Importez votre page de temps de travail
 
 const routes: Array<RouteRecordRaw> = [
-  { path: '/', name: 'Home', component: HomePage },
+  { path: '/home', name: 'Home', component: HomePage },
 ];
 
 const router = createRouter({

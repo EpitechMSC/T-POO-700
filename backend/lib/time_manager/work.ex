@@ -37,15 +37,6 @@ defmodule TimeManager.Work do
   """
   def get_working_time!(id), do: Repo.get!(WorkingTime, id)
 
-  def get_working_time_for_user(user_id, working_time_id) do
-    Repo.one(from wt in WorkingTime, where: wt.id == ^working_time_id and wt.user == ^user_id)
-  end
-
-  def get_user(user_id) do
-    Repo.get(TimeManager.Accounts.User, user_id)
-  end
-
-
   @doc """
   Creates a working_time.
 

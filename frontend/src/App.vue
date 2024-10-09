@@ -3,7 +3,7 @@
     <img alt="Vue logo" src="./assets/logo.png" />
     <nav>
       <ul>
-        <li><router-link to="/">Home</router-link></li>
+        <li><router-link to="/home">Home</router-link></li>
       </ul>
     </nav>
     <router-view />
