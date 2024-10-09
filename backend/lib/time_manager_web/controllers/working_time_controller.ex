@@ -40,4 +40,32 @@ defmodule TimeManagerWeb.WorkingTimeController do
       send_resp(conn, :no_content, "")
     end
   end
+  def search_by_userid_and_date_range(conn, %{"id" => id, "start" => start_date_as_string} = params) do
+    end_date =
+      case Map.get(params, "end") do
+        nil -> nil # `end` is not provided, set it to nil
+        end_date_as_string ->
+          # Parse the `end` date and handle both success and failure cases
+          case NaiveDateTime.from_iso8601(end_date_as_string) do
+            {:ok, parsed_date} -> parsed_date # If parsing succeeds, return the parsed date
+            {:error, _reason} -> nil          # If parsing fails, return nil
+          end
+        end
+    {:ok, start_date} = NaiveDateTime.from_iso8601(start_date_as_string)
+
+    case Work.find_working_time_for_user_and_date_range(id,start_date,end_date) do
+      {:ok, works} ->
+        render(conn, :index, workingtimes: works)
+
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "WorkingTime not found"})
+
+      {:error, :bad_request} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "Start Date was not provided"})
+    end
+  end
 end
