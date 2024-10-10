@@ -1,11 +1,13 @@
 import { defineComponent } from 'vue';
 import { User } from '../../app/models/user';
 import TableComponent from '../../components/Table/TableComponent.vue';
+import CardComponent from '../../components/Card/CardComponent.vue';
 
 export default defineComponent({
   name: 'HomePage',
   components: {
     TableComponent,
+    CardComponent,
   },
   data() {
     return {

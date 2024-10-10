@@ -2,7 +2,7 @@ import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import HomePageComponent from '../../pages/Home/HomePage.vue';
 
 const routes: Array<RouteRecordRaw> = [
-  { path: '/', redirect: '/login' },
+  { path: '/', redirect: '/home' },
   { path: '/home', name: 'Home', component: HomePageComponent },
   {
     path: '/login',
