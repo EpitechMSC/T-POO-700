@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, computed } from 'vue';
 import { useUsersStore } from '../../app/store/store';
 import TableComponent from '../Table/TableComponent.vue';
 
@@ -34,14 +34,18 @@ export default defineComponent({
       usersStore.fetchAllUsers();
     });
 
+    const users = computed(() => usersStore.users);
+    const loading = computed(() => usersStore.loading);
+    const error = computed(() => usersStore.error);
+
     const deleteUser = (id: number) => {
       usersStore.deleteUser(id);
     };
 
     return {
-      users: usersStore.users,
-      loading: usersStore.loading,
-      error: usersStore.error,
+      users,
+      loading,
+      error,
       deleteUser,
     };
   },

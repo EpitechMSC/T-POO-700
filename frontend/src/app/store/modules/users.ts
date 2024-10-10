@@ -29,7 +29,7 @@ export const useUsersStore = defineStore('users', {
           username
         );
         this.$patch({
-          users: response.data,
+          users: response,
         });
       } catch (err: any) {
         this.$patch({
@@ -47,7 +47,7 @@ export const useUsersStore = defineStore('users', {
       try {
         const response = await agent.Users.list();
         this.$patch({
-          users: response.data,
+          users: response,
         });
       } catch (err: any) {
         this.$patch({
@@ -65,7 +65,7 @@ export const useUsersStore = defineStore('users', {
       try {
         const response = await agent.Users.create(user);
         this.$patch({
-          users: [...this.users, response.data],
+          users: [...this.users, response],
         });
       } catch (err: any) {
         this.$patch({
@@ -82,7 +82,7 @@ export const useUsersStore = defineStore('users', {
       try {
         const response = await agent.Users.details(id);
         this.$patch({
-          currentUser: response.data,
+          currentUser: response,
         });
       } catch (err: any) {
         this.$patch({
@@ -103,7 +103,7 @@ export const useUsersStore = defineStore('users', {
         const index = this.users.findIndex(u => u.id === id);
         if (index !== -1) {
           this.$patch({
-            users: this.users.map(u => (u.id === id ? response.data : u)), // Utilisation de map pour une mise à jour immuable
+            users: this.users.map(u => (u.id === id ? response : u)), // Utilisation de map pour une mise à jour immuable
           });
         }
       } catch (err: any) {

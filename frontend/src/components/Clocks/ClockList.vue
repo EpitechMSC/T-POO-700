@@ -7,14 +7,20 @@
 
     <div v-if="!loading && !error">
       <TableComponent v-if="clocks.length > 0" :data="clocks" />
+      <div
+        v-else
+        class="text-center text-gray-500 border border-gray-300 rounded p-4"
+      >
+        <p class="text-lg">Aucune horloge trouvée.</p>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, computed } from 'vue';
 import TableComponent from '../Table/TableComponent.vue';
-import { useClocksStore } from '../../app/store/modules/clocks';
+import { useClocksStore } from '../../app/store/store';
 
 export default defineComponent({
   name: 'ClockList',
@@ -28,14 +34,17 @@ export default defineComponent({
       clocksStore.fetchClocks();
     });
 
+    const clocks = computed(() => clocksStore.clocks);
+    const loading = computed(() => clocksStore.loading);
+    const error = computed(() => clocksStore.error);
     const deleteClock = (id: number) => {
       clocksStore.deleteClock(id);
     };
 
     return {
-      clocks: clocksStore.clocks,
-      loading: clocksStore.loading,
-      error: clocksStore.error,
+      clocks,
+      loading,
+      error,
       deleteClock,
     };
   },

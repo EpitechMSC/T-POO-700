@@ -2,6 +2,7 @@ import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
 import UserList from '../../components/Users/UserList.vue';
 import WorkingTimeList from '../../components/WorkingTimes/WorkingTimeList.vue';
 import ClockList from '../../components/Clocks/ClockList.vue';
+import WorkingTimeChart from '../../components/Chart/WorkingTimeChart.vue';
 import CardComponent from '../../components/Card/CardComponent.vue';
 import { useWorkingTimesStore } from '../../app/store/modules/workingTimes';
 
@@ -11,6 +12,7 @@ export default defineComponent({
     UserList,
     ClockList,
     WorkingTimeList,
+    WorkingTimeChart,
     CardComponent,
   },
   setup() {

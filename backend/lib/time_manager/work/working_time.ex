@@ -2,6 +2,7 @@ defmodule TimeManager.Work.WorkingTime do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:id, :start, :end]}
   schema "workingtimes" do
     field :start, :naive_datetime
     field :end, :naive_datetime

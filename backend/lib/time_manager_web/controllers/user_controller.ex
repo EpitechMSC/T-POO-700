@@ -8,7 +8,7 @@ defmodule TimeManagerWeb.UserController do
 
   def index(conn, _params) do
     users = Accounts.list_users()
-    render(conn, :index, users: users)
+    json(conn, users)
   end
 
   def search_by_email_or_username(conn, params) do
@@ -17,7 +17,7 @@ defmodule TimeManagerWeb.UserController do
 
     case Accounts.find_users_by_email_or_username(email, username) do
       {:ok, users} ->
-        render(conn, :index, users: users)
+        json(conn, users)
 
       {:error, :not_found} ->
         conn
@@ -31,26 +31,25 @@ defmodule TimeManagerWeb.UserController do
     end
   end
 
-
   def create(conn, %{"user" => user_params}) do
     with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/users/#{user}")
-      |> render(:show, user: user)
+      |> put_resp_header("location", ~p"/api/users/#{user.id}")
+      |> json(user)
     end
   end
 
   def show(conn, %{"id" => id}) do
     user = Accounts.get_user!(id)
-    render(conn, :show, user: user)
+    json(conn, user)
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
     user = Accounts.get_user!(id)
 
-    with {:ok, %User{} = user} <- Accounts.update_user(user, user_params) do
-      render(conn, :show, user: user)
+    with {:ok, %User{} = updated_user} <- Accounts.update_user(user, user_params) do
+      json(conn, updated_user)
     end
   end
 

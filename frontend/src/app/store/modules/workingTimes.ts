@@ -28,7 +28,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.error = null;
       try {
         const response = await agent.WorkingTimes.list();
-        this.workingTimes = response.data;
+        this.workingTimes = response;
       } catch (err: any) {
         this.error =
           err.message || 'Erreur lors de la récupération des temps de travail';
@@ -42,7 +42,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.error = null;
       try {
         const response = await agent.WorkingTimes.create(workingTime);
-        this.workingTimes.push(response.data);
+        this.workingTimes.push(response);
       } catch (err: any) {
         this.error =
           err.message || 'Erreur lors de la création du temps de travail';
@@ -61,7 +61,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         const response = await agent.WorkingTimes.update(id, workingTime);
         const index = this.workingTimes.findIndex(wt => wt.id === id);
         if (index !== -1) {
-          this.workingTimes[index] = response.data;
+          this.workingTimes[index] = response;
         }
       } catch (err: any) {
         this.error =
@@ -93,7 +93,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
           userID,
           id
         );
-        this.currentWorkingTime = response.data;
+        this.currentWorkingTime = response;
       } catch (err: any) {
         this.error =
           err.message ||
