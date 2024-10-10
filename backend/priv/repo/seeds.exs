@@ -1,83 +1,108 @@
-# Script for populating the database. You can run it as:
 #
+# This file is used to populate the database with some data.
+# It is executed by running the following command:
 #     mix run priv/repo/seeds.exs
 #
-# Inside the script, you can read and write to any of your
-# repositories directly:
-#
-# We recommend using the bang functions (`insert!`, `update!`
-# and so on) as they will fail if something goes wrong.
 
+
+alias Hex.Repo
 alias TimeManager.Repo
 alias TimeManager.Accounts.User
 alias TimeManager.Clocks.Clock
 alias TimeManager.Work.WorkingTime
 
-#delete all records
+# Delete all records
 
 Repo.delete_all(Clock)
 Repo.delete_all(WorkingTime)
 Repo.delete_all(User)
 
-#insert User
+# Create users
 
 _user1 = Repo.insert!(%User{
-  email: "test@test.com",
+  email: "alex@surfhub.eu",
   username: "Alex"
 })
 
 _user2 = Repo.insert!(%User{
-  email: "test_2@test.fr",
+  email: "manu@surfhub.eu",
   username: "Manu"
 })
 
 _user3 = Repo.insert!(%User{
-  email: "test_3@test.fr",
+  email: "mimi@surfhub.eu",
   username: "Mimi"
 })
 
-#insert Clock
-
-Repo.insert!(%Clock{
-  time: ~N[2024-09-01 08:00:00],
-  status: true,
-  user: _user1.id
+_user4 = Repo.insert!(%User{
+  email: "jaquie@surfhub.eu",
+  username: "Jaquie"
 })
 
-Repo.insert!(%Clock{
-  time: ~N[2024-09-01 12:00:00],
-  status: false,
-  user: _user1.id
+_user5 = Repo.insert!(%User{
+  email: "michel@surfhub.eu",
+  username: "Michel"
 })
 
-Repo.insert!(%Clock{
-  time: ~N[2024-09-01 08:02:00],
-  status: true,
-  user: _user2.id
+_user6 = Repo.insert!(%User{
+  email: "batman@surfhub.eu",
+  username: "Batman"
 })
 
-Repo.insert!(%Clock{
-  time: ~N[2024-09-01 12:02:00],
-  status: false,
-  user: _user2.id
-})
 
-#insert WorkinTime
+# Generate working times and clocks
 
-Repo.insert!(%WorkingTime{
-  start: ~N[2024-09-01 08:00:00],
-  end: ~N[2024-09-01 12:00:00],
-  user: _user1.id
-})
+users = [_user1, _user2, _user3, _user4, _user5, _user6]
+for user <- users do
+  for month <- 1..09 do # Generate data for each month
+    for day <- 1..27 do # Generate data for each day
+      # Generate random start and end hours / minutes / seconds for the clock and working time
+      start_hour = Enum.random(8..10)
+      end_hour = Enum.random(18..20)
+      start_minute = Enum.random(0..59)
+      end_minute = Enum.random(0..59)
+      seconds = Enum.random(0..59)
 
-Repo.insert!(%WorkingTime{
-  start: ~N[2024-09-01 14:00:00],
-  end: ~N[2024-09-01 18:00:00],
-  user: _user1.id
-})
+      case NaiveDateTime.new(2024, month, day, start_hour, start_minute, seconds) do
+        {:ok, start_date} ->
 
-Repo.insert!(%WorkingTime{
-  start: ~N[2024-09-01 08:02:00],
-  end: ~N[2024-09-01 12:02:00],
-  user: _user2.id
-})
+          # Create clock in whit status true
+          Repo.insert!(%Clock{
+            time: start_date,
+            status: true,
+            user: user.id
+          })
+          # put a message in the console to know that the clock was generated correctly
+          # IO.puts("Clock generated for user #{user.id} with time: #{start_date}")
+
+          case NaiveDateTime.new(2024, month, day, end_hour, end_minute, seconds) do
+            {:ok, end_date} ->
+
+              # Create clock in whit status false
+              Repo.insert!(%Clock{
+                time: end_date,
+                status: false,
+                user: user.id
+              })
+              # put a message in the console to know that the clock was generated correctly
+              # IO.puts("Clock generated for user #{user.id} with time: #{end_date}")
+
+              # Create working time for user
+              Repo.insert!(%WorkingTime{
+                start: start_date,
+                end: end_date,
+                user: user.id
+              })
+              # put a message in the console to know that the working time was generated correctly
+              # IO.puts("Working time generated for user #{user.id} on #{start_date} to #{end_date}")
+
+            {:error, reason} ->
+              IO.puts("Failed to create end_date: #{reason}")
+          end
+
+        {:error, reason} ->
+          IO.puts("Failed to create start_date: #{reason}")
+      end
+    end
+  end
+end

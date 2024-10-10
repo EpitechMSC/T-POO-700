@@ -3,6 +3,13 @@
     <h2 class="text-2xl mb-6" style="font-family: 'Inter', sans-serif">
       Évolution du temps de travail
     </h2>
+
+    <select v-model="selectedUser" class="mb-4 p-2 border rounded">
+      <option v-for="user in users" :key="user.id" :value="user.id">
+        {{ user.name }}
+      </option>
+    </select>
+
     <LineChart
       v-if="chartData"
       :data="chartData"
@@ -50,28 +57,51 @@ export default defineComponent({
     const store = useWorkingTimesStore();
     const loading = ref(false);
     const error = ref<string | null>(null);
+    const selectedUser = ref(null);
+
+    // Récupérer les utilisateurs
+    const users = computed(() => store.users);
 
     const fetchData = async () => {
       loading.value = true;
       error.value = null;
-      await store.fetchWorkingTimes();
-      loading.value = false;
+      try {
+        await store.fetchUsers(); // Charger d'abord les utilisateurs
+        if (users.value.length > 0) {
+          selectedUser.value = users.value[0].id; // Initialiser l'utilisateur sélectionné
+          await store.fetchWorkingTimes(selectedUser.value); // Ensuite, charger les temps de travail
+        }
+      } catch (err) {
+        error.value = 'Erreur lors de la récupération des données.';
+      } finally {
+        loading.value = false;
+      }
     };
 
     onMounted(fetchData);
 
     const chartData = computed(() => {
-      const labels = store.workingTimes.map(wt => {
-        const startDate = new Date(wt.start);
-        return startDate.toLocaleDateString();
-      });
+      if (!selectedUser.value) return null; // Retourne null si aucun utilisateur n'est sélectionné
 
-      const data = store.workingTimes.map(wt => {
-        const start = new Date(wt.start);
-        const end = new Date(wt.end);
-        const duration = (end.getTime() - start.getTime()) / 3600000;
-        return duration;
-      });
+      const filteredWorkingTimes = store.workingTimes.filter(
+        wt => wt.userId === selectedUser.value
+      );
+
+      const labels = filteredWorkingTimes
+        .map(wt => {
+          const startDate = new Date(wt.start);
+          return startDate.toLocaleDateString();
+        })
+        .reverse();
+
+      const data = filteredWorkingTimes
+        .map(wt => {
+          const start = new Date(wt.start);
+          const end = new Date(wt.end);
+          const duration = (end.getTime() - start.getTime()) / 3600000;
+          return duration;
+        })
+        .reverse();
 
       return {
         labels,
@@ -102,6 +132,8 @@ export default defineComponent({
       error,
       chartData,
       chartOptions,
+      selectedUser,
+      users,
     };
   },
 });
