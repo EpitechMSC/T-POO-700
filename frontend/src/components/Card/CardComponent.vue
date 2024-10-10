@@ -1,7 +1,7 @@
 <template>
-  <div class="skeuo-no-hover flex-col rounded-lg text-center p-8 w-64">
-    <div class="text-7xl font-black">4:20{{ data }}</div>
-    <div class="text-3xl">Worked today</div>
+  <div class="skeuo-no-hover flex-col rounded-lg text-center p-8 w-72">
+    <div class="text-6xl font-black">{{ data }}</div>
+    <div class="text-2xl">{{ text }}</div>
   </div>
 </template>
 <script>
