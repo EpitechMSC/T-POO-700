@@ -1,6 +1,8 @@
 <template>
-  <div>
-    <h2>Évolution du temps de travail</h2>
+  <div class="text-center h-6">
+    <h2 class="text-2xl" style="font-family: 'Inter', sans-serif">
+      Évolution du temps de travail
+    </h2>
     <LineChart v-if="chartData" :data="chartData" :options="chartOptions" />
     <p v-if="loading">Chargement...</p>
     <p v-if="error">{{ error }}</p>

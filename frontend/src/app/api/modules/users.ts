@@ -14,7 +14,8 @@ const Users = {
   list: () => requests.get<User[]>('users'),
   create: (user: User) => requests.post<User>('users', user),
   details: (id: number) => requests.get<User>(`users/${id}`),
-  update: (id: number, user: User) => requests.put<User>(`users/${id}`, user),
+  update: (id: number, user: User) =>
+    requests.put<User>(`users/${id}`, { user }),
   remove: (id: number) => requests.delete(`users/${id}`),
 };
 

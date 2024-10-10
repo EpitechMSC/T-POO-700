@@ -6,7 +6,13 @@
     <div v-if="error" class="text-red-600">{{ error }}</div>
 
     <div v-if="!loading && !error">
-      <TableComponent v-if="users.length > 0" :data="users" />
+      <TableComponent
+        v-if="users.length > 0"
+        :data="users"
+        @edit-item="editUser"
+        @delete-item="confirmDeleteUser"
+        @save-edit="updateUser"
+      />
       <div
         v-else
         class="text-center text-gray-500 border border-gray-300 rounded p-4"
@@ -18,9 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, computed } from 'vue';
+import { defineComponent, onMounted, computed, ref } from 'vue';
 import { useUsersStore } from '../../app/store/store';
 import TableComponent from '../Table/TableComponent.vue';
+import { User } from '../../app/models/user';
 
 export default defineComponent({
   name: 'UserList',
@@ -29,6 +36,7 @@ export default defineComponent({
   },
   setup() {
     const usersStore = useUsersStore();
+    const editingItem = ref<User | null>(null);
 
     onMounted(() => {
       usersStore.fetchAllUsers();
@@ -38,15 +46,37 @@ export default defineComponent({
     const loading = computed(() => usersStore.loading);
     const error = computed(() => usersStore.error);
 
-    const deleteUser = (id: number) => {
-      usersStore.deleteUser(id);
+    const editUser = (item: User) => {
+      editingItem.value = { ...item };
+      console.log("Modifier l'élément :", editingItem.value);
+    };
+
+    const updateUser = async (updatedItem: User) => {
+      const { id, ...modifiableData } = updatedItem;
+
+      console.log(modifiableData);
+      try {
+        await usersStore.updateUser(id, modifiableData as User);
+        editingItem.value = null;
+      } catch (err) {
+        console.error("Erreur lors de la mise à jour de l'utilisateur", err);
+      }
+    };
+
+    const confirmDeleteUser = (item: User) => {
+      if (confirm(`Êtes-vous sûr de vouloir supprimer cet utilisateur ?`)) {
+        usersStore.deleteUser(item.id);
+      }
     };
 
     return {
       users,
       loading,
       error,
-      deleteUser,
+      editingItem,
+      editUser,
+      updateUser,
+      confirmDeleteUser,
     };
   },
 });

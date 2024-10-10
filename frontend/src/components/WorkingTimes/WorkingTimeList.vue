@@ -6,7 +6,13 @@
     <div v-if="error" class="text-red-600">{{ error }}</div>
 
     <div v-if="!loading && !error">
-      <TableComponent v-if="workingTimes.length > 0" :data="workingTimes" />
+      <TableComponent
+        v-if="workingTimes.length > 0"
+        :data="workingTimes"
+        @edit-item="editWorkingTime"
+        @delete-item="confirmDeleteWorkingTime"
+        @save-edit="updateWorkingTime"
+      />
       <div
         v-else
         class="text-center text-gray-500 border border-gray-300 rounded p-4"
@@ -18,9 +24,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, computed } from 'vue';
+import { defineComponent, onMounted, computed, ref } from 'vue';
 import TableComponent from '../Table/TableComponent.vue';
 import { useWorkingTimesStore } from '../../app/store/store';
+import { WorkingTime } from '../../app/models/workingTime';
 
 export default defineComponent({
   name: 'WorkingTimeList',
@@ -38,13 +45,42 @@ export default defineComponent({
     const loading = computed(() => workingTimesStore.loading);
     const error = computed(() => workingTimesStore.error);
 
+    const editingItem = ref(null);
+
+    const editWorkingTime = (item: any) => {
+      editingItem.value = { ...item };
+      console.log("Modifier l'élément :", editingItem.value);
+    };
+
+    const updateWorkingTime = async (updatedItem: any) => {
+      const { id, ...modifiableData } = updatedItem;
+
+      try {
+        await workingTimesStore.updateWorkingTime(
+          id,
+          modifiableData as WorkingTime
+        );
+        editingItem.value = null;
+      } catch (err) {
+        console.error('Erreur lors de la mise à jour du temps de travail', err);
+      }
+    };
+
+    const confirmDeleteWorkingTime = (item: any) => {
+      if (confirm(`Êtes-vous sûr de vouloir supprimer ce temps de travail ?`)) {
+        workingTimesStore.deleteWorkingTime(item.id);
+      }
+    };
+
     return {
       workingTimes,
       loading,
       error,
+      editingItem,
+      editWorkingTime,
+      updateWorkingTime,
+      confirmDeleteWorkingTime,
     };
   },
 });
 </script>
-
-<style scoped></style>
