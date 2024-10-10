@@ -70,7 +70,7 @@
       </div>
     </div>
 
-    <!-- ------------------top-Cards-Components----------------- -->
+    <!-- ------------------top-Content-Components----------------- -->
     <div class="flex w-full justify-around">
       <CardComponent data="4:20" text="Worked today" />
       <CardComponent data="3438" text="Number of clocked" />
@@ -78,8 +78,12 @@
       <CardComponent data="124:20" text="Worked this week" />
     </div>
 
-    <!--  <UserList />
-  <WorkingTimeList /> -->
+    <!-- ------------------Content-Components----------------- -->
+    <div class="flex w-full h-1/4">
+      <WorkingTimeChart class="w-4/5" />
+      <!--  <UserList />-->
+      <WorkingTimeList />
+    </div>
   </div>
 </template>
 

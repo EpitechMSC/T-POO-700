@@ -1,5 +1,5 @@
 <template>
-  <div class="p-6">
+  <div class="p-6 h-64">
     <h1 class="text-2xl font-bold mb-4">Liste des horloges</h1>
 
     <div v-if="loading" class="text-gray-500">Chargement...</div>
