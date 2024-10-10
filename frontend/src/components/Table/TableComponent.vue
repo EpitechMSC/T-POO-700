@@ -38,7 +38,6 @@ export default {
   name: 'TableComponent',
   props: {
     data: {
-      type: Array,
       required: true,
     },
   },
@@ -49,5 +48,3 @@ export default {
   },
 };
 </script>
-
-<style></style>

@@ -32,6 +32,9 @@ defmodule TimeManagerWeb.Endpoint do
     plug Phoenix.Ecto.CheckRepoStatus, otp_app: :time_manager
   end
 
+  # Add CORSPlug here
+  plug CORSPlug  # Ajoutez cette ligne
+
   plug Phoenix.LiveDashboard.RequestLogger,
     param_key: "request_logger",
     cookie_key: "request_logger"
