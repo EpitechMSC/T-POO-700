@@ -1,36 +1,34 @@
 <template>
-  <div class="overflow-x-auto">
-    <table class="min-w-full table-auto border-collapse">
-      <thead class="bg-gray-100">
-        <tr class="border-b border-gray-200">
-          <th
-            v-for="(header, index) in headers"
-            :key="index"
-            class="px-4 py-2 text-left text-sm font-semibold text-gray-600"
-          >
-            {{ header }}
-          </th>
-        </tr>
-      </thead>
-      <tbody class="text-gray-600 text-sm">
-        <tr
-          v-for="(item, rowIndex) in data"
-          :key="rowIndex"
-          class="border-b border-gray-200"
+  <table class="min-w-full table-auto border-collapse">
+    <thead class="bg-gray-100">
+      <tr class="border-b border-gray-200">
+        <th
+          v-for="(header, index) in headers"
+          :key="index"
+          class="px-4 py-2 text-left text-sm font-semibold text-gray-600"
         >
-          <td
-            v-for="(header, colIndex) in headers"
-            :key="colIndex"
-            class="px-4 py-3"
-          >
-            <slot name="customCell" :item="item" :field="header">
-              {{ formatValue(item[header]) }}
-            </slot>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+          {{ header }}
+        </th>
+      </tr>
+    </thead>
+    <tbody class="text-gray-600 text-sm">
+      <tr
+        v-for="(item, rowIndex) in data"
+        :key="rowIndex"
+        class="border-b border-gray-200"
+      >
+        <td
+          v-for="(header, colIndex) in headers"
+          :key="colIndex"
+          class="px-4 py-3"
+        >
+          <slot name="customCell" :item="item" :field="header">
+            {{ formatValue(item[header]) }}
+          </slot>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </template>
 
 <script>
