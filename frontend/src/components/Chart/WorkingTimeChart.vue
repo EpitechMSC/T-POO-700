@@ -1,5 +1,5 @@
 <template>
-  <div class="text-center h-6">
+  <div class="text-center">
     <h2 class="text-2xl" style="font-family: 'Inter', sans-serif">
       Évolution du temps de travail
     </h2>

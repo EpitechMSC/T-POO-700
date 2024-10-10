@@ -1,38 +1,7 @@
 <template>
   <div>
     <!-- ------------------User-Bar----------------- -->
-    <div class="user-bar flex justify-between h-[70px] items-center p-8">
-      <div
-        class="search-bar flex items-center border border-gray rounded-full px-4 py-2 bg-gray-50 h-min"
-      >
-        <svg
-          class="w-5 h-5 text-gray-400 mr-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M21 21l-4.35-4.35m0 0a7 7 0 10-9.9 0 7 7 0 009.9 0z"
-          ></path>
-        </svg>
-        <input
-          type="text"
-          placeholder="Search"
-          class="outline-none bg-transparent text-gray-700 placeholder-gray-400 w-full"
-        />
-      </div>
-      <div class="user-profile flex items-center">
-        <p class="capitalize mr-2">gilbert</p>
-        <img
-          class="rounded-full w-10 h-10"
-          src="../../assets/Capture d’écran 2023-10-09 150736.jpg"
-        />
-      </div>
-    </div>
+    <TopBar />
 
     <!-- ------------------Hello-Bar----------------- -->
     <div
@@ -70,7 +39,7 @@
       </div>
     </div>
 
-    <!-- ------------------top-Content-Components----------------- -->
+    <!-- ------------------Top Content Components----------------- -->
     <div class="flex w-full justify-around">
       <CardComponent data="4:20" text="Worked today" />
       <CardComponent data="3438" text="Number of clocked" />
@@ -78,23 +47,24 @@
       <CardComponent data="124:20" text="Worked this week" />
     </div>
 
-    <!-- ------------------Content-Components----------------- -->
+    <!-- ------------------Content Components----------------- -->
     <div class="flex w-full h-1/4">
-      <WorkingTimeChart class="w-4/5" />
-      <!--  <UserList />-->
+      <WorkingTimeChart />
+      <!-- <UserList /> -->
       <WorkingTimeList />
     </div>
   </div>
 </template>
 
 <script>
-import { defineComponent, onBeforeUnmount, onMounted, ref } from 'vue';
+import { defineComponent, onMounted, ref } from 'vue';
 import UserList from '../../components/Users/UserList.vue';
 import WorkingTimeList from '../../components/WorkingTimes/WorkingTimeList.vue';
 import ClockList from '../../components/Clocks/ClockList.vue';
 import WorkingTimeChart from '../../components/Chart/WorkingTimeChart.vue';
 import CardComponent from '../../components/Card/CardComponent.vue';
 import { useWorkingTimesStore } from '../../app/store/modules/workingTimes';
+import TopBar from '../../components/TopBar/TopBar.vue'; // Importer TopBar
 
 export default defineComponent({
   name: 'HomePage',
@@ -104,35 +74,41 @@ export default defineComponent({
     WorkingTimeList,
     WorkingTimeChart,
     CardComponent,
+    TopBar, // Ajouter TopBar ici
   },
   setup() {
     // stores
     const workingTimesStore = useWorkingTimesStore();
 
-    const time = ref(''); // Create a reactive variable for the time
+    const time = ref(''); // Créer une variable réactive pour l'heure
+    var workedToday = ref('');
 
-    // Function to update the time
+    // Fonction pour mettre à jour l'heure
     const updateTime = () => {
-      const now = new Date(); // Get the current date and time
-      const hours = now.getHours(); // Get the current hour (0-23)
-      const minutes = now.getMinutes(); // Get the current minutes (0-59)
-      const seconds = now.getSeconds(); // Get the current seconds (0-59)
+      const now = new Date(); // Obtenir la date et l'heure actuelles
+      const hours = now.getHours(); // Obtenir l'heure actuelle (0-23)
+      const minutes = now.getMinutes(); // Obtenir les minutes actuelles (0-59)
+      const seconds = now.getSeconds(); // Obtenir les secondes actuelles (0-59)
 
-      // Format the time as a string
+      // Formater l'heure sous forme de chaîne
       time.value = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
     };
 
-    // Update the time immediately when the component is mounted
+    // Mettre à jour l'heure immédiatement lorsque le composant est monté
     onMounted(() => {
       //fetch stores
+      workingTimesStore.getWorkingTimeById(1);
+      console.log(workingTimesStore);
 
-      updateTime(); // Set the initial time
-      setInterval(updateTime, 1000); // Update time every second
+      updateTime(); // Définir l'heure initiale
+      setInterval(updateTime, 1000); // Mettre à jour l'heure chaque seconde
     });
     return {
       time,
+      workedToday,
     };
   },
 });
 </script>
+
 <style src="./HomePage.style.css"></style>
