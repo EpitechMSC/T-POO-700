@@ -1,6 +1,6 @@
 import axios, { AxiosResponse } from 'axios';
 
-axios.defaults.baseURL = import.meta.env.VITE_API_URL;
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 
 export const responseBody = <T>(response: AxiosResponse<T>) => response.data;
 
