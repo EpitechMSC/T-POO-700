@@ -24,7 +24,7 @@
             class="px-4 py-3"
           >
             <slot name="customCell" :item="item" :field="header">
-              {{ item[header] }}
+              {{ formatValue(item[header]) }}
             </slot>
           </td>
         </tr>
@@ -39,6 +39,7 @@ export default {
   props: {
     data: {
       required: true,
+      type: Array,
     },
   },
   computed: {
@@ -46,5 +47,23 @@ export default {
       return this.data.length ? Object.keys(this.data[0]) : [];
     },
   },
+  methods: {
+    formatValue(value) {
+      const date = new Date(value);
+      if (
+        !isNaN(date.getTime()) &&
+        typeof value === 'string' &&
+        !value.match(/^\d+$/)
+      ) {
+        const day = String(date.getDate()).padStart(2, '0');
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const year = date.getFullYear();
+        return `${day}/${month}/${year}`; // Format: dd/MM/yyyy
+      }
+      return value;
+    },
+  },
 };
 </script>
+
+<style scoped></style>
