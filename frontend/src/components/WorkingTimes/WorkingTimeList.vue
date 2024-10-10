@@ -18,7 +18,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, computed } from 'vue';
 import TableComponent from '../Table/TableComponent.vue';
 import { useWorkingTimesStore } from '../../app/store/modules/workingTimes';
 
@@ -34,10 +34,14 @@ export default defineComponent({
       workingTimesStore.fetchWorkingTimes();
     });
 
+    const workingTimes = computed(() => workingTimesStore.workingTimes);
+    const loading = computed(() => workingTimesStore.loading);
+    const error = computed(() => workingTimesStore.error);
+
     return {
-      workingTimes: workingTimesStore.workingTimes,
-      loading: workingTimesStore.loading,
-      error: workingTimesStore.error,
+      workingTimes,
+      loading,
+      error,
     };
   },
 });
