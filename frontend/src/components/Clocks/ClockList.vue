@@ -20,7 +20,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed } from 'vue';
 import TableComponent from '../Table/TableComponent.vue';
-import { useClocksStore } from '../../app/store/modules/clocks';
+import { useClocksStore } from '../../app/store/store';
 
 export default defineComponent({
   name: 'ClockList',

@@ -20,7 +20,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, computed } from 'vue';
 import TableComponent from '../Table/TableComponent.vue';
-import { useWorkingTimesStore } from '../../app/store/modules/workingTimes';
+import { useWorkingTimesStore } from '../../app/store/store';
 
 export default defineComponent({
   name: 'WorkingTimeList',
