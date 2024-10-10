@@ -8,7 +8,9 @@ const WorkingTimes = {
   create: (workingTime: WorkingTime) =>
     requests.post<WorkingTime>('workingtimes', workingTime),
   update: (id: number, workingTime: WorkingTime) =>
-    requests.put<WorkingTime>(`workingtimes/${id}`, workingTime),
+    requests.put<WorkingTime>(`workingtimes/${id}`, {
+      working_time: workingTime,
+    }),
   remove: (id: number) => requests.delete(`workingtimes/${id}`),
 };
 
