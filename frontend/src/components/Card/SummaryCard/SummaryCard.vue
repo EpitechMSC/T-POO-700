@@ -33,7 +33,6 @@ export default defineComponent({
     const userId = route.params.id as string;
 
     const fetchUserData = async () => {
-      // Fetch both working times and stats
       await workingTimesStore.fetchWorkingTimeStats(userId);
     };
 
@@ -41,7 +40,6 @@ export default defineComponent({
 
     const userStats = computed(() => workingTimesStore.stats);
 
-    // Si les statistiques ne sont pas encore chargées, retourner des valeurs par défaut
     const cards = computed(() => {
       if (!userStats.value) {
         return [
@@ -80,12 +78,10 @@ export default defineComponent({
         ];
       }
 
-      // Utilisation des statistiques récupérées
       const { worked_today, worked_this_week, total_days_worked } =
         userStats.value;
 
-      // Simulation du pourcentage de changement par rapport au mois dernier
-      const percentageChange = '+5%'; // Remplacez par une vraie donnée si nécessaire
+      const percentageChange = '+5%';
 
       return [
         {
@@ -94,25 +90,25 @@ export default defineComponent({
             (worked_today % 1) * 60
           )
             .toString()
-            .padStart(2, '0')}`, // Convertit les heures décimales en format HH:MM
+            .padStart(2, '0')}`,
           percentageChange,
-          isPositive: true, // Vous pouvez ajuster cette valeur selon vos besoins
+          isPositive: true,
           type: 'worked_today',
           icon: 'fas fa-clock',
         },
         {
           title: 'Number of clocked',
-          amount: workingTimesStore.workingTimeCount.toString(), // Utilisation du getter pour obtenir le nombre d'horaires
-          percentageChange: '-3%', // Valeur fictive, remplacez si nécessaire
+          amount: workingTimesStore.workingTimeCount.toString(),
+          percentageChange: '-3%',
           isPositive: false,
           type: 'clocked',
           icon: 'fas fa-users',
         },
         {
           title: 'Working times',
-          amount: total_days_worked.toString(), // Nombre total de jours travaillés
+          amount: total_days_worked.toString(),
           percentageChange,
-          isPositive: true, // Ajustez selon vos besoins
+          isPositive: true,
           type: 'working_times',
           icon: 'fas fa-briefcase',
         },
@@ -122,8 +118,8 @@ export default defineComponent({
             (worked_this_week % 1) * 60
           )
             .toString()
-            .padStart(2, '0')}`, // Format HH:MM pour le temps travaillé cette semaine
-          percentageChange: '+12%', // Valeur fictive, remplacez si nécessaire
+            .padStart(2, '0')}`,
+          percentageChange: '+12%',
           isPositive: true,
           type: 'worked_week',
           icon: 'fas fa-calendar-week',
@@ -143,7 +139,6 @@ export default defineComponent({
   @apply mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4;
 }
 
-/* Style général des cartes */
 .app-card {
   @apply relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md mb-5 h-full;
 }

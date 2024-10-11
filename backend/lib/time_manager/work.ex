@@ -150,20 +150,28 @@ defmodule TimeManager.Work do
         {:error, :bad_request}
 
       is_nil(end_date) ->
-        Repo.all(from w in WorkingTime, where: w.user == ^user_id and w.start <= ^start_date)
+        Repo.all(from w in WorkingTime,
+          where: w.user == ^user_id and w.start >= ^start_date,
+          order_by: [asc: w.start]
+        )
         |> case do
           [] -> {:error, :not_found}
           works -> {:ok, works}
         end
 
       true ->
-        Repo.all(from w in WorkingTime, where: w.user == ^user_id and w.start <= ^start_date and field(w, :end) >= ^end_date)
+        Repo.all(from w in WorkingTime,
+          where: w.user == ^user_id and w.start >= ^start_date and w.end <= ^end_date,
+          order_by: [asc: w.start]
+        )
         |> case do
           [] -> {:error, :not_found}
           works -> {:ok, works}
         end
     end
   end
+
+
 
   def get_working_time_stats(user_id) do
     today = Date.utc_today()
