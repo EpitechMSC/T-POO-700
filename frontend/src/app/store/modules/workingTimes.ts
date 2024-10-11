@@ -1,11 +1,12 @@
-// src/stores/workingTimesStore.ts
 import { defineStore } from 'pinia';
 import { WorkingTime } from '../../models/workingTime';
 import agent from '../../api/agent';
+import { Pagination, PagingParams } from '../../models/pagination';
 
 interface WorkingTimesState {
   workingTimes: WorkingTime[];
   currentWorkingTime: WorkingTime | null;
+  workingTimesForList: WorkingTime[];
   stats: {
     worked_today: number;
     worked_this_week: number;
@@ -16,15 +17,20 @@ interface WorkingTimesState {
   } | null;
   loading: boolean;
   error: string | null;
+  pagination: Pagination | null;
+  pagingParams: PagingParams;
 }
 
 export const useWorkingTimesStore = defineStore('workingTimes', {
   state: (): WorkingTimesState => ({
     workingTimes: [],
+    workingTimesForList: [],
     currentWorkingTime: null,
     loading: false,
     error: null,
     stats: null,
+    pagination: null,
+    pagingParams: new PagingParams(),
   }),
   getters: {
     workingTimeCount: state => state.workingTimes.length,
@@ -32,12 +38,22 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       state.workingTimes.find(wt => wt.id === id),
   },
   actions: {
+    toURLSearchParams(params: PagingParams): URLSearchParams {
+      const urlParams = new URLSearchParams();
+      urlParams.append('pageNumber', params.pageNumber.toString());
+      urlParams.append('pageSize', params.pageSize.toString());
+      return urlParams;
+    },
+
     async fetchWorkingTimes(): Promise<void> {
       this.loading = true;
       this.error = null;
       try {
-        const response = await agent.WorkingTimes.list();
-        this.workingTimes = response.data;
+        const response = await agent.WorkingTimes.list(
+          this.toURLSearchParams(this.pagingParams)
+        );
+        this.workingTimesForList = response.data;
+        this.pagination = response.pagination;
       } catch (err: any) {
         this.error =
           err.message || 'Erreur lors de la récupération des temps de travail';
@@ -94,14 +110,24 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       }
     },
 
-    async fetchWorkingTimesByUserId(userId: string): Promise<void> {
+    async fetchWorkingTimesByUserId(
+      userId: string,
+      page: number,
+      pageSize: number
+    ): Promise<void> {
       this.loading = true;
       this.error = null;
       try {
-        const response =
-          await agent.WorkingTimes.getUserWorkingTimesByUserId(userId);
+        const params = new URLSearchParams();
+        params.append('page', page.toString());
+        params.append('pageSize', pageSize.toString());
 
+        const response = await agent.WorkingTimes.getUserWorkingTimesByUserId(
+          userId,
+          params
+        );
         this.workingTimes = response.data;
+        this.pagination = response.pagination;
       } catch (err: any) {
         this.error =
           err.message ||
@@ -191,6 +217,11 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       } finally {
         this.loading = false;
       }
+    },
+
+    setPage(pageNumber: number) {
+      this.pagingParams.pageNumber = pageNumber;
+      this.fetchWorkingTimes();
     },
   },
 });

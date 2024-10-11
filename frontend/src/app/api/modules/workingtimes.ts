@@ -1,17 +1,24 @@
-import { requests } from '../config/axiosConfig';
+import { requests, responseBody } from '../config/axiosConfig';
 import { WorkingTime } from '../../models/workingTime';
+import axios from 'axios';
+import { PaginatedResult } from '../../models/pagination';
 
 const WorkingTimes = {
   getUserWorkingTime: (userID: string, id: string) =>
     requests.get<WorkingTime>(`workingtimes/${userID}/${id}`),
+
   getUserWeeklyWorkingTimes: (userId: string) =>
     requests.get(`working_times/${userId}/weekly`),
   getUserMonthlyWorkingTimes: (userId: string) =>
     requests.get(`working_times/${userId}/monthly`),
   getUserYearlyWorkingTimes: (userId: string) =>
     requests.get(`working_times/${userId}/yearly`),
-  getUserWorkingTimesByUserId: (userId: string): Promise<WorkingTime[]> =>
-    requests.get(`workingtimes/user/${userId}`),
+  getUserWorkingTimesByUserId: (userId: string, params: URLSearchParams) =>
+    axios
+      .get<
+        PaginatedResult<WorkingTime[]>
+      >(`workingtimes/user/${userId}`, { params })
+      .then(responseBody),
   getUserWorkingTimeStats: (
     userId: string
   ): Promise<{
@@ -22,7 +29,10 @@ const WorkingTimes = {
     worked_last_month: number;
     percentage_change: number;
   }> => requests.get(`workingtimes/stats/${userId}`),
-  list: () => requests.get<WorkingTime[]>('workingtimes'),
+  list: (params: URLSearchParams) =>
+    axios
+      .get<PaginatedResult<WorkingTime[]>>('workingtimes', { params })
+      .then(responseBody),
   create: (workingTime: WorkingTime) =>
     requests.post<WorkingTime>('workingtimes', workingTime),
   update: (id: number, workingTime: WorkingTime) =>

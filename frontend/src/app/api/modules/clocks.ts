@@ -1,8 +1,13 @@
-import { requests } from '../config/axiosConfig';
+import { requests, responseBody } from '../config/axiosConfig';
 import { Clock } from '../../models/clock';
+import { PaginatedResult } from '../../models/pagination';
+import axios from 'axios';
 
 const Clocks = {
-  list: () => requests.get<Clock[]>('clocks'),
+  list: (params: URLSearchParams) =>
+    axios
+      .get<PaginatedResult<Clock[]>>('clocks', { params })
+      .then(responseBody),
   create: (clock: Clock) => requests.post<Clock>('clocks', clock),
   update: (id: number, clock: Clock) =>
     requests.put<Clock>(`clocks/${id}`, { clock }),

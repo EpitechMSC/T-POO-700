@@ -1,7 +1,5 @@
 <template>
   <div class="p-6">
-    <h1 class="text-2xl font-bold mb-4">Liste des temps de travail</h1>
-
     <div v-if="loading" class="text-gray-500">Chargement...</div>
     <div v-if="error" class="text-red-600">{{ error }}</div>
 
@@ -41,7 +39,7 @@ export default defineComponent({
       workingTimesStore.fetchWorkingTimes();
     });
 
-    const workingTimes = computed(() => workingTimesStore.workingTimes);
+    const workingTimes = computed(() => workingTimesStore.workingTimesForList);
     const loading = computed(() => workingTimesStore.loading);
     const error = computed(() => workingTimesStore.error);
 
