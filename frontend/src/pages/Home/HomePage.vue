@@ -64,7 +64,7 @@ import ClockList from '../../components/Clocks/ClockList.vue';
 import WorkingTimeChart from '../../components/Chart/WorkingTimeChart.vue';
 import CardComponent from '../../components/Card/CardComponent.vue';
 import { useWorkingTimesStore } from '../../app/store/modules/workingTimes';
-import TopBar from '../../components/TopBar/TopBar.vue'; // Importer TopBar
+import TopBar from '../../components/TopBar/TopBar.vue';
 
 export default defineComponent({
   name: 'HomePage',
