@@ -3,12 +3,19 @@ defmodule TimeManagerWeb.ClockController do
 
   alias TimeManager.Clocks
   alias TimeManager.Clocks.Clock
+  alias TimeManagerWeb.Response
 
   action_fallback TimeManagerWeb.FallbackController
 
   def index(conn, _params) do
-    clocks = Clocks.list_clocks()
-    json(conn, clocks)
+    case Clocks.list_clocks() do
+      {:ok, %Response{} = response} ->
+        json(conn, response)
+      {:error, reason} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: reason})
+    end
   end
 
   def create(conn, %{"clock" => clock_params}) do

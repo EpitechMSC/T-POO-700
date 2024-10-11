@@ -9,7 +9,8 @@ import Config
 
 config :time_manager,
   ecto_repos: [TimeManager.Repo],
-  generators: [timestamp_type: :utc_datetime]
+  generators: [timestamp_type: :utc_datetime],
+  pagination: [page_size: 10]
 
 # Configures the endpoint
 config :time_manager, TimeManagerWeb.Endpoint,
@@ -23,10 +24,11 @@ config :time_manager, TimeManagerWeb.Endpoint,
   live_view: [signing_salt: "fl8TKrb0"]
 
 config :cors_plug,
-  origin: ["*"],
+  origin: ["http://localhost:5173"],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   headers: ["Authorization", "Content-Type"],
   max_age: 86400
+
 
 # Configures the mailer
 #

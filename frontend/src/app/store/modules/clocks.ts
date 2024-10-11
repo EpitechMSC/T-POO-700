@@ -23,7 +23,7 @@ export const useClocksStore = defineStore('clocks', {
       this.error = null;
       try {
         const response = await agent.Clocks.list();
-        this.clocks = response;
+        this.clocks = response.data;
       } catch (err: any) {
         this.error =
           err.message || 'Erreur lors de la récupération des horloges';
@@ -37,7 +37,7 @@ export const useClocksStore = defineStore('clocks', {
       this.error = null;
       try {
         const response = await agent.Clocks.create(clock);
-        this.clocks.push(response);
+        this.clocks.push(response.data);
       } catch (err: any) {
         this.error = err.message || "Erreur lors de la création de l'horloge";
       } finally {
@@ -52,7 +52,7 @@ export const useClocksStore = defineStore('clocks', {
         const response = await agent.Clocks.update(id, clock);
         const index = this.clocks.findIndex(c => c.id === id);
         if (index !== -1) {
-          this.clocks[index] = response;
+          this.clocks[index] = response.data;
         }
       } catch (err: any) {
         this.error =

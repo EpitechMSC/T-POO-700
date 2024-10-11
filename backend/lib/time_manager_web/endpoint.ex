@@ -1,5 +1,6 @@
 defmodule TimeManagerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :time_manager
+  alias TimeManagerWeb.Router
 
   # The session will be stored in the cookie and signed,
   # this means its contents can be read but not tampered with.
@@ -32,8 +33,8 @@ defmodule TimeManagerWeb.Endpoint do
     plug Phoenix.Ecto.CheckRepoStatus, otp_app: :time_manager
   end
 
-  # Add CORSPlug here
-  plug CORSPlug  # Ajoutez cette ligne
+  plug CORSPlug
+  plug TimeManagerWeb.Router
 
   plug Phoenix.LiveDashboard.RequestLogger,
     param_key: "request_logger",

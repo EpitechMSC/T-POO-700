@@ -20,75 +20,122 @@
   </section>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      workingTimes: [
-        { id: 1, start: '08:00', end: '12:00', user: 1 },
-        { id: 2, start: '13:00', end: '17:00', user: 1 },
-        { id: 3, start: '09:00', end: '12:00', user: 2 },
-      ],
-      cards: [
+<script lang="ts">
+import { defineComponent, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useWorkingTimesStore } from '../../../app/store/store';
+
+export default defineComponent({
+  name: 'SummaryCard',
+  setup() {
+    const route = useRoute();
+    const workingTimesStore = useWorkingTimesStore();
+    const userId = route.params.id as string;
+
+    const fetchUserData = async () => {
+      // Fetch both working times and stats
+      await workingTimesStore.fetchWorkingTimeStats(userId);
+    };
+
+    onMounted(fetchUserData);
+
+    const userStats = computed(() => workingTimesStore.stats);
+
+    // Si les statistiques ne sont pas encore chargées, retourner des valeurs par défaut
+    const cards = computed(() => {
+      if (!userStats.value) {
+        return [
+          {
+            title: 'Worked today',
+            amount: '0:00',
+            percentageChange: 'N/A',
+            isPositive: false,
+            type: 'worked_today',
+            icon: 'fas fa-clock',
+          },
+          {
+            title: 'Number of clocked',
+            amount: '0',
+            percentageChange: 'N/A',
+            isPositive: false,
+            type: 'clocked',
+            icon: 'fas fa-users',
+          },
+          {
+            title: 'Working times',
+            amount: '0',
+            percentageChange: 'N/A',
+            isPositive: false,
+            type: 'working_times',
+            icon: 'fas fa-briefcase',
+          },
+          {
+            title: 'Worked this week',
+            amount: '0:00',
+            percentageChange: 'N/A',
+            isPositive: false,
+            type: 'worked_week',
+            icon: 'fas fa-calendar-week',
+          },
+        ];
+      }
+
+      // Utilisation des statistiques récupérées
+      const { worked_today, worked_this_week, total_days_worked } =
+        userStats.value;
+
+      // Simulation du pourcentage de changement par rapport au mois dernier
+      const percentageChange = '+5%'; // Remplacez par une vraie donnée si nécessaire
+
+      return [
         {
           title: 'Worked today',
-          amount: '4:20',
-          percentageChange: '+5%',
-          isPositive: true,
+          amount: `${Math.floor(worked_today)}:${Math.round(
+            (worked_today % 1) * 60
+          )
+            .toString()
+            .padStart(2, '0')}`, // Convertit les heures décimales en format HH:MM
+          percentageChange,
+          isPositive: true, // Vous pouvez ajuster cette valeur selon vos besoins
           type: 'worked_today',
           icon: 'fas fa-clock',
         },
         {
           title: 'Number of clocked',
-          amount: '3438',
-          percentageChange: '-3%',
+          amount: workingTimesStore.workingTimeCount.toString(), // Utilisation du getter pour obtenir le nombre d'horaires
+          percentageChange: '-3%', // Valeur fictive, remplacez si nécessaire
           isPositive: false,
           type: 'clocked',
           icon: 'fas fa-users',
         },
         {
           title: 'Working times',
-          amount: '1719',
-          percentageChange: '+8%',
-          isPositive: true,
+          amount: total_days_worked.toString(), // Nombre total de jours travaillés
+          percentageChange,
+          isPositive: true, // Ajustez selon vos besoins
           type: 'working_times',
           icon: 'fas fa-briefcase',
         },
         {
           title: 'Worked this week',
-          amount: '124:20',
-          percentageChange: '+12%',
+          amount: `${Math.floor(worked_this_week)}:${Math.round(
+            (worked_this_week % 1) * 60
+          )
+            .toString()
+            .padStart(2, '0')}`, // Format HH:MM pour le temps travaillé cette semaine
+          percentageChange: '+12%', // Valeur fictive, remplacez si nécessaire
           isPositive: true,
           type: 'worked_week',
           icon: 'fas fa-calendar-week',
         },
-      ],
+      ];
+    });
+
+    return {
+      cards,
     };
   },
-  methods: {
-    calculateWorkedToday() {
-      const today = new Date().toLocaleDateString();
-      const totalMinutes = this.workingTimes
-        .filter(work => {
-          const startDate = new Date(`2024-10-11T${work.start}`);
-          return startDate.toLocaleDateString() === today;
-        })
-        .reduce((total, work) => {
-          const startTime = new Date(`2024-10-11T${work.start}`);
-          const endTime = new Date(`2024-10-11T${work.end}`);
-          const diff = (endTime - startTime) / 60000;
-          return total + diff;
-        }, 0);
-
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-      return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-    },
-  },
-  created() {
-    this.cards[0].amount = this.calculateWorkedToday();
-  },
-};
+});
 </script>
 
 <style scoped>

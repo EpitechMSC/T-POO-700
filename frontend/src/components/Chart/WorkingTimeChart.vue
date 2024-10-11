@@ -1,5 +1,12 @@
 <template>
   <div class="w-full">
+    <div class="flex justify-between mb-4">
+      <select v-model="selectedPeriod" @change="fetchData">
+        <option value="total">Total</option>
+        <option value="weekly">Hebdomadaire</option>
+        <option value="monthly">Mensuel</option>
+      </select>
+    </div>
     <LineChart
       v-if="chartData"
       :data="chartData"
@@ -26,6 +33,7 @@ import {
   LinearScale,
 } from 'chart.js';
 import { useWorkingTimesStore } from '../../app/store/store';
+import { useRoute } from 'vue-router';
 
 ChartJS.register(
   Title,
@@ -47,11 +55,27 @@ export default defineComponent({
     const store = useWorkingTimesStore();
     const loading = ref(false);
     const error = ref<string | null>(null);
+    const selectedPeriod = ref('total');
+    const route = useRoute();
+    const userId = route.params.id as string;
 
     const fetchData = async () => {
       loading.value = true;
       error.value = null;
-      await store.fetchWorkingTimes();
+      try {
+        switch (selectedPeriod.value) {
+          case 'weekly':
+            await store.fetchWeeklyWorkingTimes(userId);
+            break;
+          case 'monthly':
+            await store.fetchMonthlyWorkingTimes(userId);
+            break;
+          default:
+            await store.fetchYearlyWorkingTimes(userId);
+        }
+      } catch (err) {
+        error.value = 'Erreur lors du chargement des données';
+      }
       loading.value = false;
     };
 
@@ -99,6 +123,8 @@ export default defineComponent({
       error,
       chartData,
       chartOptions,
+      selectedPeriod,
+      fetchData,
     };
   },
 });

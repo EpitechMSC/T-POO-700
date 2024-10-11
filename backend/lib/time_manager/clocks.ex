@@ -5,20 +5,111 @@ defmodule TimeManager.Clocks do
 
   import Ecto.Query, warn: false
   alias TimeManager.Repo
-
   alias TimeManager.Clocks.Clock
+  alias TimeManagerWeb.Response
 
   @doc """
-  Returns the list of clocks.
+  Returns a paginated list of clocks.
 
   ## Examples
 
-      iex> list_clocks()
-      [%Clock{}, ...]
+      iex> list_clocks(1, 10)
+      {:ok, %Response{
+        clocks: [%Clock{}, ...],
+        total_pages: 5,
+        current_page: 1,
+        page_size: 10
+      }}
 
   """
-  def list_clocks do
-    Repo.all(Clock)
+  def list_clocks(page \\ 1, page_size \\ 10) do
+    total_count = Repo.aggregate(Clock, :count, :id)
+
+    clocks =
+      Clock
+      |> order_by([c], desc: c.time)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
+
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok, %TimeManagerWeb.Response{
+      data: clocks,
+      total_pages: total_pages,
+      current_page: page,
+      page_size: page_size
+    }}
+  end
+
+  @doc """
+  Returns a list of clocks filtered by status with pagination.
+
+  ## Examples
+
+      iex> list_clocks_by_status(:active, 1, 10)
+      {:ok, %Response{
+        clocks: [%Clock{}, ...],
+        total_pages: 5,
+        current_page: 1,
+        page_size: 10
+      }}
+
+  """
+  def list_clocks_by_status(status, page \\ 1, page_size \\ 10) do
+    total_count = Repo.aggregate(from(c in Clock, where: c.status == ^status), :count, :id)
+
+    clocks =
+      Clock
+      |> where([c], c.status == ^status)
+      |> order_by([c], desc: c.time)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
+
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok, %TimeManagerWeb.Response{
+      data: clocks,
+      total_pages: total_pages,
+      current_page: page,
+      page_size: page_size
+    }}
+  end
+
+  @doc """
+  Returns a list of clocks filtered by a specific attribute with pagination.
+
+  ## Examples
+
+      iex> list_clocks_by_name("My Clock", 1, 10)
+      {:ok, %Response{
+        clocks: [%Clock{}, ...],
+        total_pages: 5,
+        current_page: 1,
+        page_size: 10
+      }}
+
+  """
+  def list_clocks_by_name(name, page \\ 1, page_size \\ 10) do
+    total_count = Repo.aggregate(from(c in Clock, where: c.name == ^name), :count, :id)
+
+    clocks =
+      Clock
+      |> where([c], c.name == ^name)
+      |> order_by([c], desc: c.time)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
+
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok, %TimeManagerWeb.Response{
+      data: clocks,
+      total_pages: total_pages,
+      current_page: page,
+      page_size: page_size
+    }}
   end
 
   @doc """

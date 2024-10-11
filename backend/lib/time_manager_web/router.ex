@@ -9,11 +9,17 @@ defmodule TimeManagerWeb.Router do
     pipe_through :api
 
     get "/users/search", UserController, :search_by_email_or_username
+    get "/workingtimes/stats/:id", WorkingTimeController, :stats
+    get "/workingtimes/user/:id", WorkingTimeController, :search_by_userid
     get "/workingtimes/search/:id", WorkingTimeController, :search_by_userid_and_date_range
-    
+    get "/working_times/:user_id/weekly", WorkingTimeController, :weekly_stats
+    get "/working_times/:user_id/monthly", WorkingTimeController, :monthly_stats
+    get "/working_times/:user_id/yearly", WorkingTimeController, :yearly_stats
+    post "/api/clocks", ClockController, :create
+
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
-    resources "/clocks", ClockController, except: [:new, :edit]
+    resources "/clocks", ClockController, except: [:edit]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

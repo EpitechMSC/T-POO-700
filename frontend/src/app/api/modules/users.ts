@@ -11,6 +11,7 @@ const Users = {
 
     return requests.get<User[]>(`users/search${queryString}`);
   },
+  getUserSummary: (userId: number) => requests.get(`users/summary/${userId}`),
   list: () => requests.get<User[]>('users'),
   create: (user: User) => requests.post<User>('users', user),
   details: (id: number) => requests.get<User>(`users/${id}`),
