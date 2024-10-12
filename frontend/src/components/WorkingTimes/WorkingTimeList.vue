@@ -25,7 +25,7 @@
 import { defineComponent, onMounted, computed, ref } from 'vue';
 import TableComponent from '../Table/TableComponent.vue';
 import { useWorkingTimesStore } from '../../app/store/store';
-import { useAuthenticateStore } from '../../app/store/store'; // Importer le store d'authentification
+import { useAuthenticateStore } from '../../app/store/store';
 import { WorkingTime } from '../../app/models/workingTime';
 
 export default defineComponent({
@@ -35,10 +35,10 @@ export default defineComponent({
   },
   setup() {
     const workingTimesStore = useWorkingTimesStore();
-    const authStore = useAuthenticateStore(); // Accéder au store d'authentification
+    const authStore = useAuthenticateStore();
 
     onMounted(() => {
-      const userId = authStore.user?.id; // Récupérer l'ID de l'utilisateur connecté
+      const userId = authStore.user?.id;
       if (userId) {
         workingTimesStore.fetchWorkingTimesByUserId(
           userId,
@@ -46,7 +46,7 @@ export default defineComponent({
           workingTimesStore.pagingParams.pageSize
         );
       } else {
-        workingTimesStore.error = 'Utilisateur non authentifié'; // Gérer le cas où l'utilisateur n'est pas connecté
+        workingTimesStore.error = 'Utilisateur non authentifié';
       }
     });
 
@@ -54,7 +54,7 @@ export default defineComponent({
     const loading = computed(() => workingTimesStore.loading);
     const error = computed(() => workingTimesStore.error);
 
-    const editingItem = ref<WorkingTime | null>(null); // Marquer comme réactif
+    const editingItem = ref<WorkingTime | null>(null);
 
     const editWorkingTime = (item: WorkingTime) => {
       editingItem.value = { ...item };
@@ -69,7 +69,7 @@ export default defineComponent({
           id,
           modifiableData as WorkingTime
         );
-        editingItem.value = null; // Réinitialiser l'élément en cours d'édition
+        editingItem.value = null;
       } catch (err) {
         console.error('Erreur lors de la mise à jour du temps de travail', err);
       }

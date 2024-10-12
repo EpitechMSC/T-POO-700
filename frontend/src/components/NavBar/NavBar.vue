@@ -221,7 +221,6 @@ export default defineComponent({
       document.removeEventListener('click', handleClickOutside);
     });
 
-    // Utilisation d'une propriété computed pour rendre `user` réactif
     const user = computed(() => store.user);
 
     return {
