@@ -7,6 +7,7 @@ defmodule TimeManager.Accounts do
   alias TimeManager.Repo
   alias TimeManager.Accounts.User
   alias TimeManagerWeb.Response
+  alias TimeManager.JWT
 
   @doc """
   Returns a paginated list of users.
@@ -41,6 +42,23 @@ defmodule TimeManager.Accounts do
       page_size: page_size
     }}
   end
+
+  def authenticate_by_email(email) do
+    case Repo.get_by(User, email: email) do
+      nil ->
+        {:error, :invalid_credentials}
+
+      user ->
+        case JWT.generate_and_sign(%{
+          "user_id" => user.id,
+          "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
+        }, JWT.signer()) do
+          {:ok, token, _claims} -> {:ok, token}
+          {:error, reason} -> {:error, reason}
+        end
+    end
+  end
+
 
   @doc """
   Finds users by partial email or username match.
@@ -94,7 +112,12 @@ defmodule TimeManager.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user(id) do
+    case Repo.get(User, id) do
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
+    end
+  end
 
   @doc """
   Creates a user.

@@ -18,6 +18,47 @@ defmodule TimeManagerWeb.UserController do
     end
   end
 
+  def login(conn, %{"email" => email}) do
+    case Accounts.authenticate_by_email(email) do
+      {:ok, token} ->
+        json(conn, %{token: token})
+
+      {:error, :invalid_credentials} ->
+        conn
+        |> put_status(:unauthorized)
+        |> json(%{error: "Invalid email"})
+        |> halt()
+
+      _ ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "Unknown error"})
+        |> halt()
+    end
+  end
+
+  def login(conn, _params) do
+    conn
+    |> put_status(:bad_request)
+    |> json(%{error: "Email parameter is required"})
+    |> halt()
+  end
+
+
+  def me(conn, _params) do
+    user_id = conn.assigns[:current_user]
+
+    case Accounts.get_user(user_id) do
+      {:ok, user} ->
+        json(conn, user)
+
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "User not found"})
+    end
+  end
+
   def search_by_email_or_username(conn, params) do
     email = Map.get(params, "email")
     username = Map.get(params, "username")

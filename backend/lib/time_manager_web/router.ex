@@ -5,9 +5,19 @@ defmodule TimeManagerWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :authenticate do
+    plug TimeManagerWeb.Plugs.Authenticate
+  end
+
   scope "/api", TimeManagerWeb do
     pipe_through :api
 
+    post "/login", UserController, :login
+    post "/users", UserController, :create
+
+    pipe_through :authenticate
+
+    get "/users/me", UserController, :me
     get "/users/search", UserController, :search_by_email_or_username
     get "/workingtimes/stats/:id", WorkingTimeController, :stats
     get "/workingtimes/user/:id", WorkingTimeController, :search_by_userid
@@ -15,7 +25,7 @@ defmodule TimeManagerWeb.Router do
     get "/working_times/:user_id/weekly", WorkingTimeController, :weekly_stats
     get "/working_times/:user_id/monthly", WorkingTimeController, :monthly_stats
     get "/working_times/:user_id/yearly", WorkingTimeController, :yearly_stats
-    post "/api/clocks", ClockController, :create
+    post "/clocks", ClockController, :create
 
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
