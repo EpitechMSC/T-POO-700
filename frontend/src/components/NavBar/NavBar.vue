@@ -15,53 +15,63 @@
         >
       </a>
       <div
-        class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse"
+        class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative"
       >
         <button
           type="button"
           class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-          id="user-menu-button"
-          aria-expanded="false"
-          data-dropdown-toggle="user-dropdown"
-          data-dropdown-placement="bottom"
+          @click="toggleUserDropdown"
+          :aria-expanded="isDropdownOpen.toString()"
         >
           <span class="sr-only">Open user menu</span>
-          <img class="w-8 h-8 rounded-full" src="" alt="user photo" />
+          <svg
+            class="w-8 h-8 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke="currentColor"
+              stroke-width="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            />
+          </svg>
         </button>
-        <!-- Dropdown menu -->
         <div
-          class="z-50 hidden my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
-          id="user-dropdown"
+          class="absolute top-6 right-0 z-50 mt-2 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600"
+          v-show="isDropdownOpen"
+          @click="e => stopPropagation(e)"
+          ref="dropdown"
         >
           <div class="px-4 py-3">
-            <span class="block text-sm text-gray-900 dark:text-white"
-              >Bonnie Green</span
-            >
+            <span class="block text-sm text-gray-900 dark:text-white">{{
+              user?.username || 'Guest'
+            }}</span>
             <span
               class="block text-sm text-gray-500 truncate dark:text-gray-400"
-              >name@flowbite.com</span
+              >{{ user?.email || 'Not logged in' }}</span
             >
           </div>
-          <ul class="py-2" aria-labelledby="user-menu-button">
+          <ul class="py-2">
             <li>
               <a
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                @click.prevent="goToSettings"
                 >Settings</a
               >
             </li>
-
             <li>
               <a
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
+                @click.prevent="logout"
                 >Sign out</a
               >
             </li>
           </ul>
         </div>
         <button
-          data-collapse-toggle="navbar-user"
           type="button"
           class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
           aria-controls="navbar-user"
@@ -95,7 +105,14 @@
           <li>
             <a
               href="#"
-              class="block py-2 px-3 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500"
+              class="block py-2 px-3 rounded"
+              :class="{
+                'text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500':
+                  isActive('home'),
+                'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700':
+                  !isActive('home'),
+              }"
+              @click.prevent="navigateTo('home')"
               aria-current="page"
               >Accueil</a
             >
@@ -103,7 +120,14 @@
           <li>
             <a
               href="#"
-              class="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700"
+              class="block py-2 px-3 rounded"
+              :class="{
+                'text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500':
+                  isActive('times'),
+                'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700':
+                  !isActive('times'),
+              }"
+              @click.prevent="navigateTo('times')"
               >Mes temps</a
             >
           </li>
@@ -113,13 +137,93 @@
   </nav>
 </template>
 
-<script>
-import { defineComponent, onMounted, ref } from 'vue';
+<script lang="ts">
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  onBeforeUnmount,
+  getCurrentInstance,
+} from 'vue';
+import { useAuthenticateStore } from '../../app/store/store';
 
 export default defineComponent({
   name: 'NavBarComponent',
-  components: {},
+  setup() {
+    const store = useAuthenticateStore();
+    const isDropdownOpen = ref(false);
+    const instance = getCurrentInstance();
+
+    const toggleUserDropdown = (e: MouseEvent) => {
+      e.stopPropagation();
+      isDropdownOpen.value = !isDropdownOpen.value;
+    };
+
+    const closeDropdown = () => {
+      isDropdownOpen.value = false;
+    };
+
+    const navigateTo = (page: string) => {
+      console.log(`Navigating to ${page}`);
+    };
+
+    const isActive = (page: string) => {
+      const currentPath = window.location.pathname;
+      return (
+        (page === 'home' && currentPath === '/') ||
+        (page === 'times' && currentPath === '/times')
+      );
+    };
+
+    const goToSettings = () => {
+      console.log('Navigating to Settings');
+    };
+
+    const logout = async () => {
+      try {
+        store.logout();
+        closeDropdown();
+        console.log('Successfully logged out');
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    };
+
+    const stopPropagation = (event: Event) => {
+      event.stopPropagation();
+    };
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const dropdown = instance?.refs.dropdown as HTMLElement;
+      if (!dropdown.contains(event.target as Node)) {
+        closeDropdown();
+      }
+    };
+
+    onMounted(() => {
+      document.addEventListener('click', handleClickOutside);
+    });
+
+    onBeforeUnmount(() => {
+      document.removeEventListener('click', handleClickOutside);
+    });
+
+    return {
+      isDropdownOpen,
+      toggleUserDropdown,
+      navigateTo,
+      isActive,
+      goToSettings,
+      logout,
+      stopPropagation,
+      user: store.getUser,
+    };
+  },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.dropdown-menu {
+  display: none;
+}
+</style>

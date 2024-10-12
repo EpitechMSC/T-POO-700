@@ -4,23 +4,23 @@ import axios from 'axios';
 import { PaginatedResult } from '../../models/pagination';
 
 const WorkingTimes = {
-  getUserWorkingTime: (userID: string, id: string) =>
+  getUserWorkingTime: (userID: number, id: string) =>
     requests.get<WorkingTime>(`workingtimes/${userID}/${id}`),
 
-  getUserWeeklyWorkingTimes: (userId: string) =>
+  getUserWeeklyWorkingTimes: (userId: number) =>
     requests.get(`working_times/${userId}/weekly`),
-  getUserMonthlyWorkingTimes: (userId: string) =>
+  getUserMonthlyWorkingTimes: (userId: number) =>
     requests.get(`working_times/${userId}/monthly`),
-  getUserYearlyWorkingTimes: (userId: string) =>
+  getUserYearlyWorkingTimes: (userId: number) =>
     requests.get(`working_times/${userId}/yearly`),
-  getUserWorkingTimesByUserId: (userId: string, params: URLSearchParams) =>
+  getUserWorkingTimesByUserId: (userId: number, params: URLSearchParams) =>
     axios
       .get<
         PaginatedResult<WorkingTime[]>
       >(`workingtimes/user/${userId}`, { params })
       .then(responseBody),
   getUserWorkingTimeStats: (
-    userId: string
+    userId: number
   ): Promise<{
     worked_today: number;
     worked_this_week: number;

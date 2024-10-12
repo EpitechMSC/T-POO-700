@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
-import { requests } from '../../api/config/axiosConfig';
 import { User } from '../../models/user';
 import Authenticate from '../../api/modules/authenticate';
+import router from '../../router/router';
 
 interface AuthenticateState {
   user: User | null;
@@ -53,7 +53,7 @@ export const useAuthenticateStore = defineStore('authenticate', {
       this.setToken(null);
       this.user = null;
       this.isAuthenticated = false;
-      delete (requests as any).defaults.headers.common['Authorization'];
+      router.push('/login');
     },
 
     async fetchUser() {

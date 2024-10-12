@@ -32,8 +32,10 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js';
-import { useWorkingTimesStore } from '../../app/store/store';
-import { useRoute } from 'vue-router';
+import {
+  useAuthenticateStore,
+  useWorkingTimesStore,
+} from '../../app/store/store';
 
 ChartJS.register(
   Title,
@@ -52,26 +54,33 @@ export default defineComponent({
     LineChart: Line,
   },
   setup() {
-    const store = useWorkingTimesStore();
+    const workingTimesStore = useWorkingTimesStore();
+    const authStore = useAuthenticateStore();
     const loading = ref(false);
     const error = ref<string | null>(null);
     const selectedPeriod = ref('total');
-    const route = useRoute();
-    const userId = route.params.id as string;
 
     const fetchData = async () => {
       loading.value = true;
       error.value = null;
+      const userId = authStore.user ? authStore.user.id : null;
+
+      if (!userId) {
+        error.value = 'Utilisateur non authentifié';
+        loading.value = false;
+        return;
+      }
+
       try {
         switch (selectedPeriod.value) {
           case 'weekly':
-            await store.fetchWeeklyWorkingTimes(userId);
+            await workingTimesStore.fetchWeeklyWorkingTimes(userId);
             break;
           case 'monthly':
-            await store.fetchMonthlyWorkingTimes(userId);
+            await workingTimesStore.fetchMonthlyWorkingTimes(userId);
             break;
           default:
-            await store.fetchYearlyWorkingTimes(userId);
+            await workingTimesStore.fetchYearlyWorkingTimes(userId);
         }
       } catch (err) {
         error.value = 'Erreur lors du chargement des données';
@@ -82,12 +91,12 @@ export default defineComponent({
     onMounted(fetchData);
 
     const chartData = computed(() => {
-      const labels = store.workingTimes.map(wt => {
+      const labels = workingTimesStore.workingTimes.map(wt => {
         const startDate = new Date(wt.start);
         return startDate.toLocaleDateString();
       });
 
-      const data = store.workingTimes.map(wt => {
+      const data = workingTimesStore.workingTimes.map(wt => {
         const start = new Date(wt.start);
         const end = new Date(wt.end);
         const duration = (end.getTime() - start.getTime()) / 3600000;

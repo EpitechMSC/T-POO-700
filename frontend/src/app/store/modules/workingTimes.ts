@@ -62,7 +62,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       }
     },
 
-    async fetchWeeklyWorkingTimes(userId: string): Promise<void> {
+    async fetchWeeklyWorkingTimes(userId: number): Promise<void> {
       this.loading = true;
       this.error = null;
       try {
@@ -78,7 +78,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       }
     },
 
-    async fetchMonthlyWorkingTimes(userId: string): Promise<void> {
+    async fetchMonthlyWorkingTimes(userId: number): Promise<void> {
       this.loading = true;
       this.error = null;
       try {
@@ -94,7 +94,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       }
     },
 
-    async fetchYearlyWorkingTimes(userId: string): Promise<void> {
+    async fetchYearlyWorkingTimes(userId: number): Promise<void> {
       this.loading = true;
       this.error = null;
       try {
@@ -111,7 +111,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
     },
 
     async fetchWorkingTimesByUserId(
-      userId: string,
+      userId: number,
       page: number,
       pageSize: number
     ): Promise<void> {
@@ -137,7 +137,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       }
     },
 
-    async fetchWorkingTimeStats(userId: string): Promise<void> {
+    async fetchWorkingTimeStats(userId: number): Promise<void> {
       this.loading = true;
       this.error = null;
       try {
@@ -201,7 +201,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       }
     },
 
-    async getUserWorkingTime(userID: string, id: string): Promise<void> {
+    async getUserWorkingTime(userID: number, id: string): Promise<void> {
       this.loading = true;
       this.error = null;
       try {
