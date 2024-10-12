@@ -1,5 +1,4 @@
 defmodule TimeManager.Pagination do
-  alias Scrivener.Page
 
   def paginate(query, params) do
     page = Map.get(params, "page", "1") |> String.to_integer()

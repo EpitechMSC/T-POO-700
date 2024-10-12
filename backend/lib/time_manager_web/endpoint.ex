@@ -1,6 +1,5 @@
 defmodule TimeManagerWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :time_manager
-  alias TimeManagerWeb.Router
 
   @session_options [
     store: :cookie,

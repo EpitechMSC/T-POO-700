@@ -6,7 +6,6 @@ defmodule TimeManager.Accounts do
   import Ecto.Query, warn: false
   alias TimeManager.Repo
   alias TimeManager.Accounts.User
-  alias TimeManagerWeb.Response
   alias TimeManager.JWT
 
   @doc """

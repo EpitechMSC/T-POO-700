@@ -6,7 +6,6 @@ defmodule TimeManager.Clocks do
   import Ecto.Query, warn: false
   alias TimeManager.Repo
   alias TimeManager.Clocks.Clock
-  alias TimeManagerWeb.Response
 
   @doc """
   Returns a paginated list of clocks.

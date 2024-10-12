@@ -213,7 +213,7 @@ defmodule TimeManager.Work do
     worked_last_month = Repo.one(worked_last_month_query) || Decimal.new(0)
 
     percentage_change =
-      if Decimal.cmp(worked_last_month, Decimal.new(0)) != :eq do
+      if Decimal.compare(worked_last_month, Decimal.new(0)) != :eq do
         Decimal.div(Decimal.sub(worked_this_month, worked_last_month), worked_last_month)
         |> Decimal.mult(100)
         |> Decimal.to_float()
