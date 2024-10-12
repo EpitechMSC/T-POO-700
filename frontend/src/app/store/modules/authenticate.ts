@@ -41,11 +41,11 @@ export const useAuthenticateStore = defineStore('authenticate', {
         if (this.user) {
           return this.user.id;
         } else {
-          throw new Error('User not found after login');
+          throw new Error('Utilisateur non trouvé après connexion');
         }
       } catch (error) {
         console.error('Login failed:', error);
-        throw new Error('Login failed');
+        throw new Error('Échec de la connexion');
       }
     },
 
@@ -63,7 +63,9 @@ export const useAuthenticateStore = defineStore('authenticate', {
       } catch (error) {
         console.error('Failed to fetch user:', error);
         this.logout();
-        throw new Error('Failed to fetch user');
+        throw new Error(
+          'Échec de la récupération des informations utilisateur'
+        );
       }
     },
   },

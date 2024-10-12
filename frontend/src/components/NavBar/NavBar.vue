@@ -19,13 +19,13 @@
       >
         <button
           type="button"
-          class="flex text-sm bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
+          class="flex text-sm dark:bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
           @click="toggleUserDropdown"
           :aria-expanded="isDropdownOpen.toString()"
         >
           <span class="sr-only">Open user menu</span>
           <svg
-            class="w-8 h-8 text-white"
+            class="w-8 h-8 dark:text-white"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -143,8 +143,10 @@ import {
   ref,
   onMounted,
   onBeforeUnmount,
+  computed,
   getCurrentInstance,
 } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthenticateStore } from '../../app/store/store';
 
 export default defineComponent({
@@ -153,6 +155,7 @@ export default defineComponent({
     const store = useAuthenticateStore();
     const isDropdownOpen = ref(false);
     const instance = getCurrentInstance();
+    const router = useRouter();
 
     const toggleUserDropdown = (e: MouseEvent) => {
       e.stopPropagation();
@@ -163,8 +166,18 @@ export default defineComponent({
       isDropdownOpen.value = false;
     };
 
-    const navigateTo = (page: string) => {
-      console.log(`Navigating to ${page}`);
+    const navigateTo = async (page: string) => {
+      if (page === 'home') {
+        const userId = store.user?.id;
+        if (userId) {
+          await router.push(`/users/${userId}`);
+        } else {
+          console.log('User ID not found, redirecting to login');
+          await router.push('/login');
+        }
+      } else if (page === 'times') {
+        await router.push('/times');
+      }
     };
 
     const isActive = (page: string) => {
@@ -183,7 +196,7 @@ export default defineComponent({
       try {
         store.logout();
         closeDropdown();
-        console.log('Successfully logged out');
+        await router.push('/login');
       } catch (error) {
         console.error('Logout failed:', error);
       }
@@ -195,7 +208,7 @@ export default defineComponent({
 
     const handleClickOutside = (event: MouseEvent) => {
       const dropdown = instance?.refs.dropdown as HTMLElement;
-      if (!dropdown.contains(event.target as Node)) {
+      if (dropdown && !dropdown.contains(event.target as Node)) {
         closeDropdown();
       }
     };
@@ -208,6 +221,9 @@ export default defineComponent({
       document.removeEventListener('click', handleClickOutside);
     });
 
+    // Utilisation d'une propriété computed pour rendre `user` réactif
+    const user = computed(() => store.user);
+
     return {
       isDropdownOpen,
       toggleUserDropdown,
@@ -216,7 +232,7 @@ export default defineComponent({
       goToSettings,
       logout,
       stopPropagation,
-      user: store.getUser,
+      user,
     };
   },
 });

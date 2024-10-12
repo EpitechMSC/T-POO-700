@@ -126,7 +126,8 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
           userId,
           params
         );
-        this.workingTimes = response.data;
+
+        this.workingTimesForList = response.data;
         this.pagination = response.pagination;
       } catch (err: any) {
         this.error =
@@ -217,11 +218,6 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       } finally {
         this.loading = false;
       }
-    },
-
-    setPage(pageNumber: number) {
-      this.pagingParams.pageNumber = pageNumber;
-      this.fetchWorkingTimes();
     },
   },
 });

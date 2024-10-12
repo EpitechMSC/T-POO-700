@@ -2,13 +2,13 @@
   <div class="w-full">
     <div class="flex justify-between mb-4">
       <select v-model="selectedPeriod" @change="fetchData">
-        <option value="total">Total</option>
+        <option value="yearly">Année</option>
         <option value="weekly">Hebdomadaire</option>
         <option value="monthly">Mensuel</option>
       </select>
     </div>
     <LineChart
-      v-if="chartData"
+      v-if="!loading && chartData"
       :data="chartData"
       :options="chartOptions"
       class="w-full"
@@ -56,14 +56,14 @@ export default defineComponent({
   setup() {
     const workingTimesStore = useWorkingTimesStore();
     const authStore = useAuthenticateStore();
-    const loading = ref(false);
+    const loading = ref(true);
     const error = ref<string | null>(null);
-    const selectedPeriod = ref('total');
+    const selectedPeriod = ref('yearly');
 
     const fetchData = async () => {
       loading.value = true;
       error.value = null;
-      const userId = authStore.user ? authStore.user.id : null;
+      const userId = authStore.user?.id;
 
       if (!userId) {
         error.value = 'Utilisateur non authentifié';
@@ -79,13 +79,15 @@ export default defineComponent({
           case 'monthly':
             await workingTimesStore.fetchMonthlyWorkingTimes(userId);
             break;
+          case 'yearly':
           default:
             await workingTimesStore.fetchYearlyWorkingTimes(userId);
         }
       } catch (err) {
         error.value = 'Erreur lors du chargement des données';
+      } finally {
+        loading.value = false;
       }
-      loading.value = false;
     };
 
     onMounted(fetchData);

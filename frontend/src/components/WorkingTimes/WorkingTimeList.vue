@@ -25,6 +25,7 @@
 import { defineComponent, onMounted, computed, ref } from 'vue';
 import TableComponent from '../Table/TableComponent.vue';
 import { useWorkingTimesStore } from '../../app/store/store';
+import { useAuthenticateStore } from '../../app/store/store'; // Importer le store d'authentification
 import { WorkingTime } from '../../app/models/workingTime';
 
 export default defineComponent({
@@ -34,23 +35,33 @@ export default defineComponent({
   },
   setup() {
     const workingTimesStore = useWorkingTimesStore();
+    const authStore = useAuthenticateStore(); // Accéder au store d'authentification
 
     onMounted(() => {
-      workingTimesStore.fetchWorkingTimes();
+      const userId = authStore.user?.id; // Récupérer l'ID de l'utilisateur connecté
+      if (userId) {
+        workingTimesStore.fetchWorkingTimesByUserId(
+          userId,
+          workingTimesStore.pagingParams.pageNumber,
+          workingTimesStore.pagingParams.pageSize
+        );
+      } else {
+        workingTimesStore.error = 'Utilisateur non authentifié'; // Gérer le cas où l'utilisateur n'est pas connecté
+      }
     });
 
     const workingTimes = computed(() => workingTimesStore.workingTimesForList);
     const loading = computed(() => workingTimesStore.loading);
     const error = computed(() => workingTimesStore.error);
 
-    const editingItem = ref(null);
+    const editingItem = ref<WorkingTime | null>(null); // Marquer comme réactif
 
-    const editWorkingTime = (item: any) => {
+    const editWorkingTime = (item: WorkingTime) => {
       editingItem.value = { ...item };
       console.log("Modifier l'élément :", editingItem.value);
     };
 
-    const updateWorkingTime = async (updatedItem: any) => {
+    const updateWorkingTime = async (updatedItem: WorkingTime) => {
       const { id, ...modifiableData } = updatedItem;
 
       try {
@@ -58,13 +69,13 @@ export default defineComponent({
           id,
           modifiableData as WorkingTime
         );
-        editingItem.value = null;
+        editingItem.value = null; // Réinitialiser l'élément en cours d'édition
       } catch (err) {
         console.error('Erreur lors de la mise à jour du temps de travail', err);
       }
     };
 
-    const confirmDeleteWorkingTime = (item: any) => {
+    const confirmDeleteWorkingTime = (item: WorkingTime) => {
       if (confirm(`Êtes-vous sûr de vouloir supprimer ce temps de travail ?`)) {
         workingTimesStore.deleteWorkingTime(item.id);
       }
@@ -82,3 +93,5 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped></style>
