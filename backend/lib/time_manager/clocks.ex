@@ -35,11 +35,14 @@ defmodule TimeManager.Clocks do
 
     {:ok, %TimeManagerWeb.Response{
       data: clocks,
-      total_pages: total_pages,
-      current_page: page,
-      page_size: page_size
+      pagination: %{
+        total_pages: total_pages,
+        current_page: page,
+        page_size: page_size,
+      }
     }}
   end
+
 
   @doc """
   Returns a list of clocks filtered by status with pagination.
@@ -70,11 +73,14 @@ defmodule TimeManager.Clocks do
 
     {:ok, %TimeManagerWeb.Response{
       data: clocks,
-      total_pages: total_pages,
-      current_page: page,
-      page_size: page_size
+      pagination: %{
+        total_pages: total_pages,
+        current_page: page,
+        page_size: page_size,
+      }
     }}
   end
+
 
   @doc """
   Returns a list of clocks filtered by a specific attribute with pagination.
@@ -105,11 +111,14 @@ defmodule TimeManager.Clocks do
 
     {:ok, %TimeManagerWeb.Response{
       data: clocks,
-      total_pages: total_pages,
-      current_page: page,
-      page_size: page_size
+      pagination: %{
+        total_pages: total_pages,
+        current_page: page,
+        page_size: page_size,
+      }
     }}
   end
+
 
   @doc """
   Gets a single clock.

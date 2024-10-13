@@ -1,7 +1,13 @@
+// src/app/store/store.ts
+
 import { defineStore } from 'pinia';
 import { WorkingTime } from '../../models/workingTime';
 import agent from '../../api/agent';
-import { Pagination, PagingParams } from '../../models/pagination';
+import {
+  Pagination,
+  PagingParams,
+  PaginatedResult,
+} from '../../models/pagination';
 
 interface WorkingTimesState {
   workingTimes: WorkingTime[];
@@ -40,7 +46,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
   actions: {
     toURLSearchParams(params: PagingParams): URLSearchParams {
       const urlParams = new URLSearchParams();
-      urlParams.append('pageNumber', params.pageNumber.toString());
+      urlParams.append('page', params.pageNumber.toString());
       urlParams.append('pageSize', params.pageSize.toString());
       return urlParams;
     },
@@ -49,14 +55,42 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await agent.WorkingTimes.list(
-          this.toURLSearchParams(this.pagingParams)
-        );
+        const params = this.toURLSearchParams(this.pagingParams);
+        const response: PaginatedResult<WorkingTime[]> =
+          await agent.WorkingTimes.list(params);
         this.workingTimesForList = response.data;
         this.pagination = response.pagination;
       } catch (err: any) {
         this.error =
           err.message || 'Erreur lors de la récupération des temps de travail';
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async fetchWorkingTimesByUserId(
+      userId: number,
+      page: number,
+      pageSize: number
+    ): Promise<void> {
+      this.loading = true;
+      this.error = null;
+      try {
+        const params = new URLSearchParams();
+        params.append('page', page.toString());
+        params.append('pageSize', pageSize.toString());
+
+        const response: PaginatedResult<WorkingTime[]> =
+          await agent.WorkingTimes.getUserWorkingTimesByUserId(userId, params);
+
+        this.workingTimesForList = response.data;
+        this.pagination = response.pagination;
+
+        console.log(response);
+      } catch (err: any) {
+        this.error =
+          err.message ||
+          `Erreur lors de la récupération des temps de travail pour l'utilisateur ${userId}`;
       } finally {
         this.loading = false;
       }
@@ -105,34 +139,6 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         this.error =
           err.message ||
           'Erreur lors de la récupération des temps de travail annuels';
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async fetchWorkingTimesByUserId(
-      userId: number,
-      page: number,
-      pageSize: number
-    ): Promise<void> {
-      this.loading = true;
-      this.error = null;
-      try {
-        const params = new URLSearchParams();
-        params.append('page', page.toString());
-        params.append('pageSize', pageSize.toString());
-
-        const response = await agent.WorkingTimes.getUserWorkingTimesByUserId(
-          userId,
-          params
-        );
-
-        this.workingTimesForList = response.data;
-        this.pagination = response.pagination;
-      } catch (err: any) {
-        this.error =
-          err.message ||
-          `Erreur lors de la récupération des temps de travail pour l'utilisateur ${userId}`;
       } finally {
         this.loading = false;
       }
@@ -210,7 +216,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
           userID,
           id
         );
-        this.currentWorkingTime = response.data;
+        this.currentWorkingTime = response;
       } catch (err: any) {
         this.error =
           err.message ||
@@ -218,6 +224,17 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       } finally {
         this.loading = false;
       }
+    },
+
+    // Actions pour changer la page et la taille de la page
+    setPage(page: number): void {
+      this.pagingParams.pageNumber = page;
+      this.fetchWorkingTimes(); // ou fetchWorkingTimesByUserId selon le contexte
+    },
+
+    setPageSize(pageSize: number): void {
+      this.pagingParams.pageSize = pageSize;
+      this.fetchWorkingTimes(); // ou fetchWorkingTimesByUserId selon le contexte
     },
   },
 });

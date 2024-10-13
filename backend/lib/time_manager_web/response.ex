@@ -3,6 +3,6 @@ defmodule TimeManagerWeb.Response do
   Response struct for API responses.
   """
 
-  @derive {Jason.Encoder, only: [:data, :total_pages, :current_page, :page_size]}
-  defstruct [:data, :total_pages, :current_page, :page_size]
+  @derive {Jason.Encoder, only: [:data, :pagination]}
+  defstruct [:data, :pagination]
 end

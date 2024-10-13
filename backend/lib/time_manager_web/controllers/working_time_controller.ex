@@ -56,8 +56,8 @@ defmodule TimeManagerWeb.WorkingTimeController do
     page_size = Map.get(conn.query_params, "page_size", "10") |> String.to_integer()
 
     case Work.find_working_times_by_userid(user_id, page, page_size) do
-      {:ok, working_times, total_pages} ->
-        json(conn, %{data: working_times, total_pages: total_pages, current_page: page, page_size: page_size})
+      {:ok, %Response{} = response} ->
+        json(conn, response)
 
       {:error, :not_found} ->
         conn

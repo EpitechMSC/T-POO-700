@@ -36,11 +36,14 @@ defmodule TimeManager.Accounts do
 
     {:ok, %TimeManagerWeb.Response{
       data: users,
-      total_pages: total_pages,
-      current_page: page,
-      page_size: page_size
+      pagination: %{
+        total_pages: total_pages,
+        current_page: page,
+        page_size: page_size,
+      }
     }}
   end
+
 
   def authenticate_by_email(email) do
     case Repo.get_by(User, email: email) do

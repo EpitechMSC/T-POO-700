@@ -31,11 +31,14 @@ defmodule TimeManager.Work do
 
     {:ok, %TimeManagerWeb.Response{
       data: workingtimes,
-      total_pages: total_pages,
-      current_page: page,
-      page_size: page_size
+      pagination: %{
+        total_pages: total_pages,
+        current_page: page,
+        page_size: page_size,
+      },
     }}
   end
+
 
   @doc """
   Gets a single working_time.
@@ -59,7 +62,7 @@ defmodule TimeManager.Work do
     else
       total_count = Repo.aggregate(WorkingTime, :count, :id)
 
-      working_times =
+      workingtimes =
         WorkingTime
         |> where([w], w.user == ^user_id)
         |> order_by([w], asc: w.start)
@@ -67,16 +70,17 @@ defmodule TimeManager.Work do
         |> offset(^((page - 1) * page_size))
         |> Repo.all()
 
-      if working_times == [] do
-        {:error, :not_found}
-      else
         total_pages = div(total_count + page_size - 1, page_size)
-        {:ok, working_times, total_pages}
-      end
+        {:ok, %TimeManagerWeb.Response{
+          data: workingtimes,
+          pagination: %{
+            total_pages: total_pages,
+            current_page: page,
+            page_size: page_size,
+          },
+        }}
     end
   end
-
-
 
 
   @doc """
@@ -236,7 +240,7 @@ defmodule TimeManager.Work do
 
   def get_weekly_working_times(user_id) do
     today = Date.utc_today()
-    {:ok, start_of_month} = Date.new(today.year, today.month, 1) # Début du mois actuel
+    {:ok, start_of_month} = Date.new(today.year, today.month, 1)
 
     query = from(w in WorkingTime,
       where: w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_month and fragment("?::date", w.start) <= ^today and not is_nil(w.end),
