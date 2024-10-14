@@ -4,14 +4,15 @@ import { PaginatedResult } from '../../models/pagination';
 import axios from 'axios';
 
 const Clocks = {
-  list: (params: URLSearchParams) =>
+  list: (params: URLSearchParams): Promise<PaginatedResult<Clock[]>> =>
     axios
       .get<PaginatedResult<Clock[]>>('clocks', { params })
       .then(responseBody),
-  create: (clock: Clock) => requests.post<Clock>('clocks', clock),
-  update: (id: number, clock: Clock) =>
+  create: (clock: Clock): Promise<Clock> =>
+    requests.post<Clock>('clocks', clock),
+  update: (id: number, clock: Clock): Promise<Clock> =>
     requests.put<Clock>(`clocks/${id}`, { clock }),
-  remove: (id: number) => requests.delete(`clocks/${id}`),
+  remove: (id: number): Promise<void> => requests.delete(`clocks/${id}`),
 };
 
 export default Clocks;

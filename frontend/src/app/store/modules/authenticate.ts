@@ -1,13 +1,8 @@
 import { defineStore } from 'pinia';
-import { User } from '../../models/user';
 import Authenticate from '../../api/modules/authenticate';
 import router from '../../router/router';
-
-interface AuthenticateState {
-  user: User | null;
-  token: string | null;
-  isAuthenticated: boolean;
-}
+import { AuthenticateState } from '../../models/authentication';
+import { User } from '../../models/user';
 
 export const useAuthenticateStore = defineStore('authenticate', {
   state: (): AuthenticateState => ({
@@ -17,7 +12,7 @@ export const useAuthenticateStore = defineStore('authenticate', {
   }),
 
   getters: {
-    getUser: state => state.user,
+    getUser: (state): User | null => state.user,
   },
 
   actions: {
