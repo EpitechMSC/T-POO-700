@@ -148,32 +148,64 @@ defmodule TimeManager.Work do
     WorkingTime.changeset(working_time, attrs)
   end
 
-  def find_working_time_for_user_and_date_range(user_id, start_date, end_date) do
+  def find_working_time_for_user_and_date_range(user_id, start_date, end_date \\ nil, page \\ 1, page_size \\ 10) do
     cond do
       is_nil(user_id) or is_nil(start_date) ->
         {:error, :bad_request}
 
       is_nil(end_date) ->
-        Repo.all(from w in WorkingTime,
-          where: w.user == ^user_id and w.start >= ^start_date,
-          order_by: [asc: w.start]
-        )
-        |> case do
+        query =
+          from w in WorkingTime,
+            where: w.user == ^user_id and w.start >= ^start_date,
+            or_where: w.end >= ^start_date or is_nil(w.end),
+            order_by: [asc: w.start],
+            limit: ^page_size,
+            offset: ^((page - 1) * page_size)
+
+        total_count = Repo.aggregate(query, :count, :id)
+        workingtimes = Repo.all(query)
+        total_pages = div(total_count + page_size - 1, page_size)
+
+        case workingtimes do
           [] -> {:error, :not_found}
-          works -> {:ok, works}
+          works ->
+            {:ok, %TimeManagerWeb.Response{
+              data: works,
+              pagination: %{
+                total_pages: total_pages,
+                current_page: page,
+                page_size: page_size
+              }
+            }}
         end
 
       true ->
-        Repo.all(from w in WorkingTime,
-          where: w.user == ^user_id and w.start >= ^start_date and w.end <= ^end_date,
-          order_by: [asc: w.start]
-        )
-        |> case do
+        query =
+          from w in WorkingTime,
+            where: w.user == ^user_id and w.start >= ^start_date and (is_nil(w.end) or w.end <= ^end_date),
+            order_by: [asc: w.start],
+            limit: ^page_size,
+            offset: ^((page - 1) * page_size)
+
+        total_count = Repo.aggregate(query, :count, :id)
+        workingtimes = Repo.all(query)
+        total_pages = div(total_count + page_size - 1, page_size)
+
+        case workingtimes do
           [] -> {:error, :not_found}
-          works -> {:ok, works}
+          works ->
+            {:ok, %TimeManagerWeb.Response{
+              data: works,
+              pagination: %{
+                total_pages: total_pages,
+                current_page: page,
+                page_size: page_size
+              }
+            }}
         end
     end
   end
+
 
 
 
