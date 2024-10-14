@@ -1,7 +1,14 @@
 <template>
   <div class="w-full">
+    <div class="flex justify-between mb-4">
+      <select v-model="selectedPeriod" @change="fetchData">
+        <option value="yearly">Année</option>
+        <option value="weekly">Hebdomadaire</option>
+        <option value="monthly">Mensuel</option>
+      </select>
+    </div>
     <LineChart
-      v-if="chartData"
+      v-if="!loading && chartData"
       :data="chartData"
       :options="chartOptions"
       class="w-full"
@@ -25,7 +32,10 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js';
-import { useWorkingTimesStore } from '../../app/store/store';
+import {
+  useAuthenticateStore,
+  useWorkingTimesStore,
+} from '../../app/store/store';
 
 ChartJS.register(
   Title,
@@ -44,26 +54,51 @@ export default defineComponent({
     LineChart: Line,
   },
   setup() {
-    const store = useWorkingTimesStore();
-    const loading = ref(false);
+    const workingTimesStore = useWorkingTimesStore();
+    const authStore = useAuthenticateStore();
+    const loading = ref(true);
     const error = ref<string | null>(null);
+    const selectedPeriod = ref('yearly');
 
     const fetchData = async () => {
       loading.value = true;
       error.value = null;
-      await store.fetchWorkingTimes();
-      loading.value = false;
+      const userId = authStore.user?.id;
+
+      if (!userId) {
+        error.value = 'Utilisateur non authentifié';
+        loading.value = false;
+        return;
+      }
+
+      try {
+        switch (selectedPeriod.value) {
+          case 'weekly':
+            await workingTimesStore.fetchWeeklyWorkingTimes(userId);
+            break;
+          case 'monthly':
+            await workingTimesStore.fetchMonthlyWorkingTimes(userId);
+            break;
+          case 'yearly':
+          default:
+            await workingTimesStore.fetchYearlyWorkingTimes(userId);
+        }
+      } catch (err) {
+        error.value = 'Erreur lors du chargement des données';
+      } finally {
+        loading.value = false;
+      }
     };
 
     onMounted(fetchData);
 
     const chartData = computed(() => {
-      const labels = store.workingTimes.map(wt => {
+      const labels = workingTimesStore.workingTimes.map(wt => {
         const startDate = new Date(wt.start);
         return startDate.toLocaleDateString();
       });
 
-      const data = store.workingTimes.map(wt => {
+      const data = workingTimesStore.workingTimes.map(wt => {
         const start = new Date(wt.start);
         const end = new Date(wt.end);
         const duration = (end.getTime() - start.getTime()) / 3600000;
@@ -99,6 +134,8 @@ export default defineComponent({
       error,
       chartData,
       chartOptions,
+      selectedPeriod,
+      fetchData,
     };
   },
 });

@@ -7,6 +7,7 @@ interface UsersState {
   currentUser: User | null;
   loading: boolean;
   error: string | null;
+  userSummary: any;
 }
 
 export const useUsersStore = defineStore('users', {
@@ -15,6 +16,7 @@ export const useUsersStore = defineStore('users', {
     currentUser: null,
     loading: false,
     error: null,
+    userSummary: null,
   }),
   getters: {
     userCount: state => state.users.length,
@@ -29,7 +31,7 @@ export const useUsersStore = defineStore('users', {
           username
         );
         this.$patch({
-          users: response,
+          users: response.data,
         });
       } catch (err: any) {
         this.$patch({
@@ -41,13 +43,28 @@ export const useUsersStore = defineStore('users', {
       }
     },
 
+    async fetchSummaryByUserId(userId: number): Promise<void> {
+      this.loading = true;
+      this.error = null;
+      try {
+        const response = await agent.Users.getUserSummary(userId);
+        this.userSummary = response.data;
+      } catch (err: any) {
+        this.error =
+          err.message ||
+          `Erreur lors de la récupération du résumé pour l'utilisateur ${userId}`;
+      } finally {
+        this.loading = false;
+      }
+    },
+
     async fetchAllUsers(): Promise<void> {
       this.loading = true;
       this.error = null;
       try {
         const response = await agent.Users.list();
         this.$patch({
-          users: response,
+          users: response.data,
         });
       } catch (err: any) {
         this.$patch({

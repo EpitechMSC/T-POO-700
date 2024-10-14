@@ -4,40 +4,6 @@
     <TopBar />
 
     <!-- ------------------Hello-Bar----------------- -->
-    <div
-      class="hello-bar flex justify-between h-24 bg-grey items-center px-16 mb-10"
-    >
-      <h1 class="font-black text-5xl">Hello Gilbert</h1>
-      <div class="clock flex items-center">
-        <p class="text-xl mr-2 w-20">{{ time }}</p>
-        <button
-          class="skeuo bg-white p-2 rounded-lg w-14 h-14 flex justify-center items-center"
-        >
-          <svg
-            width="34"
-            height="34"
-            viewBox="0 0 34 34"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <g clip-path="url(#clip0_15_254)">
-              <path
-                d="M17 8.50001V17L22.6666 19.8333M31.1666 17C31.1666 24.824 24.824 31.1667 17 31.1667C9.17595 31.1667 2.83331 24.824 2.83331 17C2.83331 9.17598 9.17595 2.83334 17 2.83334C24.824 2.83334 31.1666 9.17598 31.1666 17Z"
-                stroke="#1E1E1E"
-                stroke-width="4"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </g>
-            <defs>
-              <clipPath id="clip0_15_254">
-                <rect width="34" height="34" fill="white" />
-              </clipPath>
-            </defs>
-          </svg>
-        </button>
-      </div>
-    </div>
 
     <!-- ------------------Top Content Components----------------- -->
     <div class="flex w-full justify-around">

@@ -18,6 +18,7 @@
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "pinia": "^2.2.4",
+    "primeicons": "^7.0.0",
     "vue": "^3.5.10",
     "vue-chartjs": "^5.3.1",
     "vue-router": "^4.0.13",

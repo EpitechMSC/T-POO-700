@@ -54,8 +54,8 @@ _user6 = Repo.insert!(%User{
 
 users = [_user1, _user2, _user3, _user4, _user5, _user6]
 for user <- users do
-  for month <- 1..09 do # Generate data for each month
-    for day <- 1..27 do # Generate data for each day
+  for month <- 8..10 do # Generate data for each month
+    for day <- 1..20 do # Generate data for each day
       # Generate random start and end hours / minutes / seconds for the clock and working time
       start_hour = Enum.random(8..10)
       end_hour = Enum.random(18..20)

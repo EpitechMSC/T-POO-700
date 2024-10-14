@@ -20,27 +20,85 @@
   </section>
 </template>
 
-<script>
-export default {
-  data() {
-    return {
-      workingTimes: [
-        { id: 1, start: '08:00', end: '12:00', user: 1 },
-        { id: 2, start: '13:00', end: '17:00', user: 1 },
-        { id: 3, start: '09:00', end: '12:00', user: 2 },
-      ],
-      cards: [
+<script lang="ts">
+import { defineComponent, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useWorkingTimesStore } from '../../../app/store/store';
+
+export default defineComponent({
+  name: 'SummaryCard',
+  setup() {
+    const route = useRoute();
+    const workingTimesStore = useWorkingTimesStore();
+    const userId = route.params.id as string;
+
+    const fetchUserData = async () => {
+      await workingTimesStore.fetchWorkingTimeStats(userId);
+    };
+
+    onMounted(fetchUserData);
+
+    const userStats = computed(() => workingTimesStore.stats);
+
+    const cards = computed(() => {
+      if (!userStats.value) {
+        return [
+          {
+            title: 'Worked today',
+            amount: '0:00',
+            percentageChange: 'N/A',
+            isPositive: false,
+            type: 'worked_today',
+            icon: 'fas fa-clock',
+          },
+          {
+            title: 'Number of clocked',
+            amount: '0',
+            percentageChange: 'N/A',
+            isPositive: false,
+            type: 'clocked',
+            icon: 'fas fa-users',
+          },
+          {
+            title: 'Working times',
+            amount: '0',
+            percentageChange: 'N/A',
+            isPositive: false,
+            type: 'working_times',
+            icon: 'fas fa-briefcase',
+          },
+          {
+            title: 'Worked this week',
+            amount: '0:00',
+            percentageChange: 'N/A',
+            isPositive: false,
+            type: 'worked_week',
+            icon: 'fas fa-calendar-week',
+          },
+        ];
+      }
+
+      const { worked_today, worked_this_week, total_days_worked } =
+        userStats.value;
+
+      const percentageChange = '+5%';
+
+      return [
         {
           title: 'Worked today',
-          amount: '4:20',
-          percentageChange: '+5%',
+          amount: `${Math.floor(worked_today)}:${Math.round(
+            (worked_today % 1) * 60
+          )
+            .toString()
+            .padStart(2, '0')}`,
+          percentageChange,
           isPositive: true,
           type: 'worked_today',
           icon: 'fas fa-clock',
         },
         {
           title: 'Number of clocked',
-          amount: '3438',
+          amount: workingTimesStore.workingTimeCount.toString(),
           percentageChange: '-3%',
           isPositive: false,
           type: 'clocked',
@@ -48,47 +106,32 @@ export default {
         },
         {
           title: 'Working times',
-          amount: '1719',
-          percentageChange: '+8%',
+          amount: total_days_worked.toString(),
+          percentageChange,
           isPositive: true,
           type: 'working_times',
           icon: 'fas fa-briefcase',
         },
         {
           title: 'Worked this week',
-          amount: '124:20',
+          amount: `${Math.floor(worked_this_week)}:${Math.round(
+            (worked_this_week % 1) * 60
+          )
+            .toString()
+            .padStart(2, '0')}`,
           percentageChange: '+12%',
           isPositive: true,
           type: 'worked_week',
           icon: 'fas fa-calendar-week',
         },
-      ],
+      ];
+    });
+
+    return {
+      cards,
     };
   },
-  methods: {
-    calculateWorkedToday() {
-      const today = new Date().toLocaleDateString();
-      const totalMinutes = this.workingTimes
-        .filter(work => {
-          const startDate = new Date(`2024-10-11T${work.start}`);
-          return startDate.toLocaleDateString() === today;
-        })
-        .reduce((total, work) => {
-          const startTime = new Date(`2024-10-11T${work.start}`);
-          const endTime = new Date(`2024-10-11T${work.end}`);
-          const diff = (endTime - startTime) / 60000;
-          return total + diff;
-        }, 0);
-
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-      return `${hours}:${minutes < 10 ? '0' + minutes : minutes}`;
-    },
-  },
-  created() {
-    this.cards[0].amount = this.calculateWorkedToday();
-  },
-};
+});
 </script>
 
 <style scoped>
@@ -96,7 +139,6 @@ export default {
   @apply mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4;
 }
 
-/* Style général des cartes */
 .app-card {
   @apply relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md mb-5 h-full;
 }

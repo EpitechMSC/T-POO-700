@@ -5,21 +5,62 @@ defmodule TimeManager.Accounts do
 
   import Ecto.Query, warn: false
   alias TimeManager.Repo
-
   alias TimeManager.Accounts.User
+  alias TimeManager.JWT
 
   @doc """
-  Returns the list of users.
+  Returns a paginated list of users.
 
   ## Examples
 
-      iex> list_users()
-      [%User{}, ...]
+      iex> list_users(1, 10)
+      {:ok, %Response{
+        users: [%User{}, ...],
+        total_pages: 5,
+        current_page: 1,
+        page_size: 10
+      }}
 
   """
-  def list_users do
-    Repo.all(User)
+  def list_users(page \\ 1, page_size \\ 10) do
+    total_count = Repo.aggregate(User, :count, :id)
+
+    users =
+      User
+      |> order_by([u], asc: u.username)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
+
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok, %TimeManagerWeb.Response{
+      data: users,
+      pagination: %{
+        total_pages: total_pages,
+        current_page: page,
+        page_size: page_size,
+      }
+    }}
   end
+
+
+  def authenticate_by_email(email) do
+    case Repo.get_by(User, email: email) do
+      nil ->
+        {:error, :invalid_credentials}
+
+      user ->
+        case JWT.generate_and_sign(%{
+          "user_id" => user.id,
+          "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
+        }, JWT.signer()) do
+          {:ok, token, _claims} -> {:ok, token}
+          {:error, reason} -> {:error, reason}
+        end
+    end
+  end
+
 
   @doc """
   Finds users by partial email or username match.
@@ -31,8 +72,7 @@ defmodule TimeManager.Accounts do
   """
   def find_users_by_email_or_username(email, username) do
     cond do
-      is_nil(email) and is_nil(username) ->
-        {:error, :bad_request}
+      is_nil(email) and is_nil(username) -> {:error, :bad_request}
 
       not is_nil(email) and is_nil(username) ->
         users = Repo.all(from u in User, where: ilike(u.email, ^("#{email}%")))
@@ -60,7 +100,6 @@ defmodule TimeManager.Accounts do
     end
   end
 
-
   @doc """
   Gets a single user.
 
@@ -75,7 +114,12 @@ defmodule TimeManager.Accounts do
       ** (Ecto.NoResultsError)
 
   """
-  def get_user!(id), do: Repo.get!(User, id)
+  def get_user(id) do
+    case Repo.get(User, id) do
+      nil -> {:error, :not_found}
+      user -> {:ok, user}
+    end
+  end
 
   @doc """
   Creates a user.
