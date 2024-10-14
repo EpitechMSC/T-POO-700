@@ -3,11 +3,13 @@ import { useRouter, Router } from 'vue-router';
 import { useUsersStore } from '../../app/store/store';
 import { UserPayload } from '../../app/models/user';
 import BaseInput from '../../components/Inputs/BaseInput/BaseInput.vue';
+import BaseButton from '../../components/Buttons/BaseButton/BaseButton.vue';
 
 export default defineComponent({
   name: 'RegisterPage',
   components: {
     BaseInput,
+    BaseButton,
   },
   setup() {
     const username = ref<string>('');
