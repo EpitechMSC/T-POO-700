@@ -2,9 +2,13 @@ import { defineComponent, ref } from 'vue';
 import { useRouter, Router } from 'vue-router';
 import { useUsersStore } from '../../app/store/store';
 import { UserPayload } from '../../app/models/user';
+import BaseInput from '../../components/Inputs/BaseInput/BaseInput.vue';
 
 export default defineComponent({
   name: 'RegisterPage',
+  components: {
+    BaseInput,
+  },
   setup() {
     const username = ref<string>('');
     const email = ref<string>('');
