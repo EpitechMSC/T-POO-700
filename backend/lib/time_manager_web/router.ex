@@ -10,10 +10,10 @@ defmodule TimeManagerWeb.Router do
 
     get "/users/search", UserController, :search_by_email_or_username
     get "/workingtimes/search/:id", WorkingTimeController, :search_by_userid_and_date_range
-    
+
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
-    resources "/clocks", ClockController, except: [:new, :edit]
+    resources "/clocks", ClockController, except: [:edit]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

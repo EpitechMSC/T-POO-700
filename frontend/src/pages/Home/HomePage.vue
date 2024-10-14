@@ -98,8 +98,6 @@ export default defineComponent({
     onMounted(() => {
       //fetch stores
       workingTimesStore.getWorkingTimeById(1);
-      console.log(workingTimesStore);
-
       updateTime(); // Définir l'heure initiale
       setInterval(updateTime, 1000); // Mettre à jour l'heure chaque seconde
     });

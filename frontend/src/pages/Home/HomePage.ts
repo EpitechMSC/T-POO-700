@@ -22,7 +22,7 @@ export default defineComponent({
     const workingTimesStore = useWorkingTimesStore();
 
     const time = ref(''); // Create a reactive variable for the time
-    var workedToday = ref('');
+    const workedToday = ref('');
 
     // Function to update the time
     const updateTime = () => {
@@ -39,9 +39,6 @@ export default defineComponent({
     onMounted(() => {
       //fetch stores
       workingTimesStore.getWorkingTimeById(1);
-
-      console.log(workingTimesStore);
-
       updateTime(); // Set the initial time
       setInterval(updateTime, 1000); // Update time every second
     });
