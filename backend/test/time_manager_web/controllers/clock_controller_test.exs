@@ -2,6 +2,7 @@ defmodule TimeManagerWeb.ClockControllerTest do
   use TimeManagerWeb.ConnCase
 
   import TimeManager.ClocksFixtures
+  import TimeManager.AccountsFixtures
 
   alias TimeManager.Clocks.Clock
 
@@ -16,11 +17,16 @@ defmodule TimeManagerWeb.ClockControllerTest do
   @invalid_attrs %{status: nil, time: nil}
 
   setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
+    conn = put_req_header(conn, "accept", "application/json")
+    {:ok, conn: conn}
   end
 
   describe "index" do
-    test "lists all clocks", %{conn: conn} do
+    test "lists all clocks when authenticated", %{conn: conn} do
+      user = user_fixture()
+      token = user_token_fixture(user)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/clocks")
       assert json_response(conn, 200)["data"] == []
     end
@@ -28,8 +34,12 @@ defmodule TimeManagerWeb.ClockControllerTest do
 
   describe "create clock" do
     test "renders clock when data is valid", %{conn: conn} do
+      user = user_fixture()
+      token = user_token_fixture(user)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = post(conn, ~p"/api/clocks", clock: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+      assert %{"id" => id} = json_response(conn, 201)
 
       conn = get(conn, ~p"/api/clocks/#{id}")
 
@@ -37,10 +47,14 @@ defmodule TimeManagerWeb.ClockControllerTest do
                "id" => ^id,
                "status" => true,
                "time" => "2024-10-07T07:44:00"
-             } = json_response(conn, 200)["data"]
+             } = json_response(conn, 200)
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
+      user = user_fixture()
+      token = user_token_fixture(user)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = post(conn, ~p"/api/clocks", clock: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
@@ -50,8 +64,12 @@ defmodule TimeManagerWeb.ClockControllerTest do
     setup [:create_clock]
 
     test "renders clock when data is valid", %{conn: conn, clock: %Clock{id: id} = clock} do
-      conn = put(conn, ~p"/api/clocks/#{clock}", clock: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
+      user = user_fixture()
+      token = user_token_fixture(user)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = put(conn, ~p"/api/clocks/#{clock.id}", clock: @update_attrs)
+      assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get(conn, ~p"/api/clocks/#{id}")
 
@@ -59,11 +77,15 @@ defmodule TimeManagerWeb.ClockControllerTest do
                "id" => ^id,
                "status" => false,
                "time" => "2024-10-08T07:44:00"
-             } = json_response(conn, 200)["data"]
+             } = json_response(conn, 200)
     end
 
     test "renders errors when data is invalid", %{conn: conn, clock: clock} do
-      conn = put(conn, ~p"/api/clocks/#{clock}", clock: @invalid_attrs)
+      user = user_fixture()
+      token = user_token_fixture(user)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = put(conn, ~p"/api/clocks/#{clock.id}", clock: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -72,11 +94,15 @@ defmodule TimeManagerWeb.ClockControllerTest do
     setup [:create_clock]
 
     test "deletes chosen clock", %{conn: conn, clock: clock} do
-      conn = delete(conn, ~p"/api/clocks/#{clock}")
+      user = user_fixture()
+      token = user_token_fixture(user)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = delete(conn, ~p"/api/clocks/#{clock.id}")
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, ~p"/api/clocks/#{clock}")
+        get(conn, ~p"/api/clocks/#{clock.id}")
       end
     end
   end

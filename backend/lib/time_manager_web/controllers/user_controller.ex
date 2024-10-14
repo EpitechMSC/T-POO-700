@@ -102,20 +102,24 @@ defmodule TimeManagerWeb.UserController do
   def update(conn, %{"id" => id, "user" => user_params}) do
     case Accounts.get_user(id) do
       {:ok, user} ->
+        user_params = Enum.reject(user_params, fn {_, v} -> is_nil(v) end) |> Map.new()
+
         with {:ok, %User{} = updated_user} <- Accounts.update_user(user, user_params) do
           json(conn, updated_user)
         else
           {:error, changeset} ->
             conn
             |> put_status(:unprocessable_entity)
-            |> json(%{error: "Unable to update user", details: changeset})
+            |> json(%{errors: changeset})
         end
+
       {:error, :not_found} ->
         conn
         |> put_status(:not_found)
         |> json(%{error: "User not found"})
     end
   end
+
 
   def delete(conn, %{"id" => id}) do
     case Accounts.get_user(id) do
@@ -128,10 +132,12 @@ defmodule TimeManagerWeb.UserController do
             |> put_status(:unprocessable_entity)
             |> json(%{error: reason})
         end
+
       {:error, :not_found} ->
         conn
         |> put_status(:not_found)
         |> json(%{error: "User not found"})
     end
   end
+
 end

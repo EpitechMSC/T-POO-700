@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { User } from '../../models/user';
+import { User, UserPayload } from '../../models/user';
 import agent from '../../api/agent';
 
 interface UsersState {
@@ -76,9 +76,10 @@ export const useUsersStore = defineStore('users', {
       }
     },
 
-    async createUser(user: User): Promise<void> {
+    async createUser(user: UserPayload): Promise<void> {
       this.loading = true;
       this.error = null;
+
       try {
         const response = await agent.Users.create(user);
         this.$patch({
