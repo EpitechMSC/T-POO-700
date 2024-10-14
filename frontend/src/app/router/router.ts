@@ -1,7 +1,18 @@
-import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
+import {
+  RouteRecordRaw,
+  createRouter,
+  createWebHistory,
+  NavigationGuard,
+  RouteLocationNormalized,
+  NavigationGuardNext,
+} from 'vue-router';
 import HomePageComponent from '../../pages/Home/HomePage.vue';
 import UserDashboard from '../../pages/User/UserDashboard.vue';
 import { useAuthenticateStore } from '../store/store';
+
+interface RouteMeta {
+  requiresAuth?: boolean;
+}
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/', redirect: '/login' },
@@ -29,10 +40,18 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach((to, from, next) => {
+const beforeEachGuard: NavigationGuard = (
+  to: RouteLocationNormalized,
+  _from: RouteLocationNormalized,
+  next: NavigationGuardNext
+) => {
   const authenticateStore = useAuthenticateStore();
 
-  if (to.matched.some(record => record.meta.requiresAuth)) {
+  if (
+    to.matched.some(
+      (record: { meta: RouteMeta }) => (record.meta as RouteMeta).requiresAuth
+    )
+  ) {
     if (!authenticateStore.isAuthenticated) {
       next('/login');
     } else {
@@ -41,6 +60,8 @@ router.beforeEach((to, from, next) => {
   } else {
     next();
   }
-});
+};
+
+router.beforeEach(beforeEachGuard);
 
 export default router;
