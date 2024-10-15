@@ -51,9 +51,14 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
           await agent.WorkingTimes.list(params);
         this.workingTimesForList = response.data;
         this.pagination = response.pagination;
-      } catch (err: any) {
-        this.error =
-          err.message || 'Erreur lors de la récupération des temps de travail';
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            'Erreur lors de la récupération des temps de travail';
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -76,10 +81,14 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
 
         this.workingTimesForList = response.data;
         this.pagination = response.pagination;
-      } catch (err: any) {
-        this.error =
-          err.message ||
-          `Erreur lors de la récupération des temps de travail pour l'utilisateur ${userId}`;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            `Erreur lors de la récupération des temps de travail pour l'utilisateur ${userId}`;
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -92,10 +101,14 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         const response: WorkingTime[] =
           await agent.WorkingTimes.getUserWeeklyWorkingTimes(userId);
         this.workingTimes = response;
-      } catch (err: any) {
-        this.error =
-          err.message ||
-          'Erreur lors de la récupération des temps de travail hebdomadaires';
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            'Erreur lors de la récupération des temps de travail hebdomadaires';
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -108,10 +121,14 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         const response: WorkingTime[] =
           await agent.WorkingTimes.getUserMonthlyWorkingTimes(userId);
         this.workingTimes = response;
-      } catch (err: any) {
-        this.error =
-          err.message ||
-          'Erreur lors de la récupération des temps de travail mensuels';
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            'Erreur lors de la récupération des temps de travail mensuels';
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -124,10 +141,14 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         const response: WorkingTime[] =
           await agent.WorkingTimes.getUserYearlyWorkingTimes(userId);
         this.workingTimes = response;
-      } catch (err: any) {
-        this.error =
-          err.message ||
-          'Erreur lors de la récupération des temps de travail annuels';
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            'Erreur lors de la récupération des temps de travail annuels';
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -140,10 +161,14 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         const response: WorkingTimeStats =
           await agent.WorkingTimes.getUserWorkingTimeStats(userId);
         this.stats = response;
-      } catch (err: any) {
-        this.error =
-          err.message ||
-          `Erreur lors de la récupération des statistiques de l'utilisateur ${userId}`;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            `Erreur lors de la récupération des statistiques de l'utilisateur ${userId}`;
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -156,9 +181,13 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         const response: WorkingTime =
           await agent.WorkingTimes.create(workingTime);
         this.workingTimes.push(response);
-      } catch (err: any) {
-        this.error =
-          err.message || 'Erreur lors de la création du temps de travail';
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message || 'Erreur lors de la création du temps de travail';
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -179,9 +208,13 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         if (index !== -1) {
           this.workingTimes[index] = response;
         }
-      } catch (err: any) {
-        this.error =
-          err.message || 'Erreur lors de la mise à jour du temps de travail';
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message || 'Erreur lors de la mise à jour du temps de travail';
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -193,9 +226,13 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       try {
         await agent.WorkingTimes.remove(id);
         this.workingTimes = this.workingTimes.filter(wt => wt.id !== id);
-      } catch (err: any) {
-        this.error =
-          err.message || 'Erreur lors de la suppression du temps de travail';
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message || 'Erreur lors de la suppression du temps de travail';
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }
@@ -208,10 +245,14 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
         const response: WorkingTime =
           await agent.WorkingTimes.getUserWorkingTime(userID, id);
         this.currentWorkingTime = response;
-      } catch (err: any) {
-        this.error =
-          err.message ||
-          "Erreur lors de la récupération du temps de travail de l'utilisateur";
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            "Erreur lors de la récupération du temps de travail de l'utilisateur";
+        } else {
+          this.error = 'Erreur inconnue';
+        }
       } finally {
         this.loading = false;
       }

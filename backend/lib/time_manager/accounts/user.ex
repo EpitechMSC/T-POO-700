@@ -30,7 +30,10 @@ defmodule TimeManager.Accounts.User do
     |> validate_format(:email, ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "is invalid"
     )
-    |> unique_constraint(:email, message: "Email has already been taken", name: :users_email_index)
+    |> unique_constraint(:email,
+      message: "Email has already been taken",
+      name: :users_email_index
+    )
     |> unique_constraint(:username,
       message: "Username has already been taken",
       name: :users_username_index

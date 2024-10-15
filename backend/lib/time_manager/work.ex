@@ -57,31 +57,30 @@ defmodule TimeManager.Work do
   def get_working_time!(id), do: Repo.get!(WorkingTime, id)
 
   def find_working_times_by_userid(user_id, page \\ 1, page_size \\ 10) do
-    if is_nil(user_id) do
-      {:error, :bad_request}
-    else
-      total_count = Repo.aggregate(WorkingTime, :count, :id)
+    total_count =
+      WorkingTime
+      |> where([w], w.user == ^user_id)
+      |> Repo.aggregate(:count, :id)
 
-      workingtimes =
-        WorkingTime
-        |> where([w], w.user == ^user_id)
-        |> order_by([w], asc: w.start)
-        |> limit(^page_size)
-        |> offset(^((page - 1) * page_size))
-        |> Repo.all()
+    workingtimes =
+      WorkingTime
+      |> where([w], w.user == ^user_id)
+      |> order_by([w], asc: w.start)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
 
-      total_pages = div(total_count + page_size - 1, page_size)
+    total_pages = div(total_count + page_size - 1, page_size)
 
-      {:ok,
-       %TimeManagerWeb.Response{
-         data: workingtimes,
-         pagination: %{
-           total_pages: total_pages,
-           current_page: page,
-           page_size: page_size
-         }
-       }}
-    end
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: workingtimes,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
 
   @doc """

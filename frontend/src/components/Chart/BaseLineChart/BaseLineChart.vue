@@ -1,12 +1,15 @@
 <template>
   <div class="base-line-chart">
-    <Line :data="data" :options="options" />
+    <LineChart
+      :data="data"
+      :options="options"
+    />
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { Line } from 'vue-chartjs';
+import { Line as LineChart } from 'vue-chartjs';
 import {
   Chart as ChartJS,
   Title,
@@ -34,7 +37,7 @@ ChartJS.register(
 export default defineComponent({
   name: 'BaseLineChart',
   components: {
-    Line,
+    LineChart,
   },
   props: {
     data: {

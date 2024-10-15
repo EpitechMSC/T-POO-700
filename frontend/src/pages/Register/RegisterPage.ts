@@ -1,6 +1,7 @@
 import { defineComponent, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRouter, Router } from 'vue-router';
 import { useUsersStore } from '../../app/store/store';
+import { UserPayload } from '../../app/models/user';
 import BaseInput from '../../components/Inputs/BaseInput/BaseInput.vue';
 import BaseButton from '../../components/Buttons/BaseButton/BaseButton.vue';
 
@@ -11,13 +12,15 @@ export default defineComponent({
     BaseButton,
   },
   setup() {
-    const username = ref('');
-    const email = ref('');
+    const username = ref<string>('');
+    const email = ref<string>('');
     const error = ref<string | null>(null);
-    const router = useRouter();
+
+    const router: Router = useRouter();
+
     const usersStore = useUsersStore();
 
-    const handleRegister = async () => {
+    const handleRegister = async (): Promise<void> => {
       error.value = null;
 
       if (!username.value || !email.value) {
@@ -29,11 +32,17 @@ export default defineComponent({
         await usersStore.createUser({
           username: username.value,
           email: email.value,
-        });
+        } as UserPayload);
 
         router.push('/login');
-      } catch (err: any) {
-        error.value = err.message || "Erreur lors de l'enregistrement.";
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          error.value =
+            err.message ||
+            "Erreur lors de l'enregistrement. Veuillez réessayer.";
+        } else {
+          error.value = "Erreur inconnue lors de l'enregistrement.";
+        }
       }
     };
 
