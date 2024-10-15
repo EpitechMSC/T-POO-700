@@ -1,4 +1,3 @@
-// src/pages/Login/LoginPage.ts
 import { defineComponent, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthenticateStore } from '../../app/store/store';

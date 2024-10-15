@@ -1,5 +1,6 @@
-// jest.config.cjs
-module.exports = {
+import { defineConfig } from 'jest-define-config';
+
+export default defineConfig({
   preset: '@vue/vue3-jest',
   testEnvironment: 'jsdom',
   transform: {
@@ -8,4 +9,4 @@ module.exports = {
   },
   moduleFileExtensions: ['js', 'json', 'vue'],
   testMatch: ['**/__tests__/**/*.spec.(js|jsx|ts|tsx|vue)'],
-};
+});

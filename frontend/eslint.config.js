@@ -12,6 +12,14 @@ export default ts.config(
       parserOptions: {
         parser: '@typescript-eslint/parser',
       },
+      globals: {
+        module: 'readonly',
+        describe: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        on: 'readonly',
+        config: 'readonly',
+      },
     },
   }
 );

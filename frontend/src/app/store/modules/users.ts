@@ -1,5 +1,3 @@
-// src/app/store/usersStore.ts
-
 import { defineStore } from 'pinia';
 import { User, UserPayload } from '../../models/user';
 import agent from '../../api/agent';
@@ -14,7 +12,7 @@ interface UsersState {
   currentUser: User | null;
   loading: boolean;
   error: string | null;
-  userSummary: any;
+  userSummary: unknown; // Replace 'any' with 'unknown' for safety; define a type if known
   pagination: Pagination | null;
   pagingParams: PagingParams;
 }
@@ -49,11 +47,17 @@ export const useUsersStore = defineStore('users', {
           users: response.data,
           pagination: response.pagination,
         });
-      } catch (err: any) {
-        this.$patch({
-          error:
-            err.message || 'Erreur lors de la récupération des utilisateurs',
-        });
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.$patch({
+            error:
+              err.message || 'Erreur lors de la récupération des utilisateurs',
+          });
+        } else {
+          this.$patch({
+            error: 'Erreur inconnue lors de la récupération des utilisateurs',
+          });
+        }
       } finally {
         this.loading = false;
       }
@@ -73,11 +77,17 @@ export const useUsersStore = defineStore('users', {
           users: response.data,
           pagination: response.pagination,
         });
-      } catch (err: any) {
-        this.$patch({
-          error:
-            err.message || 'Erreur lors de la récupération des utilisateurs',
-        });
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.$patch({
+            error:
+              err.message || 'Erreur lors de la récupération des utilisateurs',
+          });
+        } else {
+          this.$patch({
+            error: 'Erreur inconnue lors de la récupération des utilisateurs',
+          });
+        }
       } finally {
         this.loading = false;
       }
@@ -92,10 +102,16 @@ export const useUsersStore = defineStore('users', {
         this.$patch({
           users: [...this.users, response],
         });
-      } catch (err: any) {
-        this.$patch({
-          error: err.message || "Erreur lors de la création de l'utilisateur",
-        });
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.$patch({
+            error: err.message || "Erreur lors de la création de l'utilisateur",
+          });
+        } else {
+          this.$patch({
+            error: 'Erreur inconnue lors de la création de l’utilisateur',
+          });
+        }
       } finally {
         this.loading = false;
       }
@@ -109,12 +125,19 @@ export const useUsersStore = defineStore('users', {
         this.$patch({
           currentUser: response,
         });
-      } catch (err: any) {
-        this.$patch({
-          error:
-            err.message ||
-            "Erreur lors de la récupération des détails de l'utilisateur",
-        });
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.$patch({
+            error:
+              err.message ||
+              "Erreur lors de la récupération des détails de l'utilisateur",
+          });
+        } else {
+          this.$patch({
+            error:
+              'Erreur inconnue lors de la récupération des détails de l’utilisateur',
+          });
+        }
       } finally {
         this.loading = false;
       }
@@ -131,11 +154,17 @@ export const useUsersStore = defineStore('users', {
             users: this.users.map(u => (u.id === id ? response : u)),
           });
         }
-      } catch (err: any) {
-        this.$patch({
-          error:
-            err.message || "Erreur lors de la mise à jour de l'utilisateur",
-        });
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.$patch({
+            error:
+              err.message || "Erreur lors de la mise à jour de l'utilisateur",
+          });
+        } else {
+          this.$patch({
+            error: 'Erreur inconnue lors de la mise à jour de l’utilisateur',
+          });
+        }
       } finally {
         this.loading = false;
       }
@@ -149,11 +178,17 @@ export const useUsersStore = defineStore('users', {
         this.$patch({
           users: this.users.filter(u => u.id !== id),
         });
-      } catch (err: any) {
-        this.$patch({
-          error:
-            err.message || "Erreur lors de la suppression de l'utilisateur",
-        });
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.$patch({
+            error:
+              err.message || "Erreur lors de la suppression de l'utilisateur",
+          });
+        } else {
+          this.$patch({
+            error: 'Erreur inconnue lors de la suppression de l’utilisateur',
+          });
+        }
       } finally {
         this.loading = false;
       }

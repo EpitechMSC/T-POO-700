@@ -9,7 +9,6 @@
         >
           {{ header }}
         </th>
-        <!--  Options column -->
         <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -35,34 +34,33 @@
           :key="colIndex"
           class="px-4 py-3"
         >
-          <!-- Check if editing-->
           <div v-if="isEditing(rowIndex)">
-            <!-- Only allow input for non-id columns -->
             <input
               v-if="header !== 'id'"
               v-model="editedData[rowIndex][header]"
               class="w-full px-2 py-1 border border-gray-300 rounded"
-            />
-            <!-- Display value without input for id -->
+            >
             <div v-else>
               {{ item[header] }}
             </div>
           </div>
           <div v-else>
-            <slot name="customCell" :item="item" :field="header">
+            <slot
+              name="customCell"
+              :item="item"
+              :field="header"
+            >
               {{ formatValue(item[header]) }}
             </slot>
           </div>
         </td>
-        <!-- Options cell -->
         <td class="px-4 py-3">
           <div class="relative">
             <button
               v-if="!isEditing(rowIndex)"
-              @click="toggleMenu(rowIndex)"
               class="text-gray-500 hover:text-gray-700"
+              @click="toggleMenu(rowIndex)"
             >
-              <!-- Option Icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 class="h-6 w-6"
@@ -78,11 +76,13 @@
                 />
               </svg>
             </button>
-            <div v-if="isEditing(rowIndex)" class="flex space-x-2">
-              <!-- validation and canceled buttons -->
+            <div
+              v-if="isEditing(rowIndex)"
+              class="flex space-x-2"
+            >
               <button
-                @click="saveEdit(rowIndex, item)"
                 class="text-green-600 hover:text-green-800"
+                @click="saveEdit(rowIndex)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -98,8 +98,8 @@
                 </svg>
               </button>
               <button
-                @click="cancelEdit(rowIndex)"
                 class="text-red-600 hover:text-red-800"
+                @click="cancelEdit(rowIndex)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -115,22 +115,20 @@
                 </svg>
               </button>
             </div>
-
-            <!-- Popup  -->
             <div
               v-if="isMenuOpen(rowIndex)"
               class="absolute right-0 mt-2 w-32 bg-white border border-gray-200 shadow-md rounded-md z-10"
             >
               <ul>
                 <li
-                  @click="startEditing(rowIndex, item)"
                   class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="startEditing(rowIndex, item)"
                 >
                   Modifier
                 </li>
                 <li
-                  @click="deleteItem(item)"
                   class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="deleteItem(item)"
                 >
                   Supprimer
                 </li>
@@ -152,6 +150,7 @@ export default {
       type: Array,
     },
   },
+  emits: ['save-edit', 'delete-item'],
   data() {
     return {
       menuOpenIndex: null,
@@ -175,7 +174,7 @@ export default {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
         const year = date.getFullYear();
-        return `${day}/${month}/${year}`; // Format: dd/MM/yyyy
+        return `${day}/${month}/${year}`;
       }
       return value;
     },
@@ -197,7 +196,7 @@ export default {
       this.editingIndex = null;
       this.editedData[rowIndex] = null;
     },
-    async saveEdit(rowIndex, item) {
+    async saveEdit(rowIndex) {
       const updatedItem = this.editedData[rowIndex];
       this.$emit('save-edit', updatedItem);
       this.editingIndex = null;

@@ -11,7 +11,10 @@
           cardIconClass(card.type),
         ]"
       >
-        <i :class="card.icon" style="font-size: 1.5rem"></i>
+        <i
+          :class="card.icon"
+          style="font-size: 1.5rem"
+        />
       </div>
       <div class="p-4 text-right">
         <p

@@ -1,10 +1,19 @@
 <template>
   <div class="w-full">
     <div class="flex justify-between mb-4">
-      <select v-model="selectedPeriod" @change="fetchData">
-        <option value="yearly">Année</option>
-        <option value="weekly">Hebdomadaire</option>
-        <option value="monthly">Mensuel</option>
+      <select
+        v-model="selectedPeriod"
+        @change="fetchData"
+      >
+        <option value="yearly">
+          Année
+        </option>
+        <option value="weekly">
+          Hebdomadaire
+        </option>
+        <option value="monthly">
+          Mensuel
+        </option>
       </select>
     </div>
     <LineChart
@@ -13,8 +22,12 @@
       :options="chartOptions"
       class="w-full"
     />
-    <p v-if="loading">Chargement...</p>
-    <p v-if="error">{{ error }}</p>
+    <p v-if="loading">
+      Chargement...
+    </p>
+    <p v-if="error">
+      {{ error }}
+    </p>
   </div>
 </template>
 
@@ -83,7 +96,7 @@ export default defineComponent({
           default:
             await workingTimesStore.fetchYearlyWorkingTimes(userId);
         }
-      } catch (err) {
+      } catch {
         error.value = 'Erreur lors du chargement des données';
       } finally {
         loading.value = false;
