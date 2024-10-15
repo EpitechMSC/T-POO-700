@@ -1,7 +1,16 @@
 <template>
-  <section class="summary__grid">
-    <div v-for="(card, index) in cards" :key="index" class="app-card">
-      <div :class="'card__icon card__icon--' + card.type">
+  <section class="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+    <div
+      v-for="(card, index) in cards"
+      :key="index"
+      class="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md mb-5 h-full"
+    >
+      <div
+        :class="[
+          'card__icon mx-4 rounded-xl overflow-hidden shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center',
+          cardIconClass(card.type),
+        ]"
+      >
         <i :class="card.icon" style="font-size: 1.5rem" />
       </div>
       <div class="card__content">

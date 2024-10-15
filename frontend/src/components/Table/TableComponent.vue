@@ -46,7 +46,9 @@
           </div>
           <div v-else>
             <slot name="customCell" :item="item" :field="header">
-              {{ formatValue(item[header]) }}
+              <slot name="customCell" :item="item" :field="header">
+                {{ formatValue(item[header]) }}
+              </slot>
             </slot>
           </div>
         </td>
