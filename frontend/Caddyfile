@@ -1,4 +1,4 @@
-vps-d49b5aff.vps.ovh.net, www.exploded.dev:443, gotham.exploded.dev:443, :8080 {
+exploded.dev, :8080 {
 	root * /var/www/frontend
 	try_files {path} /index.html
 	
