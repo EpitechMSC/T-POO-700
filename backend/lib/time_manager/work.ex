@@ -70,15 +70,17 @@ defmodule TimeManager.Work do
       |> offset(^((page - 1) * page_size))
       |> Repo.all()
 
-      total_pages = div(total_count + page_size - 1, page_size)
-      {:ok, %TimeManagerWeb.Response{
-        data: workingtimes,
-        pagination: %{
-          total_pages: total_pages,
-          current_page: page,
-          page_size: page_size,
-        },
-      }}
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: workingtimes,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
 
   @doc """
