@@ -14,6 +14,7 @@ defmodule TimeManagerWeb.WorkingTimeController do
     case Work.list_workingtimes(page, page_size) do
       {:ok, %Response{} = response} ->
         json(conn, response)
+
       {:error, reason} ->
         conn
         |> put_status(:bad_request)
@@ -38,7 +39,8 @@ defmodule TimeManagerWeb.WorkingTimeController do
   def update(conn, %{"id" => id, "working_time" => working_time_params}) do
     working_time = Work.get_working_time!(id)
 
-    with {:ok, %WorkingTime{} = updated_working_time} <- Work.update_working_time(working_time, working_time_params) do
+    with {:ok, %WorkingTime{} = updated_working_time} <-
+           Work.update_working_time(working_time, working_time_params) do
       json(conn, updated_working_time)
     end
   end
@@ -71,7 +73,6 @@ defmodule TimeManagerWeb.WorkingTimeController do
     end
   end
 
-
   def search_by_userid_and_date_range(conn, %{"id" => id}) do
     # Récupérer les paramètres de requête
     conn = Plug.Conn.fetch_query_params(conn)
@@ -81,7 +82,9 @@ defmodule TimeManagerWeb.WorkingTimeController do
 
     end_date =
       case end_date_as_string do
-        nil -> nil
+        nil ->
+          nil
+
         _ ->
           case NaiveDateTime.from_iso8601(end_date_as_string) do
             {:ok, parsed_date} -> parsed_date
@@ -113,10 +116,11 @@ defmodule TimeManagerWeb.WorkingTimeController do
     end
   end
 
-
   def stats(conn, %{"id" => id}) do
     case Work.get_working_time_stats(id) do
-      {:ok, stats} -> json(conn, stats)
+      {:ok, stats} ->
+        json(conn, stats)
+
       {:error, :not_found} ->
         conn
         |> put_status(:not_found)

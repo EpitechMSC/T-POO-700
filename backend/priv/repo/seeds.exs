@@ -4,6 +4,7 @@
 #     mix run priv/repo/seeds.exs
 #
 
+alias Hex.Repo
 alias TimeManager.Repo
 alias TimeManager.Accounts.User
 alias TimeManager.Clocks.Clock

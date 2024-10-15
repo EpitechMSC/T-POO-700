@@ -11,6 +11,7 @@ defmodule TimeManagerWeb.ClockController do
     case Clocks.list_clocks() do
       {:ok, %Response{} = response} ->
         json(conn, response)
+
       {:error, reason} ->
         conn
         |> put_status(:bad_request)

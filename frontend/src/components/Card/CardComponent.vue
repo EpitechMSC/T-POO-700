@@ -1,7 +1,11 @@
 <template>
   <div class="skeuo-no-hover flex-col rounded-lg text-center p-8 w-72">
-    <div class="text-6xl font-black">{{ data }}</div>
-    <div class="text-2xl">{{ text }}</div>
+    <div class="text-6xl font-black">
+      {{ data }}
+    </div>
+    <div class="text-2xl">
+      {{ text }}
+    </div>
   </div>
 </template>
 <script>

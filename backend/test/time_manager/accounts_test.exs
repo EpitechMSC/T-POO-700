@@ -52,7 +52,9 @@ defmodule TimeManager.AccountsTest do
 
     test "find_users_by_email_or_username/2 returns error when no users match both email and username" do
       user_fixture(email: "user1@example.com", username: "user1")
-      assert Accounts.find_users_by_email_or_username("nonexistent", "nonexistent") == {:error, :not_found}
+
+      assert Accounts.find_users_by_email_or_username("nonexistent", "nonexistent") ==
+               {:error, :not_found}
     end
 
     test "create_user/1 with valid data creates a user" do
@@ -82,7 +84,12 @@ defmodule TimeManager.AccountsTest do
 
     test "create_user/1 returns error changeset when username is not unique" do
       user_fixture(username: "duplicate_username")
-      duplicate_username_attrs = %{username: "duplicate_username", email: "unique_email@example.com"}
+
+      duplicate_username_attrs = %{
+        username: "duplicate_username",
+        email: "unique_email@example.com"
+      }
+
       assert {:error, %Ecto.Changeset{}} = Accounts.create_user(duplicate_username_attrs)
     end
 
@@ -110,21 +117,34 @@ defmodule TimeManager.AccountsTest do
     test "update_user/2 returns error changeset when email is invalid" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, %{email: "invalid_email"})
-      assert {:ok, ^user} = Accounts.get_user(user.id) # Assurez-vous que l'utilisateur n'a pas changé
+      # Assurez-vous que l'utilisateur n'a pas changé
+      assert {:ok, ^user} = Accounts.get_user(user.id)
     end
 
     test "update_user/2 returns error changeset when username is not unique" do
       existing_user = user_fixture(username: "existing_username")
-      user_to_update = user_fixture(username: "unique_username", email: "unique_email@example.com")
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user_to_update, %{username: existing_user.username})
-      assert {:ok, ^user_to_update} = Accounts.get_user(user_to_update.id) # L'utilisateur n'a pas changé
+
+      user_to_update =
+        user_fixture(username: "unique_username", email: "unique_email@example.com")
+
+      assert {:error, %Ecto.Changeset{}} =
+               Accounts.update_user(user_to_update, %{username: existing_user.username})
+
+      # L'utilisateur n'a pas changé
+      assert {:ok, ^user_to_update} = Accounts.get_user(user_to_update.id)
     end
 
     test "update_user/2 returns error changeset when email is not unique" do
       existing_user = user_fixture(email: "existing_email@example.com")
-      user_to_update = user_fixture(username: "unique_username", email: "unique_email@example.com")
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user_to_update, %{email: existing_user.email})
-      assert {:ok, ^user_to_update} = Accounts.get_user(user_to_update.id) # L'utilisateur n'a pas changé
+
+      user_to_update =
+        user_fixture(username: "unique_username", email: "unique_email@example.com")
+
+      assert {:error, %Ecto.Changeset{}} =
+               Accounts.update_user(user_to_update, %{email: existing_user.email})
+
+      # L'utilisateur n'a pas changé
+      assert {:ok, ^user_to_update} = Accounts.get_user(user_to_update.id)
     end
 
     test "delete_user/1 deletes the user" do

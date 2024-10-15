@@ -9,10 +9,11 @@ defmodule TimeManager.WorkTest do
   @invalid_attrs %{start: nil, end: nil}
 
   describe "workingtimes" do
-
     test "list_workingtimes/0 returns all workingtimes" do
       working_time = working_time_fixture()
-      assert {:ok, %TimeManagerWeb.Response{data: [^working_time], pagination: _}} = Work.list_workingtimes()
+
+      assert {:ok, %TimeManagerWeb.Response{data: [^working_time], pagination: _}} =
+               Work.list_workingtimes()
     end
 
     test "get_working_time!/1 returns the working_time with given id" do
@@ -36,7 +37,9 @@ defmodule TimeManager.WorkTest do
       working_time = working_time_fixture()
       update_attrs = %{start: ~N[2024-10-08 07:47:00], end: ~N[2024-10-08 07:47:00]}
 
-      assert {:ok, %WorkingTime{} = working_time} = Work.update_working_time(working_time, update_attrs)
+      assert {:ok, %WorkingTime{} = working_time} =
+               Work.update_working_time(working_time, update_attrs)
+
       assert working_time.start == ~N[2024-10-08 07:47:00]
       assert working_time.end == ~N[2024-10-08 07:47:00]
     end
@@ -59,11 +62,13 @@ defmodule TimeManager.WorkTest do
     end
 
     test "returns error when user is nil" do
-      assert Work.find_working_time_for_user_and_date_range(nil, ~N[2024-09-01 08:00:00], nil) == {:error, :bad_request}
+      assert Work.find_working_time_for_user_and_date_range(nil, ~N[2024-09-01 08:00:00], nil) ==
+               {:error, :bad_request}
     end
 
     test "returns error when start_date is nil" do
-      assert Work.find_working_time_for_user_and_date_range(1, nil, ~N[2024-09-01 08:00:00]) == {:error, :bad_request}
+      assert Work.find_working_time_for_user_and_date_range(1, nil, ~N[2024-09-01 08:00:00]) ==
+               {:error, :bad_request}
     end
 
     test "returns works when only start date is provided and user has matching working times" do
@@ -78,7 +83,5 @@ defmodule TimeManager.WorkTest do
       assert {:ok, response} = result
       assert length(response.data) > 0
     end
-
-
   end
 end

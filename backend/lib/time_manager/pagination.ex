@@ -27,7 +27,8 @@ defmodule TimeManager.Pagination do
   """
   def paginate(query, params) do
     with {:ok, page} <- parse_positive_integer(Map.get(params, "page", "1"), "page"),
-         {:ok, page_size} <- parse_positive_integer(Map.get(params, "page_size", "10"), "page_size") do
+         {:ok, page_size} <-
+           parse_positive_integer(Map.get(params, "page_size", "10"), "page_size") do
       total_count = Repo.aggregate(query, :count, :id)
 
       paginated_query =
@@ -44,10 +45,11 @@ defmodule TimeManager.Pagination do
         page_size: page_size
       }
 
-      {:ok, %Response{
-        data: paginated_query,
-        pagination: pagination_info
-      }}
+      {:ok,
+       %Response{
+         data: paginated_query,
+         pagination: pagination_info
+       }}
     else
       {:error, reason} -> {:error, reason}
     end

@@ -1,7 +1,17 @@
 <template>
   <div class="p-6">
-    <div v-if="loading" class="text-gray-500">Chargement...</div>
-    <div v-if="error" class="text-red-600">{{ error }}</div>
+    <div
+      v-if="loading"
+      class="text-gray-500"
+    >
+      Chargement...
+    </div>
+    <div
+      v-if="error"
+      class="text-red-600"
+    >
+      {{ error }}
+    </div>
 
     <div v-if="!loading && !error">
       <TableComponent
@@ -15,7 +25,9 @@
         v-else
         class="text-center text-gray-500 border border-gray-300 rounded p-4"
       >
-        <p class="text-lg">Aucun temps de travail trouvé.</p>
+        <p class="text-lg">
+          Aucun temps de travail trouvé.
+        </p>
       </div>
 
       <!-- Contrôles de Pagination -->
@@ -24,9 +36,9 @@
           <div>
             <a
               href="#"
-              @click.prevent="goToPage(pagination.current_page - 1)"
               class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
               :disabled="pagination.current_page === 1"
+              @click.prevent="goToPage(pagination.current_page - 1)"
             >
               <span class="sr-only">Previous</span>
               <svg
@@ -49,16 +61,19 @@
           <ul
             class="flex items-center -space-x-px h-10 text-base overflow-x-auto scrollbar-hide"
           >
-            <li v-for="page in totalPageNumbers" :key="page">
+            <li
+              v-for="page in totalPageNumbers"
+              :key="page"
+            >
               <a
                 href="#"
-                @click.prevent="goToPage(page)"
                 :class="[
                   'flex items-center justify-center px-4 h-10 leading-tight',
                   page === pagination.current_page
                     ? 'z-10 text-blue-600 border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-blue-700 dark:border-gray-700 dark:bg-gray-700 dark:text-white'
                     : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white',
                 ]"
+                @click.prevent="goToPage(page)"
               >
                 {{ page }}
               </a>
@@ -67,9 +82,9 @@
           <div>
             <a
               href="#"
-              @click.prevent="goToPage(pagination.current_page + 1)"
               class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
               :disabled="pagination.current_page === pagination.total_pages"
+              @click.prevent="goToPage(pagination.current_page + 1)"
             >
               <span class="sr-only">Next</span>
               <svg
