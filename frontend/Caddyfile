@@ -1,0 +1,10 @@
+:8080 {
+	root * /var/www/frontend
+	try_files {path} /index.html
+	
+	file_server
+}
+
+:8080/api {
+	reverse_proxy 127.0.0.1:5000
+}

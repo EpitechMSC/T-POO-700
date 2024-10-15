@@ -7,8 +7,10 @@ name: Elixir CI
 on:
   push:
     branches: [ "main" ]  # adapt branch for project
+    paths: ['backend/**']
   pull_request:
     branches: [ "main" ]  # adapt branch for project
+    paths: ['backend/**']
 
 # Sets the ENV `MIX_ENV` to `test` for running tests
 env:
