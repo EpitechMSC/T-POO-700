@@ -1,19 +1,10 @@
 <template>
   <div class="w-full">
     <div class="flex justify-between mb-4">
-      <select
-        v-model="selectedPeriod"
-        @change="fetchData"
-      >
-        <option value="yearly">
-          Année
-        </option>
-        <option value="weekly">
-          Hebdomadaire
-        </option>
-        <option value="monthly">
-          Mensuel
-        </option>
+      <select v-model="selectedPeriod" @change="fetchData">
+        <option value="yearly">Année</option>
+        <option value="monthly">Mensuel</option>
+        <option value="weekly">Hebdomadaire</option>
       </select>
     </div>
     <BaseLineChart
@@ -22,9 +13,7 @@
       :options="chartOptions"
       class="w-full"
     />
-    <p v-if="loading">
-      Chargement...
-    </p>
+    <p v-if="loading">Chargement...</p>
     <p v-if="error">
       {{ error }}
     </p>
