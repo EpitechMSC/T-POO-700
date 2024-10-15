@@ -1,4 +1,4 @@
-https://gotham.exploded.dev {
+gotham.exploded.dev:443 {
 	root * /var/www/frontend
 	try_files {path} /index.html
 	
