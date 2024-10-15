@@ -41,7 +41,22 @@ time_slots = [
 
 # Mois et jours à générer
 months_slots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-max_day_for_month = %{1 => 31, 2 => 28, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 => 30, 10 => 31, 11 => 30, 12 => 31}
+
+max_day_for_month = %{
+  1 => 31,
+  2 => 28,
+  3 => 31,
+  4 => 30,
+  5 => 31,
+  6 => 30,
+  7 => 31,
+  8 => 31,
+  9 => 30,
+  10 => 31,
+  11 => 30,
+  12 => 31
+}
+
 # Pour générer les jours d'un mois donné
 
 # Générer les horloges et les temps de travail
@@ -56,56 +71,40 @@ for user <- users do
       for {start_hour, end_hour} <- time_slots do
         index = Enum.find_index(time_slots, fn {sh, _} -> sh == start_hour end)
 
-      # Générer les différentes plages horaires avec un index
-      for {start_hour, end_hour} <- time_slots do
-        index = Enum.find_index(time_slots, fn {sh, _} -> sh == start_hour end)
+        # Générer les différentes plages horaires avec un index
+        for {start_hour, end_hour} <- time_slots do
+          index = Enum.find_index(time_slots, fn {sh, _} -> sh == start_hour end)
 
-      case NaiveDateTime.new(2024, month, day, start_hour, start_minute, seconds) do
-        {:ok, start_date} ->
-
-          # Create clock in whit status true
-          Repo.insert!(%Clock{
-            time: start_date,
-            status: true,
-            user: user.id
-          })
-          # put a message in the console to know that the clock was generated correctly
-          # IO.puts("Clock generated for user #{user.id} with time: #{start_date}")
-
-            case NaiveDateTime.new(2024, month, day, end_hour, end_minute, seconds) do
-              {:ok, end_date} ->
-                Repo.insert!(%Clock{time: end_date, status: false, user: user.id})
-                working_time = Repo.insert!(%WorkingTime{start: start_date, end: end_date, user: user.id})
-
-                IO.puts("Working time #{index} generated for #{user.username}-##{user.id} from #{start_date} to #{end_date}")
-          case NaiveDateTime.new(2024, month, day, end_hour, end_minute, seconds) do
-            {:ok, end_date} ->
-              # Create clock in whit status false
+          case NaiveDateTime.new(2024, month, day, start_hour, start_minute, seconds) do
+            {:ok, start_date} ->
+              # Create clock in whit status true
               Repo.insert!(%Clock{
-                time: end_date,
-                status: false,
+                time: start_date,
+                status: true,
                 user: user.id
               })
 
               # put a message in the console to know that the clock was generated correctly
-              # IO.puts("Clock generated for user #{user.id} with time: #{end_date}")
+              # IO.puts("Clock generated for user #{user.id} with time: #{start_date}")
 
-              # Create working time for user
-              Repo.insert!(%WorkingTime{
-                start: start_date,
-                end: end_date,
-                user: user.id
-              })
+              case NaiveDateTime.new(2024, month, day, end_hour, end_minute, seconds) do
+                {:ok, end_date} ->
+                  Repo.insert!(%Clock{time: end_date, status: false, user: user.id})
 
-            # put a message in the console to know that the working time was generated correctly
-            # IO.puts("Working time generated for user #{user.id} on #{start_date} to #{end_date}")
+                  working_time =
+                    Repo.insert!(%WorkingTime{start: start_date, end: end_date, user: user.id})
 
-              {:error, reason} ->
-                IO.puts("Failed to create end_date: #{reason}")
-            end
+                  IO.puts(
+                    "Working time #{index} generated for #{user.username}-##{user.id} from #{start_date} to #{end_date}"
+                  )
 
-          {:error, reason} ->
-            IO.puts("Failed to create start_date: #{reason}")
+                {:error, reason} ->
+                  IO.puts("Failed to create end_date: #{reason}")
+              end
+
+            {:error, reason} ->
+              IO.puts("Failed to create start_date: #{reason}")
+          end
         end
       end
     end
