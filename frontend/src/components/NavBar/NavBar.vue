@@ -1,21 +1,20 @@
 <template>
   <nav class="bg-white border-gray-200 shadow-sm dark:bg-gray-900">
-    <div
-      class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
-    >
-      <a
-        href="/"
+    <div class="flex flex-wrap items-center justify-between p-4">
+      <router-link
+        to="/"
         class="flex items-center space-x-3 rtl:space-x-reverse"
       >
         <img
           src="https://epitech.bj/wp-content/uploads/2020/03/EPI-LOGO-SIGNATURE-2018.png"
           class="h-8"
           alt="Epitech Logo"
-        >
+        />
         <span
           class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-        >Time Manager</span>
-      </a>
+          >Time Manager</span
+        >
+      </router-link>
       <div
         class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative"
       >
@@ -51,22 +50,24 @@
             }}</span>
             <span
               class="block text-sm text-gray-500 truncate dark:text-gray-400"
-            >{{ user?.email || 'Not logged in' }}</span>
+              >{{ user?.email || 'Not logged in' }}</span
+            >
           </div>
           <ul class="py-2">
             <li>
-              <a
-                href="#"
+              <router-link
+                to="/users/settings"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                @click.prevent="goToSettings"
-              >Settings</a>
+                >Settings</router-link
+              >
             </li>
             <li>
               <a
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 @click.prevent="logout"
-              >Sign out</a>
+                >Sign out</a
+              >
             </li>
           </ul>
         </div>
@@ -102,8 +103,8 @@
           class="flex flex-col font-medium p-4 md:p-0 mt-4 border border-gray-100 rounded-lg bg-gray-50 md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700"
         >
           <li>
-            <a
-              href="#"
+            <router-link
+              to="/"
               class="block py-2 px-3 rounded"
               :class="{
                 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500':
@@ -112,12 +113,12 @@
                   !isActive('home'),
               }"
               aria-current="page"
-              @click.prevent="navigateTo('home')"
-            >Accueil</a>
+              >Accueil</router-link
+            >
           </li>
           <li>
-            <a
-              href="#"
+            <router-link
+              to="/times"
               class="block py-2 px-3 rounded"
               :class="{
                 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500':
@@ -125,8 +126,8 @@
                 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700':
                   !isActive('times'),
               }"
-              @click.prevent="navigateTo('times')"
-            >Mes temps</a>
+              >Mes temps</router-link
+            >
           </li>
         </ul>
       </div>
@@ -143,8 +144,8 @@ import {
   computed,
   getCurrentInstance,
 } from 'vue';
-import { useRouter } from 'vue-router';
 import { useAuthenticateStore } from '../../app/store/store';
+import router from '../../app/router/router';
 
 export default defineComponent({
   name: 'NavBarComponent',
@@ -152,7 +153,6 @@ export default defineComponent({
     const store = useAuthenticateStore();
     const isDropdownOpen = ref(false);
     const instance = getCurrentInstance();
-    const router = useRouter();
 
     const toggleUserDropdown = (e: MouseEvent) => {
       e.stopPropagation();
@@ -163,30 +163,12 @@ export default defineComponent({
       isDropdownOpen.value = false;
     };
 
-    const navigateTo = async (page: string) => {
-      if (page === 'home') {
-        const userId = store.user?.id;
-        if (userId) {
-          await router.push(`/users/${userId}`);
-        } else {
-          console.log('User ID not found, redirecting to login');
-          await router.push('/login');
-        }
-      } else if (page === 'times') {
-        await router.push('/times');
-      }
-    };
-
     const isActive = (page: string) => {
       const currentPath = window.location.pathname;
       return (
         (page === 'home' && currentPath === '/') ||
         (page === 'times' && currentPath === '/times')
       );
-    };
-
-    const goToSettings = () => {
-      console.log('Navigating to Settings');
     };
 
     const logout = async () => {
@@ -223,9 +205,7 @@ export default defineComponent({
     return {
       isDropdownOpen,
       toggleUserDropdown,
-      navigateTo,
       isActive,
-      goToSettings,
       logout,
       stopPropagation,
       user,
