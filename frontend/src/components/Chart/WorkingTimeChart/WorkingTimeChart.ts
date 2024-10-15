@@ -1,44 +1,10 @@
-<template>
-  <div class="w-full">
-    <div class="flex justify-between mb-4">
-      <select
-        v-model="selectedPeriod"
-        @change="fetchData"
-      >
-        <option value="yearly">
-          Année
-        </option>
-        <option value="weekly">
-          Hebdomadaire
-        </option>
-        <option value="monthly">
-          Mensuel
-        </option>
-      </select>
-    </div>
-    <BaseLineChart
-      v-if="!loading && chartData"
-      :data="chartData"
-      :options="chartOptions"
-      class="w-full"
-    />
-    <p v-if="loading">
-      Chargement...
-    </p>
-    <p v-if="error">
-      {{ error }}
-    </p>
-  </div>
-</template>
-
-<script lang="ts">
 import { defineComponent, ref, onMounted, computed } from 'vue';
 import {
   useAuthenticateStore,
   useWorkingTimesStore,
-} from '../../app/store/store';
+} from '../../../app/store/store';
 import { ChartData, ChartOptions } from 'chart.js';
-import BaseLineChart from './BaseLineChart/BaseLineChart.vue';
+import BaseLineChart from '../BaseLineChart/BaseLineChart.vue';
 
 export default defineComponent({
   name: 'WorkingTimeChart',
@@ -150,6 +116,3 @@ export default defineComponent({
     };
   },
 });
-</script>
-
-<style scoped></style>
