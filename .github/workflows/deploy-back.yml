@@ -80,8 +80,7 @@ jobs:
           password: ${{ secrets.PASSWORD }}
           port: 22
           script: |
-            whoami
-            ls 
+            docker run -p 8080:8080 thjeveknc/vue-frontend:latest
       - name: kill vpn
         if: always()
         run: sudo killall openvpn
