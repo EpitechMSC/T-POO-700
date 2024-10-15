@@ -3,6 +3,8 @@
 # It is executed by running the following command:
 #     mix run priv/repo/seeds.exs
 #
+
+alias Hex.Repo
 alias TimeManager.Repo
 alias TimeManager.Accounts.User
 alias TimeManager.Clocks.Clock
@@ -41,6 +43,22 @@ time_slots = [
 
 # Mois et jours à générer
 months_slots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
+
+max_day_for_month = %{
+  1 => 31,
+  2 => 28,
+  3 => 31,
+  4 => 30,
+  5 => 31,
+  6 => 30,
+  7 => 31,
+  8 => 31,
+  9 => 30,
+  10 => 31,
+  11 => 30,
+  12 => 31
+}
+
 
 max_day_for_month = %{
   1 => 31,
