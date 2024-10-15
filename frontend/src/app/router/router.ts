@@ -6,7 +6,6 @@ import {
   RouteLocationNormalized,
   NavigationGuardNext,
 } from 'vue-router';
-import HomePageComponent from '../../pages/Home/HomePage.vue';
 import UserDashboard from '../../pages/User/UserDashboard.vue';
 import { useAuthenticateStore } from '../store/store';
 
@@ -16,7 +15,6 @@ interface RouteMeta {
 
 const routes: Array<RouteRecordRaw> = [
   { path: '/', redirect: '/login' },
-  { path: '/home', name: 'Home', component: HomePageComponent },
   {
     path: '/users/:id',
     name: 'User',
