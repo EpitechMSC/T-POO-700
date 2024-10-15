@@ -43,7 +43,22 @@ time_slots = [
 
 # Mois et jours à générer
 months_slots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-max_day_for_month = %{1 => 31, 2 => 28, 3 => 31, 4 => 30, 5 => 31, 6 => 30, 7 => 31, 8 => 31, 9 => 30, 10 => 31, 11 => 30, 12 => 31}
+
+max_day_for_month = %{
+  1 => 31,
+  2 => 28,
+  3 => 31,
+  4 => 30,
+  5 => 31,
+  6 => 30,
+  7 => 31,
+  8 => 31,
+  9 => 30,
+  10 => 31,
+  11 => 30,
+  12 => 31
+}
+
 # Pour générer les jours d'un mois donné
 
 # Générer les horloges et les temps de travail
@@ -65,9 +80,13 @@ for user <- users do
             case NaiveDateTime.new(2024, month, day, end_hour, end_minute, seconds) do
               {:ok, end_date} ->
                 Repo.insert!(%Clock{time: end_date, status: false, user: user.id})
-                working_time = Repo.insert!(%WorkingTime{start: start_date, end: end_date, user: user.id})
 
-                IO.puts("Working time #{index} generated for #{user.username}-##{user.id} from #{start_date} to #{end_date}")
+                working_time =
+                  Repo.insert!(%WorkingTime{start: start_date, end: end_date, user: user.id})
+
+                IO.puts(
+                  "Working time #{index} generated for #{user.username}-##{user.id} from #{start_date} to #{end_date}"
+                )
 
               {:error, reason} ->
                 IO.puts("Failed to create end_date: #{reason}")
