@@ -9,11 +9,10 @@
           src="https://epitech.bj/wp-content/uploads/2020/03/EPI-LOGO-SIGNATURE-2018.png"
           class="h-8"
           alt="Epitech Logo"
-        />
+        >
         <span
           class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-          >Time Manager</span
-        >
+        >Time Manager</span>
       </router-link>
       <div
         class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative"
@@ -50,24 +49,23 @@
             }}</span>
             <span
               class="block text-sm text-gray-500 truncate dark:text-gray-400"
-              >{{ user?.email || 'Not logged in' }}</span
-            >
+            >{{ user?.email || 'Not logged in' }}</span>
           </div>
           <ul class="py-2">
             <li>
               <router-link
                 to="/users/settings"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
-                >Settings</router-link
               >
+                Settings
+              </router-link>
             </li>
             <li>
               <a
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 @click.prevent="logout"
-                >Sign out</a
-              >
+              >Sign out</a>
             </li>
           </ul>
         </div>
@@ -113,8 +111,9 @@
                   !isActive('home'),
               }"
               aria-current="page"
-              >Accueil</router-link
             >
+              Accueil
+            </router-link>
           </li>
           <li>
             <router-link
@@ -126,8 +125,9 @@
                 'text-gray-900 hover:bg-gray-100 md:hover:bg-transparent md:hover:text-blue-700 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-white md:dark:hover:bg-transparent dark:border-gray-700':
                   !isActive('times'),
               }"
-              >Mes temps</router-link
             >
+              Mes temps
+            </router-link>
           </li>
         </ul>
       </div>
