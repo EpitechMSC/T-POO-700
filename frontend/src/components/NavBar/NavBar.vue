@@ -106,7 +106,7 @@
         >
           <li>
             <router-link
-              to="/"
+              :to="`/users/${user?.id}`"
               class="block py-2 px-3 rounded"
               :class="{
                 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500':
