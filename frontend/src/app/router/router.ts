@@ -23,7 +23,7 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true },
   },
   {
-    path: '/users/settings',
+    path: '/users/:id/settings',
     name: 'Settings',
     component: SettingsPage,
     meta: { requiresAuth: true },
@@ -52,7 +52,18 @@ const beforeEachGuard: NavigationGuard = (
 ) => {
   const authenticateStore = useAuthenticateStore();
 
+  const user = authenticateStore.getUser;
+
   if (
+    authenticateStore.isAuthenticated &&
+    (to.name === 'Login' || to.name === 'Register')
+  ) {
+    if (user) {
+      next(`/users/${user.id}`);
+    } else {
+      next('/login');
+    }
+  } else if (
     to.matched.some(
       (record: { meta: RouteMeta }) => (record.meta as RouteMeta).requiresAuth
     )
