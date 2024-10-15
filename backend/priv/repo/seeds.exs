@@ -59,7 +59,6 @@ max_day_for_month = %{
   12 => 31
 }
 
-
 max_day_for_month = %{
   1 => 31,
   2 => 28,
