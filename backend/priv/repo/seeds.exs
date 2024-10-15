@@ -10,12 +10,21 @@ alias TimeManager.Repo
 alias TimeManager.Accounts.User
 alias TimeManager.Clocks.Clock
 alias TimeManager.Work.WorkingTime
+alias TimeManager.Signals.Signal
 
 # Delete all records
 
 Repo.delete_all(Clock)
 Repo.delete_all(WorkingTime)
 Repo.delete_all(User)
+Repo.delete_all(Signal)
+
+# Create Bat Signal
+
+_batSignal = Repo.insert!(%Signal{
+  name: "BatSignal",
+  status: false,
+})
 
 # Create users
 
