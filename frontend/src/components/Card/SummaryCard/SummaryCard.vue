@@ -1,15 +1,17 @@
 <template>
-  <section class="summary__grid">
+  <section class="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
     <div
       v-for="(card, index) in cards"
       :key="index"
-      class="app-card"
+      class="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md mb-5 h-full"
     >
-      <div :class="'card__icon card__icon--' + card.type">
-        <i
-          :class="card.icon"
-          style="font-size: 1.5rem"
-        />
+      <div
+        :class="[
+          'card__icon mx-4 rounded-xl overflow-hidden shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center',
+          cardIconClass(card.type),
+        ]"
+      >
+        <i :class="card.icon" style="font-size: 1.5rem" />
       </div>
       <div class="card__content">
         <p class="card__title">
@@ -19,8 +21,10 @@
           {{ card.amount }}
         </h4>
       </div>
-      <div class="card__footer">
-        <p class="card__footer-text">
+      <div class="border-t border-gray-50 p-4">
+        <p
+          class="block antialiased font-sans text-base leading-relaxed font-normal text-gray-500"
+        >
           <strong :class="card.isPositive ? 'text-green-500' : 'text-red-500'">
             {{ card.percentageChange }}
           </strong>
@@ -33,18 +37,21 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useAuthenticateStore } from '../../../app/store/store';
 import { useWorkingTimesStore } from '../../../app/store/store';
 
 export default defineComponent({
   name: 'SummaryCard',
   setup() {
-    const route = useRoute();
+    const authenticateStore = useAuthenticateStore();
     const workingTimesStore = useWorkingTimesStore();
-    const userId = route.params.id as string;
+
+    const userId = computed(() => authenticateStore.user?.id);
 
     const fetchUserData = async () => {
-      await workingTimesStore.fetchWorkingTimeStats(userId);
+      if (userId.value) {
+        await workingTimesStore.fetchWorkingTimeStats(userId.value);
+      }
     };
 
     onMounted(fetchUserData);
@@ -138,60 +145,25 @@ export default defineComponent({
       ];
     });
 
+    const cardIconClass = (type: string) => {
+      switch (type) {
+        case 'worked_today':
+          return 'bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-500/40';
+        case 'clocked':
+          return 'bg-gradient-to-tr from-pink-600 to-pink-400 text-white shadow-pink-500/40';
+        case 'working_times':
+          return 'bg-gradient-to-tr from-green-600 to-green-400 text-white shadow-green-500/40';
+        case 'worked_week':
+          return 'bg-gradient-to-tr from-orange-600 to-orange-400 text-white shadow-orange-500/40';
+        default:
+          return '';
+      }
+    };
+
     return {
       cards,
+      cardIconClass,
     };
   },
 });
 </script>
-
-<style scoped>
-.summary__grid {
-  @apply mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4;
-}
-
-.app-card {
-  @apply relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md mb-5 h-full;
-}
-
-/* Card */
-.card__icon {
-  @apply bg-clip-border mx-4 rounded-xl overflow-hidden shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center;
-}
-
-.card__icon--worked_today {
-  @apply bg-gradient-to-tr from-blue-600 to-blue-400 text-white shadow-blue-500/40;
-}
-
-.card__icon--clocked {
-  @apply bg-gradient-to-tr from-pink-600 to-pink-400 text-white shadow-pink-500/40;
-}
-
-.card__icon--working_times {
-  @apply bg-gradient-to-tr from-green-600 to-green-400 text-white shadow-green-500/40;
-}
-
-.card__icon--worked_week {
-  @apply bg-gradient-to-tr from-orange-600 to-orange-400 text-white shadow-orange-500/40;
-}
-
-.card__content {
-  @apply p-4 text-right;
-}
-
-.card__title {
-  @apply block antialiased font-sans text-sm leading-normal font-normal text-gray-500;
-}
-
-.card__amount {
-  @apply block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-gray-900;
-}
-
-.card__footer {
-  @apply border-t border-gray-50 p-4;
-}
-
-.card__footer-text {
-  @apply block antialiased font-sans text-base leading-relaxed font-normal text-gray-500;
-}
-</style>
