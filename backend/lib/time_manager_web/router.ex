@@ -15,6 +15,8 @@ defmodule TimeManagerWeb.Router do
     post "/login", UserController, :login
     post "/users", UserController, :create
 
+    resources "/signal", SignalController, except: [:new, :delete]
+
     pipe_through :authenticate
 
     get "/users/me", UserController, :me
