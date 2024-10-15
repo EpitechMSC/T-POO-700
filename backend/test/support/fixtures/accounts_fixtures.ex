@@ -28,10 +28,13 @@ defmodule TimeManager.AccountsFixtures do
   Generate a user token.
   """
   def user_token_fixture(user) do
-    case JWT.generate_and_sign(%{
-      "user_id" => user.id,
-      "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
-    }, JWT.signer()) do
+    case JWT.generate_and_sign(
+           %{
+             "user_id" => user.id,
+             "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
+           },
+           JWT.signer()
+         ) do
       {:ok, token, _claims} -> token
       {:error, reason} -> raise "Failed to generate token: #{inspect(reason)}"
     end

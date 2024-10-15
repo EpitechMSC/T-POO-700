@@ -11,6 +11,7 @@ defmodule TimeManagerWeb.UserController do
     case Accounts.list_users() do
       {:ok, %Response{} = response} ->
         json(conn, response)
+
       {:error, reason} ->
         conn
         |> put_status(:bad_request)
@@ -43,7 +44,6 @@ defmodule TimeManagerWeb.UserController do
     |> json(%{error: "Email parameter is required"})
     |> halt()
   end
-
 
   def me(conn, _params) do
     user_id = conn.assigns[:current_user]
@@ -92,6 +92,7 @@ defmodule TimeManagerWeb.UserController do
     case Accounts.get_user(id) do
       {:ok, user} ->
         json(conn, user)
+
       {:error, :not_found} ->
         conn
         |> put_status(:not_found)
@@ -120,7 +121,6 @@ defmodule TimeManagerWeb.UserController do
     end
   end
 
-
   def delete(conn, %{"id" => id}) do
     case Accounts.get_user(id) do
       {:ok, user} ->
@@ -139,5 +139,4 @@ defmodule TimeManagerWeb.UserController do
         |> json(%{error: "User not found"})
     end
   end
-
 end

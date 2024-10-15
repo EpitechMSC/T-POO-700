@@ -29,16 +29,16 @@ defmodule TimeManager.Work do
 
     total_pages = div(total_count + page_size - 1, page_size)
 
-    {:ok, %TimeManagerWeb.Response{
-      data: workingtimes,
-      pagination: %{
-        total_pages: total_pages,
-        current_page: page,
-        page_size: page_size,
-      },
-    }}
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: workingtimes,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
-
 
   @doc """
   Gets a single working_time.
@@ -70,18 +70,19 @@ defmodule TimeManager.Work do
         |> offset(^((page - 1) * page_size))
         |> Repo.all()
 
-        total_pages = div(total_count + page_size - 1, page_size)
-        {:ok, %TimeManagerWeb.Response{
-          data: workingtimes,
-          pagination: %{
-            total_pages: total_pages,
-            current_page: page,
-            page_size: page_size,
-          },
-        }}
+      total_pages = div(total_count + page_size - 1, page_size)
+
+      {:ok,
+       %TimeManagerWeb.Response{
+         data: workingtimes,
+         pagination: %{
+           total_pages: total_pages,
+           current_page: page,
+           page_size: page_size
+         }
+       }}
     end
   end
-
 
   @doc """
   Creates a working_time.
@@ -148,7 +149,13 @@ defmodule TimeManager.Work do
     WorkingTime.changeset(working_time, attrs)
   end
 
-  def find_working_time_for_user_and_date_range(user_id, start_date, end_date \\ nil, page \\ 1, page_size \\ 10) do
+  def find_working_time_for_user_and_date_range(
+        user_id,
+        start_date,
+        end_date \\ nil,
+        page \\ 1,
+        page_size \\ 10
+      ) do
     cond do
       is_nil(user_id) or is_nil(start_date) ->
         {:error, :bad_request}
@@ -167,22 +174,27 @@ defmodule TimeManager.Work do
         total_pages = div(total_count + page_size - 1, page_size)
 
         case workingtimes do
-          [] -> {:error, :not_found}
+          [] ->
+            {:error, :not_found}
+
           works ->
-            {:ok, %TimeManagerWeb.Response{
-              data: works,
-              pagination: %{
-                total_pages: total_pages,
-                current_page: page,
-                page_size: page_size
-              }
-            }}
+            {:ok,
+             %TimeManagerWeb.Response{
+               data: works,
+               pagination: %{
+                 total_pages: total_pages,
+                 current_page: page,
+                 page_size: page_size
+               }
+             }}
         end
 
       true ->
         query =
           from w in WorkingTime,
-            where: w.user == ^user_id and w.start >= ^start_date and (is_nil(w.end) or w.end <= ^end_date),
+            where:
+              w.user == ^user_id and w.start >= ^start_date and
+                (is_nil(w.end) or w.end <= ^end_date),
             order_by: [asc: w.start],
             limit: ^page_size,
             offset: ^((page - 1) * page_size)
@@ -192,22 +204,22 @@ defmodule TimeManager.Work do
         total_pages = div(total_count + page_size - 1, page_size)
 
         case workingtimes do
-          [] -> {:error, :not_found}
+          [] ->
+            {:error, :not_found}
+
           works ->
-            {:ok, %TimeManagerWeb.Response{
-              data: works,
-              pagination: %{
-                total_pages: total_pages,
-                current_page: page,
-                page_size: page_size
-              }
-            }}
+            {:ok,
+             %TimeManagerWeb.Response{
+               data: works,
+               pagination: %{
+                 total_pages: total_pages,
+                 current_page: page,
+                 page_size: page_size
+               }
+             }}
         end
     end
   end
-
-
-
 
   def get_working_time_stats(user_id) do
     today = Date.utc_today()
@@ -217,30 +229,42 @@ defmodule TimeManager.Work do
     start_of_previous_month = Timex.shift(start_of_current_month, months: -1)
     end_of_previous_month = Timex.end_of_month(start_of_previous_month)
 
-    worked_today_query = from(w in WorkingTime,
-      where: w.user == ^user_id and fragment("?::date", w.start) == ^today and not is_nil(w.end),
-      select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
-    )
+    worked_today_query =
+      from(w in WorkingTime,
+        where:
+          w.user == ^user_id and fragment("?::date", w.start) == ^today and not is_nil(w.end),
+        select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
+      )
 
-    worked_this_week_query = from(w in WorkingTime,
-      where: w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_week and not is_nil(w.end),
-      select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
-    )
+    worked_this_week_query =
+      from(w in WorkingTime,
+        where:
+          w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_week and
+            not is_nil(w.end),
+        select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
+      )
 
-    total_days_worked_query = from(w in WorkingTime,
-      where: w.user == ^user_id and not is_nil(w.end),
-      select: count(fragment("DISTINCT ?::date", w.start))
-    )
+    total_days_worked_query =
+      from(w in WorkingTime,
+        where: w.user == ^user_id and not is_nil(w.end),
+        select: count(fragment("DISTINCT ?::date", w.start))
+      )
 
-    worked_this_month_query = from(w in WorkingTime,
-      where: w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_current_month and not is_nil(w.end),
-      select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
-    )
+    worked_this_month_query =
+      from(w in WorkingTime,
+        where:
+          w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_current_month and
+            not is_nil(w.end),
+        select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
+      )
 
-    worked_last_month_query = from(w in WorkingTime,
-      where: w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_previous_month and fragment("?::date", w.start) <= ^end_of_previous_month and not is_nil(w.end),
-      select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
-    )
+    worked_last_month_query =
+      from(w in WorkingTime,
+        where:
+          w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_previous_month and
+            fragment("?::date", w.start) <= ^end_of_previous_month and not is_nil(w.end),
+        select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
+      )
 
     worked_today = Repo.one(worked_today_query) || Decimal.new(0)
     worked_this_week = Repo.one(worked_this_week_query) || Decimal.new(0)
@@ -274,10 +298,13 @@ defmodule TimeManager.Work do
     today = Date.utc_today()
     {:ok, start_of_month} = Date.new(today.year, today.month, 1)
 
-    query = from(w in WorkingTime,
-      where: w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_month and fragment("?::date", w.start) <= ^today and not is_nil(w.end),
-      select: %{start: w.start, end: w.end}
-    )
+    query =
+      from(w in WorkingTime,
+        where:
+          w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_month and
+            fragment("?::date", w.start) <= ^today and not is_nil(w.end),
+        select: %{start: w.start, end: w.end}
+      )
 
     Repo.all(query)
   end
@@ -286,26 +313,29 @@ defmodule TimeManager.Work do
     today = Date.utc_today()
     {:ok, start_of_month} = Date.new(today.year, today.month, 1)
 
-    query = from(w in WorkingTime,
-      where: w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_month and not is_nil(w.end),
-      select: %{start: w.start, end: w.end}
-    )
+    query =
+      from(w in WorkingTime,
+        where:
+          w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_month and
+            not is_nil(w.end),
+        select: %{start: w.start, end: w.end}
+      )
 
     Repo.all(query)
   end
-
 
   def get_yearly_working_times(user_id) do
     today = Date.utc_today()
     {:ok, start_of_year} = Date.new(today.year, 1, 1)
 
-    query = from(w in WorkingTime,
-      where: w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_year and not is_nil(w.end),
-      select: %{start: w.start, end: w.end}
-    )
+    query =
+      from(w in WorkingTime,
+        where:
+          w.user == ^user_id and fragment("?::date", w.start) >= ^start_of_year and
+            not is_nil(w.end),
+        select: %{start: w.start, end: w.end}
+      )
 
     Repo.all(query)
   end
-
-
 end
