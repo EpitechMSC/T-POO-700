@@ -1,7 +1,5 @@
-// src/app/store/store.ts
-
 import { defineStore } from 'pinia';
-import { WorkingTime } from '../../models/workingTime';
+import { WorkingTime, WorkingTimeStats } from '../../models/workingTime';
 import agent from '../../api/agent';
 import {
   Pagination,
@@ -13,14 +11,7 @@ interface WorkingTimesState {
   workingTimes: WorkingTime[];
   currentWorkingTime: WorkingTime | null;
   workingTimesForList: WorkingTime[];
-  stats: {
-    worked_today: number;
-    worked_this_week: number;
-    total_days_worked: number;
-    worked_this_month: number;
-    worked_last_month: number;
-    percentage_change: number;
-  } | null;
+  stats: WorkingTimeStats | null;
   loading: boolean;
   error: string | null;
   pagination: Pagination | null;
@@ -39,9 +30,9 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
     pagingParams: new PagingParams(),
   }),
   getters: {
-    workingTimeCount: state => state.workingTimes.length,
+    workingTimeCount: (state): number => state.workingTimes.length,
     getWorkingTimeById: state => (id: number) =>
-      state.workingTimes.find(wt => wt.id === id),
+      state.workingTimes.find(wt => wt.id === id) || null,
   },
   actions: {
     toURLSearchParams(params: PagingParams): URLSearchParams {
@@ -85,8 +76,6 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
 
         this.workingTimesForList = response.data;
         this.pagination = response.pagination;
-
-        console.log(response);
       } catch (err: any) {
         this.error =
           err.message ||
@@ -100,7 +89,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.loading = true;
       this.error = null;
       try {
-        const response =
+        const response: WorkingTime[] =
           await agent.WorkingTimes.getUserWeeklyWorkingTimes(userId);
         this.workingTimes = response;
       } catch (err: any) {
@@ -116,7 +105,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.loading = true;
       this.error = null;
       try {
-        const response =
+        const response: WorkingTime[] =
           await agent.WorkingTimes.getUserMonthlyWorkingTimes(userId);
         this.workingTimes = response;
       } catch (err: any) {
@@ -132,7 +121,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.loading = true;
       this.error = null;
       try {
-        const response =
+        const response: WorkingTime[] =
           await agent.WorkingTimes.getUserYearlyWorkingTimes(userId);
         this.workingTimes = response;
       } catch (err: any) {
@@ -148,7 +137,7 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.loading = true;
       this.error = null;
       try {
-        const response =
+        const response: WorkingTimeStats =
           await agent.WorkingTimes.getUserWorkingTimeStats(userId);
         this.stats = response;
       } catch (err: any) {
@@ -164,7 +153,8 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await agent.WorkingTimes.create(workingTime);
+        const response: WorkingTime =
+          await agent.WorkingTimes.create(workingTime);
         this.workingTimes.push(response);
       } catch (err: any) {
         this.error =
@@ -181,7 +171,10 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await agent.WorkingTimes.update(id, workingTime);
+        const response: WorkingTime = await agent.WorkingTimes.update(
+          id,
+          workingTime
+        );
         const index = this.workingTimes.findIndex(wt => wt.id === id);
         if (index !== -1) {
           this.workingTimes[index] = response;
@@ -212,10 +205,8 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await agent.WorkingTimes.getUserWorkingTime(
-          userID,
-          id
-        );
+        const response: WorkingTime =
+          await agent.WorkingTimes.getUserWorkingTime(userID, id);
         this.currentWorkingTime = response;
       } catch (err: any) {
         this.error =
@@ -226,15 +217,14 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       }
     },
 
-    // Actions pour changer la page et la taille de la page
     setPage(page: number): void {
       this.pagingParams.pageNumber = page;
-      this.fetchWorkingTimes(); // ou fetchWorkingTimesByUserId selon le contexte
+      this.fetchWorkingTimes();
     },
 
     setPageSize(pageSize: number): void {
       this.pagingParams.pageSize = pageSize;
-      this.fetchWorkingTimes(); // ou fetchWorkingTimesByUserId selon le contexte
+      this.fetchWorkingTimes();
     },
   },
 });

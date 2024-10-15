@@ -1,11 +1,18 @@
 import { defineStore } from 'pinia';
 import { Clock } from '../../models/clock';
 import agent from '../../api/agent';
+import {
+  Pagination,
+  PagingParams,
+  PaginatedResult,
+} from '../../models/pagination';
 
 interface ClocksState {
   clocks: Clock[];
   loading: boolean;
   error: string | null;
+  pagination: Pagination | null;
+  pagingParams: PagingParams;
 }
 
 export const useClocksStore = defineStore('clocks', {
@@ -13,6 +20,8 @@ export const useClocksStore = defineStore('clocks', {
     clocks: [],
     loading: false,
     error: null,
+    pagination: null,
+    pagingParams: new PagingParams(),
   }),
   getters: {
     clockCount: state => state.clocks.length,
@@ -22,8 +31,14 @@ export const useClocksStore = defineStore('clocks', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await agent.Clocks.list();
+        const params = new URLSearchParams();
+        params.append('page', this.pagingParams.pageNumber.toString());
+        params.append('pageSize', this.pagingParams.pageSize.toString());
+
+        const response: PaginatedResult<Clock[]> =
+          await agent.Clocks.list(params);
         this.clocks = response.data;
+        this.pagination = response.pagination;
       } catch (err: any) {
         this.error =
           err.message || 'Erreur lors de la récupération des horloges';
@@ -37,7 +52,7 @@ export const useClocksStore = defineStore('clocks', {
       this.error = null;
       try {
         const response = await agent.Clocks.create(clock);
-        this.clocks.push(response.data);
+        this.clocks.push(response);
       } catch (err: any) {
         this.error = err.message || "Erreur lors de la création de l'horloge";
       } finally {
@@ -52,7 +67,7 @@ export const useClocksStore = defineStore('clocks', {
         const response = await agent.Clocks.update(id, clock);
         const index = this.clocks.findIndex(c => c.id === id);
         if (index !== -1) {
-          this.clocks[index] = response.data;
+          this.clocks[index] = response;
         }
       } catch (err: any) {
         this.error =
@@ -74,6 +89,16 @@ export const useClocksStore = defineStore('clocks', {
       } finally {
         this.loading = false;
       }
+    },
+
+    setPage(page: number): void {
+      this.pagingParams.pageNumber = page;
+      this.fetchClocks();
+    },
+
+    setPageSize(pageSize: number): void {
+      this.pagingParams.pageSize = pageSize;
+      this.fetchClocks();
     },
   },
 });

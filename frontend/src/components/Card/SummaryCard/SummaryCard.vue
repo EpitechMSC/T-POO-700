@@ -1,12 +1,23 @@
 <template>
   <section class="summary__grid">
-    <div v-for="(card, index) in cards" :key="index" class="app-card">
+    <div
+      v-for="(card, index) in cards"
+      :key="index"
+      class="app-card"
+    >
       <div :class="'card__icon card__icon--' + card.type">
-        <i :class="card.icon" style="font-size: 1.5rem"></i>
+        <i
+          :class="card.icon"
+          style="font-size: 1.5rem"
+        />
       </div>
       <div class="card__content">
-        <p class="card__title">{{ card.title }}</p>
-        <h4 class="card__amount">{{ card.amount }}</h4>
+        <p class="card__title">
+          {{ card.title }}
+        </p>
+        <h4 class="card__amount">
+          {{ card.amount }}
+        </h4>
       </div>
       <div class="card__footer">
         <p class="card__footer-text">

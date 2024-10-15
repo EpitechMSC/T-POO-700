@@ -1,57 +1,40 @@
 <template>
   <div class="w-full">
     <div class="flex justify-between mb-4">
-      <select v-model="selectedPeriod" @change="fetchData">
+      <select
+        v-model="selectedPeriod"
+        @change="fetchData"
+        class="p-2 border rounded"
+      >
         <option value="yearly">Année</option>
         <option value="weekly">Hebdomadaire</option>
         <option value="monthly">Mensuel</option>
       </select>
     </div>
-    <LineChart
+    <BaseLineChart
       v-if="!loading && chartData"
       :data="chartData"
       :options="chartOptions"
       class="w-full"
     />
-    <p v-if="loading">Chargement...</p>
-    <p v-if="error">{{ error }}</p>
+    <p v-if="loading" class="text-center">Chargement...</p>
+    <p v-if="error" class="text-center text-red-500">{{ error }}</p>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, computed } from 'vue';
-import { Line } from 'vue-chartjs';
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  Filler,
-  CategoryScale,
-  LinearScale,
-} from 'chart.js';
 import {
   useAuthenticateStore,
   useWorkingTimesStore,
 } from '../../app/store/store';
-
-ChartJS.register(
-  Title,
-  Tooltip,
-  Legend,
-  LineElement,
-  PointElement,
-  Filler,
-  CategoryScale,
-  LinearScale
-);
+import { ChartData, ChartOptions } from 'chart.js';
+import BaseLineChart from './BaseLineChart/BaseLineChart.vue';
 
 export default defineComponent({
   name: 'WorkingTimeChart',
   components: {
-    LineChart: Line,
+    BaseLineChart,
   },
   setup() {
     const workingTimesStore = useWorkingTimesStore();
@@ -92,7 +75,7 @@ export default defineComponent({
 
     onMounted(fetchData);
 
-    const chartData = computed(() => {
+    const chartData = computed<ChartData<'line', number[], unknown>>(() => {
       const labels = workingTimesStore.workingTimes.map(wt => {
         const startDate = new Date(wt.start);
         return startDate.toLocaleDateString();
@@ -120,14 +103,33 @@ export default defineComponent({
       };
     });
 
-    const chartOptions = {
+    const chartOptions = computed<ChartOptions<'line'>>(() => ({
       responsive: true,
+      plugins: {
+        legend: {
+          position: 'top' as const,
+        },
+        title: {
+          display: true,
+          text: 'Heures de Travail',
+        },
+      },
       scales: {
         y: {
           beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Heures',
+          },
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Date',
+          },
         },
       },
-    };
+    }));
 
     return {
       loading,

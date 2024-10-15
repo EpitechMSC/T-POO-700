@@ -7,10 +7,22 @@
 
     <!-- ------------------Top Content Components----------------- -->
     <div class="flex w-full justify-around">
-      <CardComponent data="4:20" text="Worked today" />
-      <CardComponent data="3438" text="Number of clocked" />
-      <CardComponent data="1719" text="Working times" />
-      <CardComponent data="124:20" text="Worked this week" />
+      <CardComponent
+        data="4:20"
+        text="Worked today"
+      />
+      <CardComponent
+        data="3438"
+        text="Number of clocked"
+      />
+      <CardComponent
+        data="1719"
+        text="Working times"
+      />
+      <CardComponent
+        data="124:20"
+        text="Worked this week"
+      />
     </div>
 
     <!-- ------------------Content Components----------------- -->

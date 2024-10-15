@@ -42,14 +42,18 @@
               v-if="header !== 'id'"
               v-model="editedData[rowIndex][header]"
               class="w-full px-2 py-1 border border-gray-300 rounded"
-            />
+            >
             <!-- Display value without input for id -->
             <div v-else>
               {{ item[header] }}
             </div>
           </div>
           <div v-else>
-            <slot name="customCell" :item="item" :field="header">
+            <slot
+              name="customCell"
+              :item="item"
+              :field="header"
+            >
               {{ formatValue(item[header]) }}
             </slot>
           </div>
@@ -59,8 +63,8 @@
           <div class="relative">
             <button
               v-if="!isEditing(rowIndex)"
-              @click="toggleMenu(rowIndex)"
               class="text-gray-500 hover:text-gray-700"
+              @click="toggleMenu(rowIndex)"
             >
               <!-- Option Icon -->
               <svg
@@ -78,11 +82,14 @@
                 />
               </svg>
             </button>
-            <div v-if="isEditing(rowIndex)" class="flex space-x-2">
+            <div
+              v-if="isEditing(rowIndex)"
+              class="flex space-x-2"
+            >
               <!-- validation and canceled buttons -->
               <button
-                @click="saveEdit(rowIndex, item)"
                 class="text-green-600 hover:text-green-800"
+                @click="saveEdit(rowIndex, item)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -98,8 +105,8 @@
                 </svg>
               </button>
               <button
-                @click="cancelEdit(rowIndex)"
                 class="text-red-600 hover:text-red-800"
+                @click="cancelEdit(rowIndex)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -123,14 +130,14 @@
             >
               <ul>
                 <li
-                  @click="startEditing(rowIndex, item)"
                   class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="startEditing(rowIndex, item)"
                 >
                   Modifier
                 </li>
                 <li
-                  @click="deleteItem(item)"
                   class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="deleteItem(item)"
                 >
                   Supprimer
                 </li>
