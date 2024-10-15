@@ -1,4 +1,4 @@
-:8080 {
+gotham.exploded.dev {
 	root * /var/www/frontend
 	try_files {path} /index.html
 	
