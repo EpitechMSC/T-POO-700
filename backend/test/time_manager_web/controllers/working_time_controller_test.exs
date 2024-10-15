@@ -42,6 +42,7 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
 
       conn =
         post(conn, ~p"/api/workingtimes", working_time: Map.put(@create_attrs, :user_id, user.id))
+
       conn =
         post(conn, ~p"/api/workingtimes", working_time: Map.put(@create_attrs, :user_id, user.id))
 
@@ -78,68 +79,69 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       conn: conn,
       working_time: %WorkingTime{id: id} = working_time
     } do
-    test "renders working_time when data is valid", %{
-      conn: conn,
-      working_time: %WorkingTime{id: id} = working_time
-    } do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      test "renders working_time when data is valid", %{
+        conn: conn,
+        working_time: %WorkingTime{id: id} = working_time
+      } do
+        user = user_fixture()
+        token = user_token_fixture(user)
 
-      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+        conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
-      conn =
-        put(conn, ~p"/api/workingtimes/#{working_time.id}",
-          working_time: Map.put(@update_attrs, :user_id, user.id)
-        )
+        conn =
+          put(conn, ~p"/api/workingtimes/#{working_time.id}",
+            working_time: Map.put(@update_attrs, :user_id, user.id)
+          )
 
-      conn =
-        put(conn, ~p"/api/workingtimes/#{working_time.id}",
-          working_time: Map.put(@update_attrs, :user_id, user.id)
-        )
+        conn =
+          put(conn, ~p"/api/workingtimes/#{working_time.id}",
+            working_time: Map.put(@update_attrs, :user_id, user.id)
+          )
 
-      assert %{"id" => ^id} = json_response(conn, 200)
+        assert %{"id" => ^id} = json_response(conn, 200)
 
-      conn = get(conn, ~p"/api/workingtimes/#{id}")
+        conn = get(conn, ~p"/api/workingtimes/#{id}")
 
-      assert %{
-               "id" => ^id,
-               "end" => "2024-10-08T07:47:00",
-               "start" => "2024-10-08T07:47:00"
-             } = json_response(conn, 200)
-    end
+        assert %{
+                 "id" => ^id,
+                 "end" => "2024-10-08T07:47:00",
+                 "start" => "2024-10-08T07:47:00"
+               } = json_response(conn, 200)
+      end
 
-    test "renders errors when data is invalid", %{conn: conn, working_time: working_time} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      test "renders errors when data is invalid", %{conn: conn, working_time: working_time} do
+        user = user_fixture()
+        token = user_token_fixture(user)
 
-      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+        conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
-      conn = put(conn, ~p"/api/workingtimes/#{working_time.id}", working_time: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
-
-  describe "delete working_time" do
-    setup [:create_working_time]
-
-    test "deletes chosen working_time", %{conn: conn, working_time: working_time} do
-      user = user_fixture()
-      token = user_token_fixture(user)
-
-      conn = put_req_header(conn, "authorization", "Bearer #{token}")
-
-      conn = delete(conn, ~p"/api/workingtimes/#{working_time.id}")
-      assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, ~p"/api/workingtimes/#{working_time.id}")
+        conn = put(conn, ~p"/api/workingtimes/#{working_time.id}", working_time: @invalid_attrs)
+        assert json_response(conn, 422)["errors"] != %{}
       end
     end
-  end
 
-  defp create_working_time(_) do
-    user = user_fixture()
-    working_time = working_time_fixture(user_id: user.id)
-    %{working_time: working_time}
+    describe "delete working_time" do
+      setup [:create_working_time]
+
+      test "deletes chosen working_time", %{conn: conn, working_time: working_time} do
+        user = user_fixture()
+        token = user_token_fixture(user)
+
+        conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+        conn = delete(conn, ~p"/api/workingtimes/#{working_time.id}")
+        assert response(conn, 204)
+
+        assert_error_sent 404, fn ->
+          get(conn, ~p"/api/workingtimes/#{working_time.id}")
+        end
+      end
+    end
+
+    defp create_working_time(_) do
+      user = user_fixture()
+      working_time = working_time_fixture(user_id: user.id)
+      %{working_time: working_time}
+    end
   end
 end
