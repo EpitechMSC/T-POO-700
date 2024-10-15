@@ -27,9 +27,10 @@ defmodule TimeManagerWeb.UserControllerTest do
       response_data = json_response(conn, 200)["data"]
 
       assert length(response_data) > 0
+
       assert Enum.all?(response_data, fn user ->
-        Map.has_key?(user, "id") and Map.has_key?(user, "username")
-      end)
+               Map.has_key?(user, "id") and Map.has_key?(user, "username")
+             end)
     end
   end
 
@@ -43,10 +44,13 @@ defmodule TimeManagerWeb.UserControllerTest do
       username = "user_#{:rand.uniform(1000)}"
       email = "user_#{:rand.uniform(1000)}@gmail.com"
 
-      conn = post(conn, ~p"/api/users", user: %{
-        username: username,
-        email: email
-      })
+      conn =
+        post(conn, ~p"/api/users",
+          user: %{
+            username: username,
+            email: email
+          }
+        )
 
       assert %{"id" => id, "username" => ^username, "email" => ^email} = json_response(conn, 201)
 
@@ -74,15 +78,22 @@ defmodule TimeManagerWeb.UserControllerTest do
       new_email = "user.test@axel.axel"
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
-      conn = put(conn, ~p"/api/users/#{id}", user: %{
-        username: new_username,
-        email: new_email
-      })
 
-      assert %{"id" => ^id, "username" => ^new_username, "email" => ^new_email} = json_response(conn, 200)
+      conn =
+        put(conn, ~p"/api/users/#{id}",
+          user: %{
+            username: new_username,
+            email: new_email
+          }
+        )
+
+      assert %{"id" => ^id, "username" => ^new_username, "email" => ^new_email} =
+               json_response(conn, 200)
 
       conn = get(conn, ~p"/api/users/#{id}")
-      assert %{"id" => ^id, "username" => ^new_username, "email" => ^new_email} = json_response(conn, 200)
+
+      assert %{"id" => ^id, "username" => ^new_username, "email" => ^new_email} =
+               json_response(conn, 200)
     end
 
     test "returns not found when user does not exist", %{conn: conn} do
@@ -91,10 +102,15 @@ defmodule TimeManagerWeb.UserControllerTest do
       token = user_token_fixture(user)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
-      conn = put(conn, ~p"/api/users/#{fake_user_id}", user: %{
-        username: "user_#{:rand.uniform(1000)}",
-        email: "user_#{:rand.uniform(1000)}@gmail.com"
-      })
+
+      conn =
+        put(conn, ~p"/api/users/#{fake_user_id}",
+          user: %{
+            username: "user_#{:rand.uniform(1000)}",
+            email: "user_#{:rand.uniform(1000)}@gmail.com"
+          }
+        )
+
       assert json_response(conn, 404)["error"] == "User not found"
     end
   end
@@ -133,7 +149,10 @@ defmodule TimeManagerWeb.UserControllerTest do
       conn = get(conn, ~p"/api/users/search?email=john")
 
       response_data = json_response(conn, 200)
-      assert response_data == [%{"id" => user1.id, "username" => "john_doe", "email" => "john@example.com"}]
+
+      assert response_data == [
+               %{"id" => user1.id, "username" => "john_doe", "email" => "john@example.com"}
+             ]
     end
 
     test "returns users matching the username", %{conn: conn, user2: user2} do
@@ -143,7 +162,10 @@ defmodule TimeManagerWeb.UserControllerTest do
       conn = get(conn, ~p"/api/users/search?username=jane")
 
       response_data = json_response(conn, 200)
-      assert response_data == [%{"id" => user2.id, "username" => "jane_doe", "email" => "jane@example.com"}]
+
+      assert response_data == [
+               %{"id" => user2.id, "username" => "jane_doe", "email" => "jane@example.com"}
+             ]
     end
 
     test "returns error when both email and username are nil", %{conn: conn, user1: user1} do

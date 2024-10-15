@@ -29,7 +29,6 @@ config :cors_plug,
   headers: ["Authorization", "Content-Type"],
   max_age: 86400
 
-
 # Configures the mailer
 #
 # By default it uses the "Local" adapter which stores the emails

@@ -50,6 +50,11 @@
               :item="item"
               :field="header"
             >
+            <slot
+              name="customCell"
+              :item="item"
+              :field="header"
+            >
               {{ formatValue(item[header]) }}
             </slot>
           </div>
@@ -59,6 +64,7 @@
             <button
               v-if="!isEditing(rowIndex)"
               class="text-gray-500 hover:text-gray-700"
+              @click="toggleMenu(rowIndex)"
               @click="toggleMenu(rowIndex)"
             >
               <svg
@@ -100,6 +106,7 @@
               <button
                 class="text-red-600 hover:text-red-800"
                 @click="cancelEdit(rowIndex)"
+                @click="cancelEdit(rowIndex)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -123,11 +130,13 @@
                 <li
                   class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
                   @click="startEditing(rowIndex, item)"
+                  @click="startEditing(rowIndex, item)"
                 >
                   Modifier
                 </li>
                 <li
                   class="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                  @click="deleteItem(item)"
                   @click="deleteItem(item)"
                 >
                   Supprimer

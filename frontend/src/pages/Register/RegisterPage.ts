@@ -5,6 +5,10 @@ import { UserPayload } from '../../app/models/user';
 
 export default defineComponent({
   name: 'RegisterPage',
+  components: {
+    BaseInput,
+    BaseButton,
+  },
   setup() {
     const username = ref<string>('');
     const email = ref<string>('');

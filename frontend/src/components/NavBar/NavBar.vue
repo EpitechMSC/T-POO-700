@@ -3,18 +3,16 @@
     <div
       class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4"
     >
-      <a
-        href="/"
-        class="flex items-center space-x-3 rtl:space-x-reverse"
-      >
+      <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
         <img
           src="https://epitech.bj/wp-content/uploads/2020/03/EPI-LOGO-SIGNATURE-2018.png"
           class="h-8"
           alt="Epitech Logo"
-        >
+        />
         <span
           class="self-center text-2xl font-semibold whitespace-nowrap dark:text-white"
-        >Time Manager</span>
+          >Time Manager</span
+        >
       </a>
       <div
         class="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative"
@@ -22,7 +20,7 @@
         <button
           type="button"
           class="flex text-sm dark:bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
-          :aria-expanded="isDropdownOpen.toString()"
+          :aria-expanded="isDropdownOpen ? 'true' : 'false'"
           @click="toggleUserDropdown"
         >
           <span class="sr-only">Open user menu</span>
@@ -51,7 +49,8 @@
             }}</span>
             <span
               class="block text-sm text-gray-500 truncate dark:text-gray-400"
-            >{{ user?.email || 'Not logged in' }}</span>
+              >{{ user?.email || 'Not logged in' }}</span
+            >
           </div>
           <ul class="py-2">
             <li>
@@ -59,14 +58,16 @@
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 @click.prevent="goToSettings"
-              >Settings</a>
+                >Settings</a
+              >
             </li>
             <li>
               <a
                 href="#"
                 class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
                 @click.prevent="logout"
-              >Sign out</a>
+                >Sign out</a
+              >
             </li>
           </ul>
         </div>
@@ -113,7 +114,8 @@
               }"
               aria-current="page"
               @click.prevent="navigateTo('home')"
-            >Accueil</a>
+              >Accueil</a
+            >
           </li>
           <li>
             <a
@@ -126,7 +128,8 @@
                   !isActive('times'),
               }"
               @click.prevent="navigateTo('times')"
-            >Mes temps</a>
+              >Mes temps</a
+            >
           </li>
         </ul>
       </div>

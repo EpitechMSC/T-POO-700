@@ -40,7 +40,8 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
-      conn = post(conn, ~p"/api/workingtimes", working_time: Map.put(@create_attrs, :user_id, user.id))
+      conn =
+        post(conn, ~p"/api/workingtimes", working_time: Map.put(@create_attrs, :user_id, user.id))
 
       assert %{"id" => id} = json_response(conn, 201)
 
@@ -59,7 +60,9 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
-      conn = post(conn, ~p"/api/workingtimes", working_time: Map.put(@invalid_attrs, :user_id, user.id))
+      conn =
+        post(conn, ~p"/api/workingtimes", working_time: Map.put(@invalid_attrs, :user_id, user.id))
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -67,13 +70,20 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
   describe "update working_time" do
     setup [:create_working_time]
 
-    test "renders working_time when data is valid", %{conn: conn, working_time: %WorkingTime{id: id} = working_time} do
+    test "renders working_time when data is valid", %{
+      conn: conn,
+      working_time: %WorkingTime{id: id} = working_time
+    } do
       user = user_fixture()
       token = user_token_fixture(user)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
-      conn = put(conn, ~p"/api/workingtimes/#{working_time.id}", working_time: Map.put(@update_attrs, :user_id, user.id))
+      conn =
+        put(conn, ~p"/api/workingtimes/#{working_time.id}",
+          working_time: Map.put(@update_attrs, :user_id, user.id)
+        )
+
       assert %{"id" => ^id} = json_response(conn, 200)
 
       conn = get(conn, ~p"/api/workingtimes/#{id}")
