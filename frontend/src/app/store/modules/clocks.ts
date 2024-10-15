@@ -39,9 +39,13 @@ export const useClocksStore = defineStore('clocks', {
           await agent.Clocks.list(params);
         this.clocks = response.data;
         this.pagination = response.pagination;
-      } catch (err: any) {
-        this.error =
-          err.message || 'Erreur lors de la récupération des horloges';
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message || 'Erreur lors de la récupération des horloges';
+        } else {
+          this.error = 'Erreur inconnue lors de la récupération des horloges';
+        }
       } finally {
         this.loading = false;
       }
@@ -53,8 +57,12 @@ export const useClocksStore = defineStore('clocks', {
       try {
         const response = await agent.Clocks.create(clock);
         this.clocks.push(response);
-      } catch (err: any) {
-        this.error = err.message || "Erreur lors de la création de l'horloge";
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error = err.message || "Erreur lors de la création de l'horloge";
+        } else {
+          this.error = "Erreur inconnue lors de la création de l'horloge";
+        }
       } finally {
         this.loading = false;
       }
@@ -69,9 +77,13 @@ export const useClocksStore = defineStore('clocks', {
         if (index !== -1) {
           this.clocks[index] = response;
         }
-      } catch (err: any) {
-        this.error =
-          err.message || "Erreur lors de la mise à jour de l'horloge";
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message || "Erreur lors de la mise à jour de l'horloge";
+        } else {
+          this.error = "Erreur inconnue lors de la mise à jour de l'horloge";
+        }
       } finally {
         this.loading = false;
       }
@@ -83,9 +95,13 @@ export const useClocksStore = defineStore('clocks', {
       try {
         await agent.Clocks.remove(id);
         this.clocks = this.clocks.filter(c => c.id !== id);
-      } catch (err: any) {
-        this.error =
-          err.message || "Erreur lors de la suppression de l'horloge";
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message || "Erreur lors de la suppression de l'horloge";
+        } else {
+          this.error = "Erreur inconnue lors de la suppression de l'horloge";
+        }
       } finally {
         this.loading = false;
       }

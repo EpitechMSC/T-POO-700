@@ -1,9 +1,21 @@
 <template>
   <div class="p-6 h-64">
-    <h1 class="text-2xl font-bold mb-4">Liste des horloges</h1>
+    <h1 class="text-2xl font-bold mb-4">
+      Liste des horloges
+    </h1>
 
-    <div v-if="loading" class="text-gray-500">Chargement...</div>
-    <div v-if="error" class="text-red-600">{{ error }}</div>
+    <div
+      v-if="loading"
+      class="text-gray-500"
+    >
+      Chargement...
+    </div>
+    <div
+      v-if="error"
+      class="text-red-600"
+    >
+      {{ error }}
+    </div>
 
     <div v-if="!loading && !error">
       <TableComponent
@@ -17,7 +29,9 @@
         v-else
         class="text-center text-gray-500 border border-gray-300 rounded p-4"
       >
-        <p class="text-lg">Aucune horloge trouvée.</p>
+        <p class="text-lg">
+          Aucune horloge trouvée.
+        </p>
       </div>
     </div>
   </div>
