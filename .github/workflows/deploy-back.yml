@@ -30,7 +30,7 @@ jobs:
           push: true
           tags: thjeveknc/phoenix-backend:latest
     
-    frontend-build:
+  frontend-build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
