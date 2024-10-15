@@ -6,7 +6,9 @@
       Bonjour, Gilbert
     </h1>
     <div class="clock flex items-center">
-      <p class="text-xl mr-2 w-20">{{ time }}</p>
+      <p class="text-xl mr-2 w-20">
+        {{ time }}
+      </p>
       <button
         class="bg-white p-2 rounded-lg w-14 h-14 flex justify-center items-center"
       >
@@ -28,7 +30,11 @@
           </g>
           <defs>
             <clipPath id="clip0_15_254">
-              <rect width="34" height="34" fill="white" />
+              <rect
+                width="34"
+                height="34"
+                fill="white"
+              />
             </clipPath>
           </defs>
         </svg>
