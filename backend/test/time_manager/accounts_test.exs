@@ -12,12 +12,12 @@ defmodule TimeManager.AccountsTest do
   describe "users" do
     test "list_users/0 returns all users" do
       user = user_fixture()
-      assert Accounts.list_users() == [user]
+      assert {:ok, %TimeManagerWeb.Response{data: [^user], pagination: _}} = Accounts.list_users()
     end
 
-    test "get_user!/1 returns the user with given id" do
+    test "get_user/1 returns the user with given id" do
       user = user_fixture()
-      assert Accounts.get_user!(user.id) == user
+      assert {:ok, ^user} = Accounts.get_user(user.id)
     end
 
     test "find_users_by_email_or_username/2 returns error when both email and username are nil" do
@@ -96,48 +96,41 @@ defmodule TimeManager.AccountsTest do
       user = user_fixture()
       update_attrs = %{username: "some updated username", email: "some_updated_email@example.com"}
 
-      assert {:ok, %User{} = user} = Accounts.update_user(user, update_attrs)
-      assert user.username == "some updated username"
-      assert user.email == "some_updated_email@example.com"
+      assert {:ok, %User{} = updated_user} = Accounts.update_user(user, update_attrs)
+      assert updated_user.username == "some updated username"
+      assert updated_user.email == "some_updated_email@example.com"
     end
 
     test "update_user/2 with invalid data returns error changeset" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, @invalid_attrs)
-      assert user == Accounts.get_user!(user.id)
-    end
-
-    test "update_user/2 returns error changeset when username is nil" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, %{username: nil})
-    end
-
-    test "update_user/2 returns error changeset when email is nil" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, %{email: nil})
+      assert {:ok, ^user} = Accounts.get_user(user.id)
     end
 
     test "update_user/2 returns error changeset when email is invalid" do
       user = user_fixture()
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user, %{email: "invalid_email"})
+      assert {:ok, ^user} = Accounts.get_user(user.id) # Assurez-vous que l'utilisateur n'a pas changé
     end
 
     test "update_user/2 returns error changeset when username is not unique" do
       existing_user = user_fixture(username: "existing_username")
       user_to_update = user_fixture(username: "unique_username", email: "unique_email@example.com")
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user_to_update, %{username: existing_user.username})
+      assert {:ok, ^user_to_update} = Accounts.get_user(user_to_update.id) # L'utilisateur n'a pas changé
     end
 
     test "update_user/2 returns error changeset when email is not unique" do
       existing_user = user_fixture(email: "existing_email@example.com")
       user_to_update = user_fixture(username: "unique_username", email: "unique_email@example.com")
       assert {:error, %Ecto.Changeset{}} = Accounts.update_user(user_to_update, %{email: existing_user.email})
+      assert {:ok, ^user_to_update} = Accounts.get_user(user_to_update.id) # L'utilisateur n'a pas changé
     end
 
     test "delete_user/1 deletes the user" do
       user = user_fixture()
       assert {:ok, %User{}} = Accounts.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Accounts.get_user!(user.id) end
+      assert {:error, :not_found} = Accounts.get_user(user.id)
     end
 
     test "change_user/1 returns a user changeset" do

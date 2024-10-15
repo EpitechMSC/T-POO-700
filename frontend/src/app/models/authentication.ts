@@ -1,8 +1,9 @@
 import { User } from './user';
 
-export interface AuthState {
-  token: string | null;
+export interface AuthenticateState {
   user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
 }
 
 export interface LoginResponse {

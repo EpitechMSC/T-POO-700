@@ -12,7 +12,7 @@ defmodule TimeManager.ClocksTest do
 
     test "list_clocks/0 returns all clocks" do
       clock = clock_fixture()
-      assert Clocks.list_clocks() == [clock]
+      assert {:ok, %TimeManagerWeb.Response{data: [^clock], pagination: _}} = Clocks.list_clocks()
     end
 
     test "get_clock!/1 returns the clock with given id" do

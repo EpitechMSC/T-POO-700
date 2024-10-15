@@ -1,6 +1,13 @@
+// src/app/store/usersStore.ts
+
 import { defineStore } from 'pinia';
-import { User } from '../../models/user';
+import { User, UserPayload } from '../../models/user';
 import agent from '../../api/agent';
+import {
+  Pagination,
+  PagingParams,
+  PaginatedResult,
+} from '../../models/pagination';
 
 interface UsersState {
   users: User[];
@@ -8,6 +15,8 @@ interface UsersState {
   loading: boolean;
   error: string | null;
   userSummary: any;
+  pagination: Pagination | null;
+  pagingParams: PagingParams;
 }
 
 export const useUsersStore = defineStore('users', {
@@ -17,6 +26,8 @@ export const useUsersStore = defineStore('users', {
     loading: false,
     error: null,
     userSummary: null,
+    pagination: null,
+    pagingParams: new PagingParams(),
   }),
   getters: {
     userCount: state => state.users.length,
@@ -26,33 +37,23 @@ export const useUsersStore = defineStore('users', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await agent.Users.searchByEmailOrUsername(
-          email,
-          username
-        );
+        const params = new URLSearchParams();
+        if (email) params.append('email', email);
+        if (username) params.append('username', username);
+        params.append('page', this.pagingParams.pageNumber.toString());
+        params.append('pageSize', this.pagingParams.pageSize.toString());
+
+        const response: PaginatedResult<User[]> =
+          await agent.Users.searchByEmailOrUsername(params);
         this.$patch({
           users: response.data,
+          pagination: response.pagination,
         });
       } catch (err: any) {
         this.$patch({
           error:
             err.message || 'Erreur lors de la récupération des utilisateurs',
         });
-      } finally {
-        this.loading = false;
-      }
-    },
-
-    async fetchSummaryByUserId(userId: number): Promise<void> {
-      this.loading = true;
-      this.error = null;
-      try {
-        const response = await agent.Users.getUserSummary(userId);
-        this.userSummary = response.data;
-      } catch (err: any) {
-        this.error =
-          err.message ||
-          `Erreur lors de la récupération du résumé pour l'utilisateur ${userId}`;
       } finally {
         this.loading = false;
       }
@@ -62,9 +63,15 @@ export const useUsersStore = defineStore('users', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await agent.Users.list();
+        const params = new URLSearchParams();
+        params.append('page', this.pagingParams.pageNumber.toString());
+        params.append('pageSize', this.pagingParams.pageSize.toString());
+
+        const response: PaginatedResult<User[]> =
+          await agent.Users.list(params);
         this.$patch({
           users: response.data,
+          pagination: response.pagination,
         });
       } catch (err: any) {
         this.$patch({
@@ -76,9 +83,10 @@ export const useUsersStore = defineStore('users', {
       }
     },
 
-    async createUser(user: User): Promise<void> {
+    async createUser(user: UserPayload): Promise<void> {
       this.loading = true;
       this.error = null;
+
       try {
         const response = await agent.Users.create(user);
         this.$patch({
@@ -120,7 +128,7 @@ export const useUsersStore = defineStore('users', {
         const index = this.users.findIndex(u => u.id === id);
         if (index !== -1) {
           this.$patch({
-            users: this.users.map(u => (u.id === id ? response : u)), // Utilisation de map pour une mise à jour immuable
+            users: this.users.map(u => (u.id === id ? response : u)),
           });
         }
       } catch (err: any) {
@@ -149,6 +157,16 @@ export const useUsersStore = defineStore('users', {
       } finally {
         this.loading = false;
       }
+    },
+
+    setPage(page: number): void {
+      this.pagingParams.pageNumber = page;
+      this.fetchAllUsers();
+    },
+
+    setPageSize(pageSize: number): void {
+      this.pagingParams.pageSize = pageSize;
+      this.fetchAllUsers();
     },
   },
 });
