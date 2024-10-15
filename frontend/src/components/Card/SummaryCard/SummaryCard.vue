@@ -11,13 +11,20 @@
           cardIconClass(card.type),
         ]"
       >
-        <i :class="card.icon" style="font-size: 1.5rem" />
+        <i
+          :class="card.icon"
+          style="font-size: 1.5rem"
+        />
       </div>
-      <div class="card__content">
-        <p class="card__title">
+      <div class="p-4 text-right">
+        <p
+          class="block antialiased font-sans text-sm leading-normal font-normal text-gray-500"
+        >
           {{ card.title }}
         </p>
-        <h4 class="card__amount">
+        <h4
+          class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-gray-900"
+        >
           {{ card.amount }}
         </h4>
       </div>

@@ -12,7 +12,7 @@ interface UsersState {
   currentUser: User | null;
   loading: boolean;
   error: string | null;
-  userSummary: unknown; // Replace 'any' with 'unknown' for safety; define a type if known
+  userSummary: unknown;
   pagination: Pagination | null;
   pagingParams: PagingParams;
 }

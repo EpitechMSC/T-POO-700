@@ -39,14 +39,22 @@
               v-if="header !== 'id'"
               v-model="editedData[rowIndex][header]"
               class="w-full px-2 py-1 border border-gray-300 rounded"
-            />
+            >
             <div v-else>
               {{ item[header] }}
             </div>
           </div>
           <div v-else>
-            <slot name="customCell" :item="item" :field="header">
-              <slot name="customCell" :item="item" :field="header">
+            <slot
+              name="customCell"
+              :item="item"
+              :field="header"
+            >
+              <slot
+                name="customCell"
+                :item="item"
+                :field="header"
+              >
                 {{ formatValue(item[header]) }}
               </slot>
             </slot>
@@ -74,7 +82,10 @@
                 />
               </svg>
             </button>
-            <div v-if="isEditing(rowIndex)" class="flex space-x-2">
+            <div
+              v-if="isEditing(rowIndex)"
+              class="flex space-x-2"
+            >
               <button
                 class="text-green-600 hover:text-green-800"
                 @click="saveEdit(rowIndex)"
