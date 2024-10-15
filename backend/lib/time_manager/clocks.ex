@@ -33,16 +33,16 @@ defmodule TimeManager.Clocks do
 
     total_pages = div(total_count + page_size - 1, page_size)
 
-    {:ok, %TimeManagerWeb.Response{
-      data: clocks,
-      pagination: %{
-        total_pages: total_pages,
-        current_page: page,
-        page_size: page_size,
-      }
-    }}
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: clocks,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
-
 
   @doc """
   Returns a list of clocks filtered by status with pagination.
@@ -71,16 +71,16 @@ defmodule TimeManager.Clocks do
 
     total_pages = div(total_count + page_size - 1, page_size)
 
-    {:ok, %TimeManagerWeb.Response{
-      data: clocks,
-      pagination: %{
-        total_pages: total_pages,
-        current_page: page,
-        page_size: page_size,
-      }
-    }}
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: clocks,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
-
 
   @doc """
   Returns a list of clocks filtered by a specific attribute with pagination.
@@ -109,16 +109,16 @@ defmodule TimeManager.Clocks do
 
     total_pages = div(total_count + page_size - 1, page_size)
 
-    {:ok, %TimeManagerWeb.Response{
-      data: clocks,
-      pagination: %{
-        total_pages: total_pages,
-        current_page: page,
-        page_size: page_size,
-      }
-    }}
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: clocks,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
-
 
   @doc """
   Gets a single clock.

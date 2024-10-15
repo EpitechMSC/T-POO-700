@@ -34,16 +34,16 @@ defmodule TimeManager.Accounts do
 
     total_pages = div(total_count + page_size - 1, page_size)
 
-    {:ok, %TimeManagerWeb.Response{
-      data: users,
-      pagination: %{
-        total_pages: total_pages,
-        current_page: page,
-        page_size: page_size,
-      }
-    }}
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: users,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
-
 
   def authenticate_by_email(email) do
     case Repo.get_by(User, email: email) do
@@ -51,16 +51,18 @@ defmodule TimeManager.Accounts do
         {:error, :invalid_credentials}
 
       user ->
-        case JWT.generate_and_sign(%{
-          "user_id" => user.id,
-          "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
-        }, JWT.signer()) do
+        case JWT.generate_and_sign(
+               %{
+                 "user_id" => user.id,
+                 "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
+               },
+               JWT.signer()
+             ) do
           {:ok, token, _claims} -> {:ok, token}
           {:error, reason} -> {:error, reason}
         end
     end
   end
-
 
   @doc """
   Finds users by partial email or username match.
@@ -72,27 +74,32 @@ defmodule TimeManager.Accounts do
   """
   def find_users_by_email_or_username(email, username) do
     cond do
-      is_nil(email) and is_nil(username) -> {:error, :bad_request}
+      is_nil(email) and is_nil(username) ->
+        {:error, :bad_request}
 
       not is_nil(email) and is_nil(username) ->
-        users = Repo.all(from u in User, where: ilike(u.email, ^("#{email}%")))
+        users = Repo.all(from u in User, where: ilike(u.email, ^"#{email}%"))
+
         case users do
           [] -> {:error, :not_found}
           _ -> {:ok, users}
         end
 
       is_nil(email) and not is_nil(username) ->
-        users = Repo.all(from u in User, where: ilike(u.username, ^("#{username}%")))
+        users = Repo.all(from u in User, where: ilike(u.username, ^"#{username}%"))
+
         case users do
           [] -> {:error, :not_found}
           _ -> {:ok, users}
         end
 
       not is_nil(email) and not is_nil(username) ->
-        users = Repo.all(
-          from u in User,
-          where: ilike(u.email, ^("#{email}%")) or ilike(u.username, ^("#{username}%"))
-        )
+        users =
+          Repo.all(
+            from u in User,
+              where: ilike(u.email, ^"#{email}%") or ilike(u.username, ^"#{username}%")
+          )
+
         case users do
           [] -> {:error, :not_found}
           _ -> {:ok, users}
