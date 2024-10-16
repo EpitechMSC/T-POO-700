@@ -81,6 +81,9 @@ jobs:
           port: 22
           script: |
             cd ~/gotham
+            docker compose down
+            docker system prune -af 
+            docker compose pull
             docker compose up -d
       - name: kill vpn
         if: always()
