@@ -21,17 +21,17 @@ defmodule TimeManagerWeb.SignalControllerTest do
 
   describe "index" do
     test "lists all signals", %{conn: conn} do
-      conn = get(conn, ~p"/api/signals")
+      conn = get(conn, ~p"/api/signal")
       assert json_response(conn, 200)["data"] == []
     end
   end
 
   describe "create signal" do
     test "renders signal when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/api/signals", signal: @create_attrs)
+      conn = post(conn, ~p"/api/signal", signal: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
-      conn = get(conn, ~p"/api/signals/#{id}")
+      conn = get(conn, ~p"/api/signal/#{id}")
 
       assert %{
                "id" => ^id,
@@ -41,7 +41,7 @@ defmodule TimeManagerWeb.SignalControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ~p"/api/signals", signal: @invalid_attrs)
+      conn = post(conn, ~p"/api/signal", signal: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -50,10 +50,10 @@ defmodule TimeManagerWeb.SignalControllerTest do
     setup [:create_signal]
 
     test "renders signal when data is valid", %{conn: conn, signal: %Signal{id: id} = signal} do
-      conn = put(conn, ~p"/api/signals/#{signal}", signal: @update_attrs)
+      conn = put(conn, ~p"/api/signal/#{signal}", signal: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
-      conn = get(conn, ~p"/api/signals/#{id}")
+      conn = get(conn, ~p"/api/signal/#{id}")
 
       assert %{
                "id" => ^id,
@@ -63,7 +63,7 @@ defmodule TimeManagerWeb.SignalControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, signal: signal} do
-      conn = put(conn, ~p"/api/signals/#{signal}", signal: @invalid_attrs)
+      conn = put(conn, ~p"/api/signal/#{signal}", signal: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -72,11 +72,11 @@ defmodule TimeManagerWeb.SignalControllerTest do
     setup [:create_signal]
 
     test "deletes chosen signal", %{conn: conn, signal: signal} do
-      conn = delete(conn, ~p"/api/signals/#{signal}")
+      conn = delete(conn, ~p"/api/signal/#{signal}")
       assert response(conn, 204)
 
       assert_error_sent 404, fn ->
-        get(conn, ~p"/api/signals/#{signal}")
+        get(conn, ~p"/api/signal/#{signal}")
       end
     end
   end
