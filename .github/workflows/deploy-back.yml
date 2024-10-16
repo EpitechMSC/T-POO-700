@@ -1,8 +1,8 @@
 name: remote ssh command to deploy
 on:
   push:
-    branches: [ 'master', 'feat/deploy']
-    
+    branches: [ 'main', 'feat/deployment']
+
 jobs:
   backend-build:
     runs-on: ubuntu-latest
