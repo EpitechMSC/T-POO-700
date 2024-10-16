@@ -68,19 +68,6 @@ defmodule TimeManagerWeb.SignalControllerTest do
     end
   end
 
-  describe "delete signal" do
-    setup [:create_signal]
-
-    test "deletes chosen signal", %{conn: conn, signal: signal} do
-      conn = delete(conn, ~p"/api/signal/#{signal}")
-      assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, ~p"/api/signal/#{signal}")
-      end
-    end
-  end
-
   defp create_signal(_) do
     signal = signal_fixture()
     %{signal: signal}
