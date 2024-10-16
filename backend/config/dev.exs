@@ -25,7 +25,6 @@ config :time_manager, TimeManagerWeb.Endpoint,
   debug_errors: true,
   secret_key_base: "jz9lJjC802eqy6Et0WhX0Ne/yDntpXtvffMz93mbsEcR2xfo/A3MihFYyCOhCNzI"
 
-
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed
