@@ -21,8 +21,8 @@ defmodule TimeManagerWeb.UserController do
 
   def login(conn, %{"email" => email}) do
     case Accounts.authenticate_by_email(email) do
-      {:ok, token} ->
-        json(conn, %{token: token})
+      {:ok, user} ->
+        json(conn, %{user: user})
 
       {:error, :invalid_credentials} ->
         conn
@@ -83,7 +83,6 @@ defmodule TimeManagerWeb.UserController do
     with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/users/#{user.id}")
       |> json(user)
     end
   end

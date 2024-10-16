@@ -51,16 +51,8 @@ defmodule TimeManager.Accounts do
         {:error, :invalid_credentials}
 
       user ->
-        case JWT.generate_and_sign(
-               %{
-                 "user_id" => user.id,
-                 "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
-               },
-               JWT.signer()
-             ) do
-          {:ok, token, _claims} -> {:ok, token}
-          {:error, reason} -> {:error, reason}
-        end
+        # Renvoie l'utilisateur au lieu du token
+        {:ok, user}
     end
   end
 

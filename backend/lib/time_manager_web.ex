@@ -41,16 +41,6 @@ defmodule TimeManagerWeb do
 
       import Plug.Conn
       import TimeManagerWeb.Gettext
-
-      unquote(verified_routes())
-    end
-  end
-
-  def verified_routes do
-    quote do
-      use Phoenix.VerifiedRoutes,
-        endpoint: TimeManagerWeb.Endpoint,
-        router: TimeManagerWeb.Router
     end
   end
 

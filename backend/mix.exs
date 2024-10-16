@@ -37,7 +37,6 @@ defmodule TimeManager.MixProject do
       {:ecto_sql, "~> 3.10"},
       {:postgrex, ">= 0.0.0"},
       {:timex, "~> 3.7"},
-      {:joken, "~> 2.0"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:cors_plug, "~> 3.0"},

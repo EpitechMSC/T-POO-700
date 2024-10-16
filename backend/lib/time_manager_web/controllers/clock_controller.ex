@@ -23,7 +23,6 @@ defmodule TimeManagerWeb.ClockController do
     with {:ok, %Clock{} = clock} <- Clocks.create_clock(clock_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/clocks/#{clock.id}")
       |> json(clock)
     end
   end

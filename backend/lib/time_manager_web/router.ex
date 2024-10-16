@@ -15,8 +15,6 @@ defmodule TimeManagerWeb.Router do
     post "/login", UserController, :login
     post "/users", UserController, :create
 
-    pipe_through :authenticate
-
     get "/users/me", UserController, :me
     get "/users/search", UserController, :search_by_email_or_username
     get "/workingtimes/stats/:id", WorkingTimeController, :stats
