@@ -15,7 +15,6 @@ defmodule TimeManagerWeb.SignalController do
     with {:ok, %Signal{} = signal} <- Signals.create_signal(signal_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/signals/#{signal}")
       |> render(:show, signal: signal)
     end
   end
