@@ -32,8 +32,12 @@
               :field="header"
               :row-index="rowIndex"
             >
-              <slot name="defaultCell" :item="item" :field="header">
-                {{ formatValue(item[header]) }}
+              <slot
+                name="defaultCell"
+                :item="item"
+                :field="header"
+              >
+                {{ formatValue(item[header as keyof WorkingTime]) }}
               </slot>
             </slot>
           </td>
@@ -43,8 +47,9 @@
             <div class="relative">
               <button
                 class="text-gray-500 hover:text-gray-700"
-                @click="toggleMenu(rowIndex)" <!-- Appel de la méthode toggleMenu -->
+                @click="toggleMenu(rowIndex)"
               >
+                >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -81,16 +86,16 @@
     <div class="flex justify-end mt-4 space-x-2">
       <button
         :disabled="currentPage === 1"
-        @click="currentPage--"
         class="px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+        @click="currentPage--"
       >
         Précédent
       </button>
       <span>Page {{ currentPage }} sur {{ totalPages }}</span>
       <button
         :disabled="currentPage === totalPages"
-        @click="currentPage++"
         class="px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+        @click="currentPage++"
       >
         Suivant
       </button>
@@ -100,19 +105,17 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-
-interface Item {
-  [key: string]: string | number | Date;
-}
+import { WorkingTime } from '../../app/models/workingTime';
 
 export default defineComponent({
+  name: 'TableComponent',
   props: {
     headers: {
-      type: Array as PropType<string[]>,
+      type: Array,
       required: true,
     },
     data: {
-      type: Array as PropType<Item[]>,
+      type: Array as PropType<WorkingTime[]>,
       required: true,
     },
     itemsPerPage: {
@@ -120,17 +123,18 @@ export default defineComponent({
       default: 5,
     },
   },
+  emits: ['delete-item'],
   data() {
     return {
       currentPage: 1,
-      activeRow: null as number | null, 
+      activeRow: null as number | null,
     };
   },
   computed: {
     totalPages(): number {
       return Math.ceil(this.data.length / this.itemsPerPage);
     },
-    paginatedData(): Item[] {
+    paginatedData(): WorkingTime[] {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       return this.data.slice(startIndex, startIndex + this.itemsPerPage);
     },
@@ -144,9 +148,11 @@ export default defineComponent({
       console.log("Suppression de l'élément :", this.data[rowIndex]);
       this.activeRow = null;
     },
-    formatValue(value: any): string {
-      const date = new Date(value);
-      return !isNaN(date.getTime()) ? date.toLocaleString('fr-FR') : String(value);
+    formatValue(value: string | number): string {
+      const date = new Date(value as string);
+      return !isNaN(date.getTime())
+        ? date.toLocaleString('fr-FR')
+        : String(value);
     },
   },
 });

@@ -1,7 +1,17 @@
 <template>
   <div class="p-6">
-    <div v-if="loading" class="text-gray-500">Chargement...</div>
-    <div v-if="error" class="text-red-600">{{ error }}</div>
+    <div
+      v-if="loading"
+      class="text-gray-500"
+    >
+      Chargement...
+    </div>
+    <div
+      v-if="error"
+      class="text-red-600"
+    >
+      {{ error }}
+    </div>
 
     <div v-if="!loading && !error">
       <TableComponent
@@ -31,6 +41,7 @@ import { defineComponent, onMounted, computed } from 'vue';
 import TableComponent from '../Table/TableComponent.vue';
 import { useWorkingTimesStore } from '../../app/store/store';
 import { useAuthenticateStore } from '../../app/store/store';
+import { WorkingTime } from '../../app/models/workingTime';
 
 export default defineComponent({
   name: 'WorkingTimeList',
@@ -69,7 +80,7 @@ export default defineComponent({
       });
     };
 
-    const deleteWorkingTime = async (item: any) => {
+    const deleteWorkingTime = async (item: WorkingTime) => {
       await workingTimesStore.deleteWorkingTime(item.id);
       console.log('Suppression du temps de travail :', item);
     };
