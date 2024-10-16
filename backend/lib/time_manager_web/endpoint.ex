@@ -15,8 +15,7 @@ defmodule TimeManagerWeb.Endpoint do
   plug Plug.Static,
     at: "/",
     from: :time_manager,
-    gzip: false,
-    only: TimeManagerWeb.static_paths()
+    gzip: false
 
   if code_reloading? do
     plug Phoenix.CodeReloader
