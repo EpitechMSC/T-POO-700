@@ -20,10 +20,11 @@ Repo.delete_all(Signal)
 
 # Create Bat Signal
 
-_batSignal = Repo.insert!(%Signal{
-  name: "BatSignal",
-  status: false,
-})
+_batSignal =
+  Repo.insert!(%Signal{
+    name: "BatSignal",
+    status: false
+  })
 
 # Create users
 
