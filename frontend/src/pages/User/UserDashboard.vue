@@ -1,5 +1,6 @@
 <template>
   <NavBar />
+  <BatSignal />
   <TopBar />
   <main class="p-6 my-12">
     <SummaryCard />
@@ -17,6 +18,7 @@ import SummaryCard from '../../components/Card/SummaryCard/SummaryCard.vue';
 import WorkingTimeChart from '../../components/Chart/WorkingTimeChart.vue';
 import WorkingTimeList from '../../components/WorkingTimes/WorkingTimeList.vue';
 import TopBar from '../../components/TopBar/TopBar.vue';
+import BatSignal from '../../components/BatSignalBar/BatSignal.vue';
 
 export default defineComponent({
   name: 'UserDashboardPage',
@@ -26,6 +28,7 @@ export default defineComponent({
     SummaryCard,
     WorkingTimeChart,
     WorkingTimeList,
+    BatSignal,
   },
 });
 </script>

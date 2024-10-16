@@ -2,9 +2,17 @@
   <div
     class="hello-bar flex justify-between h-24 bg-gray-100 items-center px-16 mb-10"
   >
-    <h1 class="text-3xl font-semibold whitespace-nowrap dark:text-white">
-      Bonjour, Gilbert
+    <h1 class="text-3xl font-semibold whitespace-nowrap dark:text-black">
+      Bonjour, Commissaire
     </h1>
+    <div
+      class="hover:shadow-[0px_0px_20px_5px] hover:shadow-yellow-200 cursor-pointer hover:bg-gray-300 bg-gray-400 border-2 border-black p-2 transition ease-in-out duration-200"
+      style="border-radius: 50%"
+      @click="toggleBatSignal"
+    >
+      <img src="../../assets/batman-logo-circleless-11.png" class="w-32" />
+    </div>
+
     <div class="clock flex items-center">
       <span class="flex">
         <p v-if="!isClocked" class="text-xl mr-1">{{ timeOfClockedIn }} -</p>
@@ -32,11 +40,7 @@
           </g>
           <defs>
             <clipPath id="clip0_15_254">
-              <rect
-                width="34"
-                height="34"
-                fill="white"
-              />
+              <rect width="34" height="34" fill="white" />
             </clipPath>
           </defs>
         </svg>
@@ -47,16 +51,18 @@
 
 <script>
 import { defineComponent, ref, onMounted } from 'vue';
-import { useWorkingTimesStore, useClocksStore } from '../../app/store/store';
-import { useToast } from 'vue-toastification';
+import {
+  useWorkingTimesStore,
+  useClocksStore,
+  useSignalStore,
+} from '../../app/store/store';
 
 export default defineComponent({
   name: 'TopBar',
   setup() {
-    const toast = useToast();
-
     const workingTimesStore = useWorkingTimesStore();
     const clockStore = useClocksStore();
+    const signalStore = useSignalStore();
 
     const time = ref('');
     const date = ref('');
@@ -64,7 +70,15 @@ export default defineComponent({
     const isClocked = ref(true);
     const timeOfClockedIn = ref('');
     let workedToday = ref('');
+    const batSignalStatus = ref('');
 
+    const toggleBatSignal = async () => {
+      signalStore.toggleStatus();
+      updateStatus();
+    };
+    const updateStatus = async () => {
+      batSignalStatus.value = await signalStore.getStatus();
+    };
     const updateTime = () => {
       const now = new Date();
       const year = now.getFullYear();
@@ -77,22 +91,7 @@ export default defineComponent({
       time.value = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       date.value = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     };
-    const triggerToast = () => {
-      this.toast('Hi from LogRocket', {
-        position: 'top-right',
-        timeout: 5000,
-        closeOnClick: true,
-        pauseOnFocusLoss: true,
-        pauseOnHover: true,
-        draggable: true,
-        draggablePercent: 0.6,
-        showCloseButtonOnHover: false,
-        hideProgressBar: true,
-        closeButton: 'button',
-        icon: 'fas fa-rocket',
-        rtl: false,
-      });
-    };
+
     const clocking = async () => {
       const dataToSend = {
         clock: {
@@ -124,7 +123,6 @@ export default defineComponent({
         };
         try {
           await workingTimesStore.createWorkingTime(workingTimeDataToSend);
-          triggerToast();
         } catch (error) {
           console.error(
             'There was an error when creating a working time',
@@ -137,7 +135,9 @@ export default defineComponent({
     onMounted(() => {
       workingTimesStore.getWorkingTimeById(1);
       updateTime();
+      updateStatus();
       setInterval(updateTime, 1000);
+      setInterval(updateStatus, 1000);
     });
     return {
       time,
@@ -145,9 +145,15 @@ export default defineComponent({
       clocking,
       isClocked,
       timeOfClockedIn,
+      batSignalStatus,
+      toggleBatSignal,
     };
   },
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+.prout {
+  color: rgb(255, 255, 122);
+}
+</style>
