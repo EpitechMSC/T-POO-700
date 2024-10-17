@@ -10,6 +10,7 @@ alias TimeManager.Accounts.User
 alias TimeManager.Clocks.Clock
 alias TimeManager.Work.WorkingTime
 alias TimeManager.Signals.Signal
+alias TimeManager.Contrats.Contrat
 
 # Delete all records
 
@@ -17,6 +18,7 @@ Repo.delete_all(Clock)
 Repo.delete_all(WorkingTime)
 Repo.delete_all(User)
 Repo.delete_all(Signal)
+Repo.delete_all(Contrat)
 
 # Create Bat Signal
 
@@ -26,6 +28,22 @@ _batSignal =
     status: false
   })
 
+# Create Contrats
+
+_35h=
+  Repo.insert!(%Contrat{
+    temps: 35
+  })
+
+_39h=
+  Repo.insert!(%Contrat{
+    temps: 39
+  })
+
+_42h=
+  Repo.insert!(%Contrat{
+    temps: 42
+  })
 # Create users
 
 _user1 =
