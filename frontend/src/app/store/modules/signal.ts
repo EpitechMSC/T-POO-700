@@ -17,24 +17,25 @@ export const useSignalStore = defineStore('signal', {
     async getStatus(): Promise<boolean> {
       try {
         const response = await SignalMethods.getSignalStatus();
-        const data = response.data;
+
+        const data = response.data[0];
         return data.status;
       } catch (error) {
-        console.error('Login failed:', error);
+        console.error('Failed to retreive status:', error);
         throw new Error('Échec de la connexion');
       }
     },
     async toggleStatus(): Promise<void> {
-        try {
-          const response = await SignalMethods.getSignalStatus();
-          const data = response.data;
+      try {
+        const response = await SignalMethods.getSignalStatus();
+        const data = response.data[0];
+        console.log(data);
 
-          await SignalMethods.updateSignalStatus(!data.status)
-          
-        } catch (error) {
-          console.error('Login failed:', error);
-          throw new Error('Échec de la connexion');
-        }
-      },
+        await SignalMethods.updateSignalStatus(data);
+      } catch (error) {
+        console.error('Failed to toggle status:', error);
+        throw new Error('Échec de la connexion');
+      }
+    },
   },
 });

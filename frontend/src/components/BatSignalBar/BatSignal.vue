@@ -8,23 +8,6 @@
   </div>
 </template>
 <script>
-// Function to duplicate the text inside the moving-text container to ensure seamless scrolling
-function repeatText() {
-  const movingText = document.querySelector('.moving-text');
-  const span = movingText.querySelector('span');
-  const containerWidth = document.querySelector('.police-tape').offsetWidth;
-  const textWidth = span.offsetWidth;
-
-  // Calculate how many times to repeat the text to ensure multiple instances are visible
-  let repeatCount = Math.ceil(containerWidth / textWidth) + 5; // +5 ensures extra repetition to cover width
-
-  // Repeat the text multiple times to fill the container
-  movingText.innerHTML = span.outerHTML.repeat(repeatCount);
-}
-
-// Call the function once the window has loaded
-window.onload = repeatText;
-
 import { defineComponent, ref, onMounted } from 'vue';
 import { useSignalStore } from '../../app/store/store';
 
@@ -38,11 +21,31 @@ export default defineComponent({
     const updateStatus = async () => {
       batSignalStatus.value = await signalStore.getStatus();
     };
+    const repeatText = () => {
+      const movingText = document.querySelector('.moving-text');
+      if (movingText) {
+        const span = movingText.querySelector('span');
+        if (span) {
+          const containerWidth =
+            document.querySelector('.police-tape').offsetWidth;
+          const textWidth = span.offsetWidth;
 
+          // Calculate how many times to repeat the text to ensure multiple instances are visible
+          let repeatCount = Math.ceil(containerWidth / textWidth) + 5; // +5 ensures extra repetition to cover width
+
+          // Repeat the text multiple times to fill the container
+          movingText.innerHTML = span.outerHTML.repeat(repeatCount);
+        }
+      }
+    };
     onMounted(() => {
       updateStatus();
       setInterval(updateStatus, 1000);
-      setInterval(repeatText, 10);
+      setInterval(() => {
+        if (batSignalStatus.value) {
+          repeatText();
+        }
+      }, 100);
     });
     return {
       batSignalStatus,
