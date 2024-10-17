@@ -103,6 +103,7 @@ import { defineComponent, PropType } from 'vue';
 
 export default defineComponent({
   name: 'TableComponent',
+  // Déclaration du type générique <T>
   props: {
     headers: {
       type: Array as PropType<string[]>,
