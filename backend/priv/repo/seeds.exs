@@ -28,20 +28,21 @@ _batSignal =
 
 # Create Contrats
 
-_35h=
+_35h =
   Repo.insert!(%Contrat{
     temps: 35
   })
 
-_39h=
+_39h =
   Repo.insert!(%Contrat{
     temps: 39
   })
 
-_42h=
+_42h =
   Repo.insert!(%Contrat{
     temps: 42
   })
+
 # Create users
 # Create users with roles and hashed passwords
 hashed_password1 = Bcrypt.hash_pwd_salt("password1")
