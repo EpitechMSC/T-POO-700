@@ -11,6 +11,5 @@ defmodule TimeManager.Repo.Migrations.CreateUsers do
 
       timestamps(type: :utc_datetime)
     end
-
   end
 end

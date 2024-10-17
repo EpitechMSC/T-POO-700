@@ -21,13 +21,13 @@ defmodule TimeManager.Accounts.User do
   def changeset(user, attrs) do
     user
     |> cast(attrs, [:email, :username, :password, :role_id])
-    |> validate_required([:email, :username, :password, :role_id])
+    |> validate_required([:email, :username, :role_id])
+    |> validate_password(attrs)
     |> validate_format(:email, ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "is invalid"
     )
     |> unique_constraint(:email, message: "Email has already been taken")
     |> unique_constraint(:username, message: "Username has already been taken")
-    |> validate_length(:password, min: 6, message: "Password must be at least 6 characters")
     |> hash_password()
   end
 
@@ -36,6 +36,7 @@ defmodule TimeManager.Accounts.User do
     user
     |> cast(attrs, [:email, :username, :password, :role_id])
     |> validate_required([:email])
+    |> validate_password(attrs, true)
     |> validate_format(:email, ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "is invalid"
     )
@@ -47,8 +48,21 @@ defmodule TimeManager.Accounts.User do
       message: "Username has already been taken",
       name: :users_username_index
     )
-    |> validate_length(:password, min: 6, message: "Password must be at least 6 characters")
     |> hash_password()
+  end
+
+  defp validate_password(changeset, attrs, update \\ false) do
+    if password = get_change(changeset, :password) do
+      changeset
+      |> validate_length(:password, min: 6, message: "Password must be at least 6 characters")
+    else
+      if update do
+        changeset
+      else
+        changeset
+        |> add_error(:password, "Password is required")
+      end
+    end
   end
 
   defp hash_password(changeset) do
