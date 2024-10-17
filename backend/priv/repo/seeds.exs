@@ -4,12 +4,14 @@ alias TimeManager.Clocks.Clock
 alias TimeManager.Work.WorkingTime
 alias TimeManager.Signals.Signal
 alias Bcrypt
+alias TimeManager.Contrats.Contrat
 
 # Delete all records
 Repo.delete_all(Clock)
 Repo.delete_all(WorkingTime)
 Repo.delete_all(User)
 Repo.delete_all(Signal)
+Repo.delete_all(Contrat)
 Repo.delete_all(Role)
 
 # Create roles
@@ -24,6 +26,23 @@ _batSignal =
     status: false
   })
 
+# Create Contrats
+
+_35h=
+  Repo.insert!(%Contrat{
+    temps: 35
+  })
+
+_39h=
+  Repo.insert!(%Contrat{
+    temps: 39
+  })
+
+_42h=
+  Repo.insert!(%Contrat{
+    temps: 42
+  })
+# Create users
 # Create users with roles and hashed passwords
 hashed_password1 = Bcrypt.hash_pwd_salt("password1")
 
