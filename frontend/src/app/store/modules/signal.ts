@@ -1,10 +1,10 @@
 import { defineStore } from 'pinia';
-import router from '../../router/router';
 import { SignalModel } from '../../models/signal';
 import SignalMethods from '../../api/modules/signal';
 
 export const useSignalStore = defineStore('signal', {
   state: (): SignalModel => ({
+    id: 1,
     name: 'BatSignal',
     status: false,
   }),
@@ -16,9 +16,9 @@ export const useSignalStore = defineStore('signal', {
   actions: {
     async getStatus(): Promise<boolean> {
       try {
-        const response = await SignalMethods.getSignalStatus();
+        const response: SignalModel[] = await SignalMethods.getSignalStatus();
+        const data = response[0];
 
-        const data = response.data[0];
         return data.status;
       } catch (error) {
         console.error('Failed to retreive status:', error);
@@ -27,8 +27,9 @@ export const useSignalStore = defineStore('signal', {
     },
     async toggleStatus(): Promise<void> {
       try {
-        const response = await SignalMethods.getSignalStatus();
-        const data = response.data[0];
+        const response: SignalModel[] = await SignalMethods.getSignalStatus();
+        const data = response[0];
+
         console.log(data);
 
         await SignalMethods.updateSignalStatus(data);
