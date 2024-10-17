@@ -43,20 +43,29 @@ defmodule TimeManagerWeb.UserControllerTest do
 
       username = "user_#{:rand.uniform(1000)}"
       email = "user_#{:rand.uniform(1000)}@gmail.com"
+      password = "secure_password_#{:rand.uniform(1000)}"
+      role = role_fixture()
 
       conn =
         post(conn, ~p"/api/users",
           user: %{
             username: username,
-            email: email
+            email: email,
+            password: password,
+            role_id: role.id
           }
         )
 
-      assert %{"id" => id, "username" => ^username, "email" => ^email} = json_response(conn, 201)
+      assert %{"id" => id, "username" => ^username, "email" => ^email, "role_id" => role_id} = json_response(conn, 201)
+
+      assert role_id == role.id
 
       conn = get(conn, ~p"/api/users/#{id}")
-      assert %{"id" => ^id, "username" => ^username, "email" => ^email} = json_response(conn, 200)
+      assert %{"id" => ^id, "username" => ^username, "email" => ^email, "role_id" => role_id} = json_response(conn, 200)
+
+      assert role_id == role.id
     end
+
 
     test "renders errors when data is invalid", %{conn: conn} do
       user = user_fixture()

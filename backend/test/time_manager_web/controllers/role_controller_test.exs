@@ -1,9 +1,9 @@
 defmodule TimeManagerWeb.RoleControllerTest do
   use TimeManagerWeb.ConnCase
 
-  import TimeManager.AccountFixtures
+  import TimeManager.AccountsFixtures
 
-  alias TimeManager.Account.Role
+  alias TimeManager.Accounts.Role
 
   @create_attrs %{
     name: "some name"

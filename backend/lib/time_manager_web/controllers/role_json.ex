@@ -1,5 +1,5 @@
 defmodule TimeManagerWeb.RoleJSON do
-  alias TimeManager.Account.Role
+  alias TimeManager.Accounts.Role
 
   @doc """
   Renders a list of roles.
