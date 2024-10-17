@@ -32,6 +32,7 @@ defmodule TimeManagerWeb.Router do
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
     resources "/clocks", ClockController, except: [:edit]
+    resources "/roles", RoleController, except: [:new, :edit]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
