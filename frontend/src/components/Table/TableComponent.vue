@@ -32,12 +32,8 @@
               :field="header"
               :row-index="rowIndex"
             >
-              <slot
-                name="defaultCell"
-                :item="item"
-                :field="header"
-              >
-                {{ formatValue(item[header as keyof WorkingTime]) }}
+              <slot name="defaultCell" :item="item" :field="header">
+                {{ formatValue(item[header]) }}
               </slot>
             </slot>
           </td>
@@ -49,7 +45,6 @@
                 class="text-gray-500 hover:text-gray-700"
                 @click="toggleMenu(rowIndex)"
               >
-                >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -105,17 +100,16 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { WorkingTime } from '../../app/models/workingTime';
 
 export default defineComponent({
   name: 'TableComponent',
   props: {
     headers: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true,
     },
     data: {
-      type: Array as PropType<WorkingTime[]>,
+      type: Array as PropType<any[]>,
       required: true,
     },
     itemsPerPage: {
@@ -134,7 +128,7 @@ export default defineComponent({
     totalPages(): number {
       return Math.ceil(this.data.length / this.itemsPerPage);
     },
-    paginatedData(): WorkingTime[] {
+    paginatedData(): any[] {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       return this.data.slice(startIndex, startIndex + this.itemsPerPage);
     },
@@ -145,7 +139,6 @@ export default defineComponent({
     },
     confirmDelete(rowIndex: number): void {
       this.$emit('delete-item', this.data[rowIndex]);
-      console.log("Suppression de l'élément :", this.data[rowIndex]);
       this.activeRow = null;
     },
     formatValue(value: string | number): string {
