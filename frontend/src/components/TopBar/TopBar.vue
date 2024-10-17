@@ -10,17 +10,23 @@
       style="border-radius: 50%"
       @click="toggleBatSignal"
     >
-      <img src="../../assets/batman-logo-circleless-11.png" class="w-32" />
+      <img
+        src="../../assets/batman-logo-circleless-11.png"
+        class="w-32"
+      >
     </div>
 
     <div class="clock flex items-center">
       <span class="flex">
-        <p v-if="!isClocked" class="text-xl mr-1">{{ timeOfClockedIn }} -</p>
+        <p
+          v-if="!isClocked"
+          class="text-xl mr-1"
+        >{{ timeOfClockedIn }} -</p>
         <p class="text-xl mr-2 w-20">{{ time }}</p>
       </span>
       <button
-        @click="clocking"
         class="bg-white p-2 rounded-lg w-14 h-14 flex justify-center items-center"
+        @click="clocking"
       >
         <svg
           width="34"
@@ -40,7 +46,11 @@
           </g>
           <defs>
             <clipPath id="clip0_15_254">
-              <rect width="34" height="34" fill="white" />
+              <rect
+                width="34"
+                height="34"
+                fill="white"
+              />
             </clipPath>
           </defs>
         </svg>
