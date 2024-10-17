@@ -39,4 +39,18 @@ defmodule TimeManager.AccountsFixtures do
       {:error, reason} -> raise "Failed to generate token: #{inspect(reason)}"
     end
   end
+
+  @doc """
+  Generate a role.
+  """
+  def role_fixture(attrs \\ %{}) do
+    {:ok, role} =
+      attrs
+      |> Enum.into(%{
+        name: "some name"
+      })
+      |> TimeManager.Accounts.create_role()
+
+    role
+  end
 end
