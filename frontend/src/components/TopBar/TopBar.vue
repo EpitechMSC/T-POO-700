@@ -3,7 +3,7 @@
     class="hello-bar flex justify-between h-24 bg-gray-100 items-center px-16 mb-10"
   >
     <h1 class="text-3xl font-semibold whitespace-nowrap dark:text-black">
-      Bonjour, Commissaire
+      Bonjour, {{ username }}
     </h1>
     <div
       class="hover:shadow-[0px_0px_20px_5px] hover:shadow-yellow-200 cursor-pointer hover:bg-gray-300 bg-gray-400 border-2 border-black p-2 transition ease-in-out duration-200"
@@ -55,6 +55,7 @@ import {
   useWorkingTimesStore,
   useClocksStore,
   useSignalStore,
+  useAuthenticateStore,
 } from '../../app/store/store';
 
 export default defineComponent({
@@ -63,6 +64,7 @@ export default defineComponent({
     const workingTimesStore = useWorkingTimesStore();
     const clockStore = useClocksStore();
     const signalStore = useSignalStore();
+    const authenticateStore = useAuthenticateStore();
 
     const time = ref('');
     const date = ref('');
@@ -71,6 +73,7 @@ export default defineComponent({
     const timeOfClockedIn = ref('');
     let workedToday = ref('');
     const batSignalStatus = ref('');
+    const username = ref('');
 
     const toggleBatSignal = async () => {
       signalStore.toggleStatus();
@@ -78,6 +81,10 @@ export default defineComponent({
     };
     const updateStatus = async () => {
       batSignalStatus.value = await signalStore.getStatus();
+    };
+    const updateUsername = async () => {
+      await authenticateStore.fetchUser();
+      username.value = authenticateStore.$state.user.username;
     };
     const updateTime = () => {
       const now = new Date();
@@ -133,6 +140,7 @@ export default defineComponent({
     };
 
     onMounted(() => {
+      updateUsername();
       workingTimesStore.getWorkingTimeById(1);
       updateTime();
       updateStatus();
@@ -147,6 +155,7 @@ export default defineComponent({
       timeOfClockedIn,
       batSignalStatus,
       toggleBatSignal,
+      username,
     };
   },
 });
