@@ -17,8 +17,6 @@ defmodule TimeManagerWeb do
   those modules here.
   """
 
-  def static_paths, do: ~w(assets fonts images favicon.ico robots.txt)
-
   def router do
     quote do
       use Phoenix.Router, helpers: false
@@ -52,8 +50,7 @@ defmodule TimeManagerWeb do
     quote do
       use Phoenix.VerifiedRoutes,
         endpoint: TimeManagerWeb.Endpoint,
-        router: TimeManagerWeb.Router,
-        statics: TimeManagerWeb.static_paths()
+        router: TimeManagerWeb.Router
     end
   end
 
