@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { SignalModel } from '../../models/signal';
+import { SignalModel, ApiResponse } from '../../models/signal';
 import SignalMethods from '../../api/modules/signal';
 
 export const useSignalStore = defineStore('signal', {
@@ -16,8 +16,8 @@ export const useSignalStore = defineStore('signal', {
   actions: {
     async getStatus(): Promise<boolean> {
       try {
-        const response: SignalModel[] = await SignalMethods.getSignalStatus();
-        const data = response[0];
+        const response: ApiResponse = await SignalMethods.getSignalStatus();
+        const data = response.data[0];
 
         return data.status;
       } catch (error) {
@@ -27,10 +27,8 @@ export const useSignalStore = defineStore('signal', {
     },
     async toggleStatus(): Promise<void> {
       try {
-        const response: SignalModel[] = await SignalMethods.getSignalStatus();
-        const data = response[0];
-
-        console.log(data);
+        const response: ApiResponse = await SignalMethods.getSignalStatus();
+        const data = response.data[0];
 
         await SignalMethods.updateSignalStatus(data);
       } catch (error) {
