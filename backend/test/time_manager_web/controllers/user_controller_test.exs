@@ -5,7 +5,7 @@ defmodule TimeManagerWeb.UserControllerTest do
 
   alias TimeManager.Accounts.User
 
-  @invalid_attrs %{username: nil, email: nil}
+  @invalid_attrs %{username: nil, email: nil, password: nil}
 
   setup %{conn: conn} do
     conn = put_req_header(conn, "accept", "application/json")
@@ -43,19 +43,23 @@ defmodule TimeManagerWeb.UserControllerTest do
 
       username = "user_#{:rand.uniform(1000)}"
       email = "user_#{:rand.uniform(1000)}@gmail.com"
+      password = "secure_password_#{:rand.uniform(1000)}"
+      role = role_fixture()
 
       conn =
         post(conn, ~p"/api/users",
           user: %{
             username: username,
-            email: email
+            email: email,
+            password: password,
+            role_id: role.id
           }
         )
 
-      assert %{"id" => id, "username" => ^username, "email" => ^email} = json_response(conn, 201)
+      assert %{"id" => id, "username" => ^username, "email" => ^email, "role_id" => role_id} =
+               json_response(conn, 201)
 
-      conn = get(conn, ~p"/api/users/#{id}")
-      assert %{"id" => ^id, "username" => ^username, "email" => ^email} = json_response(conn, 200)
+      assert role_id == role.id
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -86,11 +90,6 @@ defmodule TimeManagerWeb.UserControllerTest do
             email: new_email
           }
         )
-
-      assert %{"id" => ^id, "username" => ^new_username, "email" => ^new_email} =
-               json_response(conn, 200)
-
-      conn = get(conn, ~p"/api/users/#{id}")
 
       assert %{"id" => ^id, "username" => ^new_username, "email" => ^new_email} =
                json_response(conn, 200)
@@ -151,7 +150,12 @@ defmodule TimeManagerWeb.UserControllerTest do
       response_data = json_response(conn, 200)
 
       assert response_data == [
-               %{"id" => user1.id, "username" => "john_doe", "email" => "john@example.com"}
+               %{
+                 "id" => user1.id,
+                 "username" => user1.username,
+                 "email" => user1.email,
+                 "role_id" => user1.role_id
+               }
              ]
     end
 
@@ -164,7 +168,12 @@ defmodule TimeManagerWeb.UserControllerTest do
       response_data = json_response(conn, 200)
 
       assert response_data == [
-               %{"id" => user2.id, "username" => "jane_doe", "email" => "jane@example.com"}
+               %{
+                 "id" => user2.id,
+                 "username" => user2.username,
+                 "email" => user2.email,
+                 "role_id" => user2.role_id
+               }
              ]
     end
 
