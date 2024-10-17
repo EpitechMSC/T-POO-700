@@ -12,12 +12,16 @@ defmodule TimeManager.AccountsFixtures do
   def user_fixture(attrs \\ %{}) do
     unique_username = "user_#{System.unique_integer()}"
     unique_email = "user_#{System.unique_integer()}@example.com"
+    password = "password_#{System.unique_integer()}"
+    role = role_fixture()
 
     {:ok, user} =
       attrs
       |> Enum.into(%{
         username: unique_username,
-        email: unique_email
+        email: unique_email,
+        password: password,
+        role_id: role.id
       })
       |> TimeManager.Accounts.create_user()
 
@@ -38,5 +42,19 @@ defmodule TimeManager.AccountsFixtures do
       {:ok, token, _claims} -> token
       {:error, reason} -> raise "Failed to generate token: #{inspect(reason)}"
     end
+  end
+
+  @doc """
+  Generate a role.
+  """
+  def role_fixture(attrs \\ %{}) do
+    {:ok, role} =
+      attrs
+      |> Enum.into(%{
+        name: "role_#{System.unique_integer()}"
+      })
+      |> TimeManager.Accounts.create_role()
+
+    role
   end
 end

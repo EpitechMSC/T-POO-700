@@ -37,7 +37,7 @@
                 :item="item"
                 :field="header"
               >
-                {{ formatValue(item[header as keyof WorkingTime]) }}
+                {{ formatValue(item[header as number]) }}
               </slot>
             </slot>
           </td>
@@ -105,7 +105,6 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-import { WorkingTime } from '../../app/models/workingTime';
 
 export default defineComponent({
   name: 'TableComponent',
@@ -115,7 +114,7 @@ export default defineComponent({
       required: true,
     },
     data: {
-      type: Array as PropType<WorkingTime[]>,
+      type: Array as PropType<any[]>,
       required: true,
     },
     itemsPerPage: {
@@ -134,7 +133,7 @@ export default defineComponent({
     totalPages(): number {
       return Math.ceil(this.data.length / this.itemsPerPage);
     },
-    paginatedData(): WorkingTime[] {
+    paginatedData(): any[] {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       return this.data.slice(startIndex, startIndex + this.itemsPerPage);
     },
