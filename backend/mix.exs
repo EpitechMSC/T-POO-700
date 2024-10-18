@@ -8,6 +8,11 @@ defmodule TimeManager.MixProject do
       elixir: "~> 1.14",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
+      releases: [
+        roll_dice: [
+          applications: [opentelemetry: :temporary]
+        ]
+      ],
       aliases: aliases(),
       deps: deps()
     ]
@@ -50,10 +55,12 @@ defmodule TimeManager.MixProject do
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.5"},
-      {:plug_cowboy, "~> 2.0"},
-      {:opentelemetry_phoenix, "~> 1.0.0-rc.2"},
-      {:opentelemetry_ecto, "~> 1.0.0-rc.1"},
-      {:opentelemetry_exporter, "~> 1.0.0-rc.1"}
+      {:opentelemetry, "~> 1.3"},
+      {:opentelemetry_api, "~> 1.2"},
+      {:opentelemetry_exporter, "~> 1.6"},
+      {:opentelemetry_phoenix, "~> 1.1"},
+      {:opentelemetry_cowboy, "~> 0.2"},
+      {:opentelemetry_ecto, "~> 1.2"}
     ]
   end
 
