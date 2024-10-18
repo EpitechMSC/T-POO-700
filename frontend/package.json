@@ -13,13 +13,11 @@
     "test:unit": "jest",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "prepare": "husky"
+    "prepare": "husky && husky install"
   },
   "lint-staged": {
-    "*.{js,vue,ts}": [
-      "eslint --fix",
-      "prettier --write"
-    ]
+    "*.{js,vue,ts}": "prettier --write",
+    "*.js": "eslint --cache --fix"
   },
   "dependencies": {
     "axios": "^1.7.7",
