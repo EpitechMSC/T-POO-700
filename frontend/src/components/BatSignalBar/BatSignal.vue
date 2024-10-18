@@ -31,7 +31,7 @@ export default defineComponent({
           const textWidth = span.offsetWidth;
 
           // Calculate how many times to repeat the text to ensure multiple instances are visible
-          let repeatCount = Math.ceil(containerWidth / textWidth) + 5; // +5 ensures extra repetition to cover width
+          const repeatCount = Math.ceil(containerWidth / textWidth) + 5; // +5 ensures extra repetition to cover width
 
           // Repeat the text multiple times to fill the container
           movingText.innerHTML = span.outerHTML.repeat(repeatCount);

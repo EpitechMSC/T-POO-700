@@ -37,7 +37,7 @@
                 :item="item"
                 :field="header"
               >
-                {{ formatValue(item[header as number]) }}
+                {{ formatValue(item[header as keyof T]) }}
               </slot>
             </slot>
           </td>
@@ -110,11 +110,11 @@ export default defineComponent({
   name: 'TableComponent',
   props: {
     headers: {
-      type: Array,
+      type: Array as PropType<string[]>,
       required: true,
     },
     data: {
-      type: Array as PropType<any[]>,
+      type: Array as PropType<any[]>, // On peut le remplacer plus tard par un type générique
       required: true,
     },
     itemsPerPage: {
@@ -133,7 +133,7 @@ export default defineComponent({
     totalPages(): number {
       return Math.ceil(this.data.length / this.itemsPerPage);
     },
-    paginatedData(): any[] {
+    paginatedData(): T[] { // Utilisation du type générique ici
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       return this.data.slice(startIndex, startIndex + this.itemsPerPage);
     },
@@ -155,4 +155,6 @@ export default defineComponent({
     },
   },
 });
+
+type T = Record<string, any>;
 </script>
