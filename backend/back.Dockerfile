@@ -1,7 +1,8 @@
 FROM bitwalker/alpine-elixir-phoenix:latest AS phx-builder
 
 # Set exposed ports
-ENV MIX_ENV=prod
+RUN apk add --update alpine-sdk
+
 
 # Cache elixir deps
 ADD mix.exs mix.lock ./
@@ -13,6 +14,8 @@ ADD . .
 RUN mix do compile, phx.digest
 
 FROM bitwalker/alpine-elixir:latest
+RUN apk add --update alpine-sdk
+
 
 EXPOSE 5000
 ENV PORT=5000 MIX_ENV=prod
