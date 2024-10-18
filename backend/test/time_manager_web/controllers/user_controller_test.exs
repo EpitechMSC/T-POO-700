@@ -52,14 +52,12 @@ defmodule TimeManagerWeb.UserControllerTest do
             username: username,
             email: email,
             password: password,
-            role_id: role.id
+            role: role.id
           }
         )
 
-      assert %{"id" => id, "username" => ^username, "email" => ^email, "role_id" => role_id} =
+      assert %{"id" => id, "username" => ^username, "email" => ^email, "role" => role} =
                json_response(conn, 201)
-
-      assert role_id == role.id
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -154,7 +152,7 @@ defmodule TimeManagerWeb.UserControllerTest do
                  "id" => user1.id,
                  "username" => user1.username,
                  "email" => user1.email,
-                 "role_id" => user1.role_id
+                 "role" => user1.role
                }
              ]
     end
@@ -172,7 +170,7 @@ defmodule TimeManagerWeb.UserControllerTest do
                  "id" => user2.id,
                  "username" => user2.username,
                  "email" => user2.email,
-                 "role_id" => user2.role_id
+                 "role" => user2.role
                }
              ]
     end

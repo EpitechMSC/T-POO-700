@@ -12,7 +12,7 @@ defmodule TimeManager.AccountsFixtures do
   def user_fixture(attrs \\ %{}) do
     unique_username = "user_#{System.unique_integer()}"
     unique_email = "user_#{System.unique_integer()}@example.com"
-    password = "password_#{System.unique_integer()}"
+    password = "Password_#{System.unique_integer()}"
     role = role_fixture()
 
     {:ok, user} =
@@ -21,7 +21,7 @@ defmodule TimeManager.AccountsFixtures do
         username: unique_username,
         email: unique_email,
         password: password,
-        role_id: role.id
+        role: role.id
       })
       |> TimeManager.Accounts.create_user()
 
@@ -35,6 +35,7 @@ defmodule TimeManager.AccountsFixtures do
     case JWT.generate_and_sign(
            %{
              "user_id" => user.id,
+             "role" => user.role,
              "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
            },
            JWT.signer()
