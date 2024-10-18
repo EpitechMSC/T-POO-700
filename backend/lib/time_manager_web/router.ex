@@ -17,7 +17,7 @@ defmodule TimeManagerWeb.Router do
 
     resources "/signal", SignalController, except: [:new, :delete]
 
-    resources "/contrats", ContratController, except: [:new, :delete, :update, :create,:edit]
+    resources "/contrats", ContratController, except: [:new, :delete, :update, :create, :edit]
 
     resources "/roles", RoleController, except: [:edit]
 
