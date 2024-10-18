@@ -2,9 +2,8 @@ version: '3.8'
 
 services:
   backend:
-    build: 
-      context: backend
-      dockerfile: ./backend/back.Dockerfile
+    image: thjeveknc/phoenix-backend:latest
+    container_name: backend_gotham
     environment:
       - SECRET_KEY_BASE=GGZsehjQB9/SeBXcwgiXCjf7ufksUV7XmB8wG/76wj6A8p4BsCziCcpQLVjDogFO
       - DATABASE_URL=postgres://postgres:postgres@database:5432/time_manager
@@ -25,16 +24,36 @@ services:
     restart: always
 
   frontend:
+    image: thjeveknc/vue-frontend:latest
     container_name: frontend_gotham
-    build: 
-      context: frontend
-      dockerfile: ./frontend/front.Dockerfile
     ports:
       - "8080:8080"
       - "443:443"
     networks:
       - app_network
     restart: always
+
+  otel:
+    image: otel/opentelemetry-collector-contrib-dev:latest
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    ports:
+      - '55681:55681'
+      - '55680:55680'
+    volumes:
+      - ./otel-collector-config.yaml:/etc/otel-collector-config.yaml
+
+  zipkin:
+    image: openzipkin/zipkin-slim
+    ports:
+      - '9411:9411'
+
+  # Jaeger
+  jaeger-all-in-one:
+    image: jaegertracing/all-in-one:latest
+    ports:
+      - "16686:16686"
+      - "14268"
+      - "14250"
 
   database:
     image: postgres:latest
