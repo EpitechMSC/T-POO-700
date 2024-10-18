@@ -5,14 +5,13 @@ defmodule TimeManager.Accounts.User do
   alias TimeManager.Accounts.Role
   alias Bcrypt
 
-  @derive {Jason.Encoder, only: [:id, :username, :email, :role_id]}
+  @derive {Jason.Encoder, only: [:id, :username, :email, :role]}
   schema "users" do
     field :username, :string
     field :email, :string
     field :password, :string, virtual: true
     field :password_hash, :string
-
-    belongs_to :role, Role
+    field :role, :id
 
     timestamps(type: :utc_datetime)
   end
@@ -20,8 +19,8 @@ defmodule TimeManager.Accounts.User do
   @doc false
   def changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :username, :password, :role_id])
-    |> validate_required([:email, :username, :role_id])
+    |> cast(attrs, [:email, :username, :password, :role])
+    |> validate_required([:email, :username, :role])
     |> validate_password(attrs)
     |> validate_format(:email, ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
       message: "is invalid"
@@ -34,7 +33,7 @@ defmodule TimeManager.Accounts.User do
   @doc false
   def update_changeset(user, attrs) do
     user
-    |> cast(attrs, [:email, :username, :password, :role_id])
+    |> cast(attrs, [:email, :username, :password, :role])
     |> validate_required([:email])
     |> validate_password(attrs, true)
     |> validate_format(:email, ~r/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,

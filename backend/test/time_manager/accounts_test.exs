@@ -72,8 +72,8 @@ defmodule TimeManager.AccountsTest do
       valid_attrs = %{
         username: "some_username",
         email: "some_email@example.com",
-        password: "password",
-        role_id: role.id
+        password: "password1",
+        role: role.id
       }
 
       assert {:ok, %User{} = user} = Accounts.create_user(valid_attrs)
