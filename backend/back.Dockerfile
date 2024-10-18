@@ -1,7 +1,8 @@
 FROM bitwalker/alpine-elixir-phoenix:latest AS phx-builder
 
 # Set exposed ports
-ENV MIX_ENV=prod
+
+RUN apk add --update alpine-sdk
 
 # Cache elixir deps
 ADD mix.exs mix.lock ./
