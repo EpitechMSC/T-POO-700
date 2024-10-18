@@ -1,5 +1,6 @@
 import js from '@eslint/js';
 import eslintPluginVue from 'eslint-plugin-vue';
+import prettierConfig from 'eslint-config-prettier';
 import ts from 'typescript-eslint';
 
 export default ts.config(
@@ -18,6 +19,10 @@ export default ts.config(
       eqeqeq: "off",
       "no-unused-vars": "error",
       "prefer-const": ["error", { ignoreReadBeforeAssign: true }],
+    },
+    rules: {
+      ...prettierConfig.rules,
+      'vue/multi-word-component-names': 'off',
     },
   }
 );
