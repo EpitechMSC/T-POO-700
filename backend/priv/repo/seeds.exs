@@ -25,6 +25,7 @@ _batSignal =
 
 # Create users with roles and hashed passwords
 hashed_password1 = Bcrypt.hash_pwd_salt("password1")
+
 _user1 =
   Repo.insert!(%User{
     email: "alex@surfhub.eu",
@@ -34,6 +35,7 @@ _user1 =
   })
 
 hashed_password2 = Bcrypt.hash_pwd_salt("password2")
+
 _user2 =
   Repo.insert!(%User{
     email: "manu@surfhub.eu",
@@ -43,6 +45,7 @@ _user2 =
   })
 
 hashed_password3 = Bcrypt.hash_pwd_salt("password3")
+
 _user3 =
   Repo.insert!(%User{
     email: "mimi@surfhub.eu",
@@ -52,6 +55,7 @@ _user3 =
   })
 
 hashed_password4 = Bcrypt.hash_pwd_salt("password4")
+
 _user4 =
   Repo.insert!(%User{
     email: "jaquie@surfhub.eu",
@@ -61,6 +65,7 @@ _user4 =
   })
 
 hashed_password5 = Bcrypt.hash_pwd_salt("password5")
+
 _user5 =
   Repo.insert!(%User{
     email: "michel@surfhub.eu",
@@ -70,6 +75,7 @@ _user5 =
   })
 
 hashed_password6 = Bcrypt.hash_pwd_salt("password6")
+
 _user6 =
   Repo.insert!(%User{
     email: "batman@surfhub.eu",

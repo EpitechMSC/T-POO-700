@@ -57,7 +57,8 @@ defmodule TimeManager.Accounts do
                  %{
                    "user_id" => user.id,
                    "role" => user.role,
-                   "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
+                   "exp" =>
+                     DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
                  },
                  JWT.signer()
                ) do
@@ -69,7 +70,6 @@ defmodule TimeManager.Accounts do
         end
     end
   end
-
 
   @doc """
   Finds users by partial email or username match.
