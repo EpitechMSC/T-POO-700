@@ -1,5 +1,5 @@
 // src/api/modules/signal.ts
-import { SignalModel,ApiResponse } from '../../models/signal';
+import { SignalModel, ApiResponse } from '../../models/signal';
 import { requests } from '../config/axiosConfig';
 
 const SignalMethods = {
