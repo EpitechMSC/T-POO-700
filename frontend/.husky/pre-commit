@@ -1,5 +1,6 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
@@ -13,3 +14,9 @@ npm test
 
 npx lint-staged
 >>>>>>> 4c3d65a (husky test)
+=======
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged
+>>>>>>> refs/remotes/origin/feat/auth
