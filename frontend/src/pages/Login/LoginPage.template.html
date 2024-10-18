@@ -22,6 +22,16 @@
             required
             :error="error"
           />
+          <BaseInput
+            v-model="password"
+            type="password"
+            label="Votre mot de passe"
+            name="password"
+            id="password"
+            placeholder="••••••••"
+            required
+            :error="error"
+          />
           <BaseButton type="submit" variant="primary" :fullWidth="true">
             Se connecter
           </BaseButton>
