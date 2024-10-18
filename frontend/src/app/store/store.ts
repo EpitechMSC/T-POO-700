@@ -9,5 +9,5 @@ export {
   useClocksStore,
   useWorkingTimesStore,
   useAuthenticateStore,
-  useSignalStore
+  useSignalStore,
 };

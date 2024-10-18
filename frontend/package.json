@@ -61,6 +61,7 @@
     "vue-tsc": "^2.1.6"
   },
   "eslintConfig": {
+    "ignorePatterns": ["dist/**/*"],
     "root": true,
     "env": {
       "node": true
@@ -74,5 +75,6 @@
       "parser": "@typescript-eslint/parser"
     },
     "rules": {}
+    
   }
 }

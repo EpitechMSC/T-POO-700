@@ -13,14 +13,12 @@ export default ts.config(
       parserOptions: {
         parser: '@typescript-eslint/parser',
       },
-      globals: {
-        module: 'readonly',
-        describe: 'readonly',
-        it: 'readonly',
-        expect: 'readonly',
-        on: 'readonly',
-        config: 'readonly',
-      },
+    },
+    ignores: [".node_modules/*", ".dist/**/*"],
+    rules: {
+      eqeqeq: "off",
+      "no-unused-vars": "error",
+      "prefer-const": ["error", { ignoreReadBeforeAssign: true }],
     },
     rules: {
       ...prettierConfig.rules,

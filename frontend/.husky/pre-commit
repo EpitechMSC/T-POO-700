@@ -1,4 +1,12 @@
+<<<<<<< HEAD
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
+=======
+npm test
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged
+>>>>>>> 4c3d65a (husky test)
