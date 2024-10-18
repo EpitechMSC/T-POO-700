@@ -1,10 +1,13 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
 =======
 npm test
+=======
+>>>>>>> 696b7d6 (prepare husky)
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
