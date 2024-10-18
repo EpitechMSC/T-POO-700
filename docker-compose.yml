@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  backend:
+    build: 
+      context: backend
+      dockerfile: ./backend/back.Dockerfile
+    environment:
+      - SECRET_KEY_BASE=GGZsehjQB9/SeBXcwgiXCjf7ufksUV7XmB8wG/76wj6A8p4BsCziCcpQLVjDogFO
+      - DATABASE_URL=postgres://postgres:postgres@database:5432/time_manager
+    depends_on:
+      - database
+    networks:
+      - app_network
+    command: >
+      sh -c "
+      echo 'Waiting for the database connection...' &&
+      until mix ecto.migrate; do
+        echo 'Postgres is unavailable - sleeping';
+        sleep 2;
+      done &&
+      echo 'Starting the Phoenix server...' &&
+      mix phx.server
+      "
+    restart: always
+
+  frontend:
+    container_name: frontend_gotham
+    build: 
+      context: frontend
+      dockerfile: ./frontend/front.Dockerfile
+    ports:
+      - "8080:8080"
+      - "443:443"
+    networks:
+      - app_network
+    restart: always
+
+  database:
+    image: postgres:latest
+    container_name: database
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=time_manager
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - app_network
+    restart: always
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
