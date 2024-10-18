@@ -61,9 +61,7 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
       conn =
-        post(conn, ~p"/api/workingtimes",
-          working_time: Map.put(@invalid_attrs, :user_id, user.id)
-        )
+        post(conn, ~p"/api/workingtimes", working_time: Map.put(@invalid_attrs, :user_id, user.id))
 
       assert json_response(conn, 422)["errors"] != %{}
     end

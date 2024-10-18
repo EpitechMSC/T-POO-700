@@ -49,7 +49,11 @@ defmodule TimeManager.MixProject do
       {:gettext, "~> 0.20"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-      {:bandit, "~> 1.5"}
+      {:bandit, "~> 1.5"},
+      {:plug_cowboy, "~> 2.0"},
+      {:opentelemetry_phoenix, "~> 1.0.0-rc.2"},
+      {:opentelemetry_ecto, "~> 1.0.0-rc.1"},
+      {:opentelemetry_exporter, "~> 1.0.0-rc.1"}
     ]
   end
 
