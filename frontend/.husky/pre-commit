@@ -1,4 +1,22 @@
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
+=======
+npm test
+=======
+>>>>>>> 696b7d6 (prepare husky)
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged
+>>>>>>> 4c3d65a (husky test)
+=======
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+npx lint-staged
+>>>>>>> refs/remotes/origin/feat/auth

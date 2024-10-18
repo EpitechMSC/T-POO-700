@@ -7,8 +7,8 @@ interface AuthResponse {
 }
 
 const Authenticate = {
-  userByEmail: (email: string): Promise<AuthResponse> =>
-    requests.post<AuthResponse>('login', { email }),
+  userByEmail: (email: string, password: string): Promise<AuthResponse> =>
+    requests.post<AuthResponse>('login', { email, password }),
 
   userDetails: (): Promise<User> => requests.get<User>('users/me'),
 };
