@@ -46,24 +46,30 @@ defmodule TimeManager.Accounts do
      }}
   end
 
-  def authenticate_by_email(email) do
+  def authenticate_by_email_and_password(email, password) do
     case Repo.get_by(User, email: email) do
       nil ->
         {:error, :invalid_credentials}
 
       user ->
-        case JWT.generate_and_sign(
-               %{
-                 "user_id" => user.id,
-                 "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
-               },
-               JWT.signer()
-             ) do
-          {:ok, token, _claims} -> {:ok, token}
-          {:error, reason} -> {:error, reason}
+        if Bcrypt.verify_pass(password, user.password_hash) do
+          case JWT.generate_and_sign(
+                 %{
+                   "user_id" => user.id,
+                   "role" => user.role,
+                   "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
+                 },
+                 JWT.signer()
+               ) do
+            {:ok, token, _claims} -> {:ok, token}
+            {:error, reason} -> {:error, reason}
+          end
+        else
+          {:error, :invalid_credentials}
         end
     end
   end
+
 
   @doc """
   Finds users by partial email or username match.

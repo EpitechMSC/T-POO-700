@@ -19,15 +19,15 @@ defmodule TimeManagerWeb.UserController do
     end
   end
 
-  def login(conn, %{"email" => email}) do
-    case Accounts.authenticate_by_email(email) do
+  def login(conn, %{"email" => email, "password" => password}) do
+    case Accounts.authenticate_by_email_and_password(email, password) do
       {:ok, token} ->
         json(conn, %{token: token})
 
       {:error, :invalid_credentials} ->
         conn
         |> put_status(:unauthorized)
-        |> json(%{error: "Invalid email"})
+        |> json(%{error: "Invalid email or password"})
         |> halt()
 
       _ ->
@@ -41,7 +41,7 @@ defmodule TimeManagerWeb.UserController do
   def login(conn, _params) do
     conn
     |> put_status(:bad_request)
-    |> json(%{error: "Email parameter is required"})
+    |> json(%{error: "Email and password are required"})
     |> halt()
   end
 

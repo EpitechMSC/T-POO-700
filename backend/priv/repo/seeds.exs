@@ -3,6 +3,7 @@ alias TimeManager.Accounts.{User, Role}
 alias TimeManager.Clocks.Clock
 alias TimeManager.Work.WorkingTime
 alias TimeManager.Signals.Signal
+alias Bcrypt
 
 # Delete all records
 Repo.delete_all(Clock)
@@ -22,54 +23,59 @@ _batSignal =
     status: false
   })
 
-# Create users with roles
-
+# Create users with roles and hashed passwords
+hashed_password1 = Bcrypt.hash_pwd_salt("password1")
 _user1 =
   Repo.insert!(%User{
     email: "alex@surfhub.eu",
     username: "Alex",
-    password: "password1",
-    role_id: admin_role.id
+    password_hash: hashed_password1,
+    role: admin_role.id
   })
 
+hashed_password2 = Bcrypt.hash_pwd_salt("password2")
 _user2 =
   Repo.insert!(%User{
     email: "manu@surfhub.eu",
     username: "Manu",
-    password: "password2",
-    role_id: user_role.id
+    password_hash: hashed_password2,
+    role: user_role.id
   })
 
+hashed_password3 = Bcrypt.hash_pwd_salt("password3")
 _user3 =
   Repo.insert!(%User{
     email: "mimi@surfhub.eu",
     username: "Mimi",
-    password: "password3",
-    role_id: user_role.id
+    password_hash: hashed_password3,
+    role: user_role.id
   })
 
+hashed_password4 = Bcrypt.hash_pwd_salt("password4")
 _user4 =
   Repo.insert!(%User{
     email: "jaquie@surfhub.eu",
     username: "Jaquie",
-    password: "password4",
-    role_id: user_role.id
+    password_hash: hashed_password4,
+    role: user_role.id
   })
 
+hashed_password5 = Bcrypt.hash_pwd_salt("password5")
 _user5 =
   Repo.insert!(%User{
     email: "michel@surfhub.eu",
     username: "Michel",
-    password: "password5",
-    role_id: user_role.id
+    password_hash: hashed_password5,
+    role: user_role.id
   })
 
+hashed_password6 = Bcrypt.hash_pwd_salt("password6")
 _user6 =
   Repo.insert!(%User{
     email: "batman@surfhub.eu",
     username: "Batman",
-    password: "password6",
-    role_id: admin_role.id
+    password_hash: hashed_password6,
+    role: admin_role.id
   })
 
 # Generate working times and clocks
