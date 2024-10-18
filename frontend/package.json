@@ -15,6 +15,12 @@
     "cypress:run": "cypress run",
     "prepare": "husky && husky install"
   },
+  "husky": {
+    "hooks": {
+        "pre-commit": "lint-staged",
+        "pre-push": "npm test"
+      }
+  },
   "lint-staged": {
     "*.{js,vue,ts}": "prettier --write",
     "*.js": "eslint --cache --fix"
