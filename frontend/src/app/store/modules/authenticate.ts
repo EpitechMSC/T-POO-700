@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import Authenticate from '../../api/modules/authenticate';
 import router from '../../router/router';
-import { AuthenticateState } from '../../models/authentication';
+import { AuthenticateState, Credentials } from '../../models/authentication';
 import { User } from '../../models/user';
 
 export const useAuthenticateStore = defineStore('authenticate', {
@@ -25,9 +25,9 @@ export const useAuthenticateStore = defineStore('authenticate', {
       }
     },
 
-    async login(email: string): Promise<number> {
+    async login(credentials: Credentials): Promise<number> {
       try {
-        const response = await Authenticate.userByEmail(email);
+        const response = await Authenticate.userByEmail(credentials.email, credentials.password);
         this.setToken(response.token);
         this.isAuthenticated = true;
 
