@@ -2,7 +2,6 @@ defmodule TimeManager.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias TimeManager.Accounts.Role
   alias Bcrypt
 
   @derive {Jason.Encoder, only: [:id, :username, :email, :role]}

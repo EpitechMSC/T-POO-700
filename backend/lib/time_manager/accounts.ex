@@ -47,21 +47,24 @@ defmodule TimeManager.Accounts do
   end
 
   def authenticate_by_email_and_password(email, password) do
-    case Repo.get_by(User, email: email) do
+    query = from u in User,
+            join: r in Role, on: u.role == r.id,
+            where: u.email == ^email,
+            select: {u, r.name}
+
+    case Repo.one(query) do
       nil ->
         {:error, :invalid_credentials}
 
-      user ->
+      {%User{} = user, role_name} ->
         if Bcrypt.verify_pass(password, user.password_hash) do
-          case JWT.generate_and_sign(
-                 %{
-                   "user_id" => user.id,
-                   "role" => user.role,
-                   "exp" =>
-                     DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
-                 },
-                 JWT.signer()
-               ) do
+          claims = %{
+            "user_id" => user.id,
+            "role" => role_name,
+            "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
+          }
+
+          case JWT.generate_and_sign(claims, JWT.signer()) do
             {:ok, token, _claims} -> {:ok, token}
             {:error, reason} -> {:error, reason}
           end

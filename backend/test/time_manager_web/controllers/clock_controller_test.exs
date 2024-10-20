@@ -23,8 +23,9 @@ defmodule TimeManagerWeb.ClockControllerTest do
 
   describe "index" do
     test "lists all clocks when authenticated", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/clocks")
@@ -34,8 +35,9 @@ defmodule TimeManagerWeb.ClockControllerTest do
 
   describe "create clock" do
     test "renders clock when data is valid", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = post(conn, ~p"/api/clocks", clock: @create_attrs)
@@ -51,8 +53,9 @@ defmodule TimeManagerWeb.ClockControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = post(conn, ~p"/api/clocks", clock: @invalid_attrs)
@@ -64,8 +67,9 @@ defmodule TimeManagerWeb.ClockControllerTest do
     setup [:create_clock]
 
     test "renders clock when data is valid", %{conn: conn, clock: %Clock{id: id} = clock} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = put(conn, ~p"/api/clocks/#{clock.id}", clock: @update_attrs)
@@ -81,8 +85,9 @@ defmodule TimeManagerWeb.ClockControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, clock: clock} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = put(conn, ~p"/api/clocks/#{clock.id}", clock: @invalid_attrs)
@@ -94,8 +99,9 @@ defmodule TimeManagerWeb.ClockControllerTest do
     setup [:create_clock]
 
     test "deletes chosen clock", %{conn: conn, clock: clock} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = delete(conn, ~p"/api/clocks/#{clock.id}")

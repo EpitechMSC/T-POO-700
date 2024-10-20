@@ -9,11 +9,18 @@ defmodule TimeManagerWeb.Router do
     plug TimeManagerWeb.Plugs.Authenticate
   end
 
+  pipeline :manager_or_supervisor do
+    plug TimeManagerWeb.Plugs.EnsureRole, ["Manager"]
+  end
+
+  pipeline :supervisor_only do
+    plug TimeManagerWeb.Plugs.EnsureRole, ["Supervisor"]
+  end
+
   scope "/api", TimeManagerWeb do
     pipe_through :api
 
     post "/login", UserController, :login
-    post "/users", UserController, :create
 
     resources "/signal", SignalController, except: [:new, :delete]
     resources "/roles", RoleController, except: [:edit]
@@ -30,9 +37,17 @@ defmodule TimeManagerWeb.Router do
     get "/working_times/:user_id/yearly", WorkingTimeController, :yearly_stats
     post "/clocks", ClockController, :create
 
+
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
     resources "/clocks", ClockController, except: [:edit]
+
+    pipe_through [:manager_or_supervisor]
+
+    pipe_through [:supervisor_only]
+
+    post "/users", UserController, :create
+
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

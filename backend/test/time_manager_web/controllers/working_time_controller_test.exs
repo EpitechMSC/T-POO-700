@@ -23,8 +23,9 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
 
   describe "index" do
     test "lists all working times when authenticated", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
@@ -35,8 +36,9 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
 
   describe "create working_time" do
     test "renders working_time when data is valid", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
@@ -55,8 +57,9 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
@@ -77,7 +80,9 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       working_time: %WorkingTime{id: id} = working_time
     } do
       user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
@@ -98,8 +103,9 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, working_time: working_time} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
@@ -112,8 +118,9 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
     setup [:create_working_time]
 
     test "deletes chosen working_time", %{conn: conn, working_time: working_time} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
