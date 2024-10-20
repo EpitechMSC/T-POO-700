@@ -6,9 +6,6 @@ defmodule TimeManager.AccountsTest do
 
   import TimeManager.AccountsFixtures
 
-  @valid_attrs %{username: "some username", email: "some_email@example.com"}
-  @invalid_attrs %{username: nil, email: nil}
-
   describe "users" do
     setup do
       {:ok, user: user_fixture()}
@@ -110,9 +107,16 @@ defmodule TimeManager.AccountsTest do
 
     @invalid_attrs %{name: nil}
 
-    test "list_roles/0 returns all roles" do
-      role = role_fixture()
-      assert Accounts.list_roles() == [role]
+    setup do
+      {:ok, role: role_fixture()}
+    end
+
+    test "list_roles/0 returns all roles", %{role: role} do
+      assert {:ok, %TimeManagerWeb.Response{data: [returned_role], pagination: _}} =
+               Accounts.list_roles()
+
+      assert returned_role.id == role.id
+      assert returned_role.name == role.name
     end
 
     test "get_role!/1 returns the role with given id" do

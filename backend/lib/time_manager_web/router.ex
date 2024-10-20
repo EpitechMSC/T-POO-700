@@ -23,7 +23,6 @@ defmodule TimeManagerWeb.Router do
     post "/login", UserController, :login
 
     resources "/signal", SignalController, except: [:new, :delete]
-    resources "/roles", RoleController, except: [:edit]
 
     pipe_through :authenticate
 
@@ -46,7 +45,8 @@ defmodule TimeManagerWeb.Router do
 
     pipe_through [:supervisor_only]
 
-    post "/users", UserController, :create
+    resources "/roles", RoleController, except: [:edit]
+
 
   end
 

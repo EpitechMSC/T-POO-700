@@ -3,12 +3,20 @@ defmodule TimeManagerWeb.RoleController do
 
   alias TimeManager.Accounts
   alias TimeManager.Accounts.Role
+  alias TimeManagerWeb.Response
 
   action_fallback TimeManagerWeb.FallbackController
 
   def index(conn, _params) do
-    roles = Accounts.list_roles()
-    render(conn, :index, roles: roles)
+    case Accounts.list_roles() do
+      {:ok, %Response{} = response} ->
+        json(conn, response)
+
+      {:error, reason} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: reason})
+    end
   end
 
   def create(conn, %{"role" => role_params}) do

@@ -212,8 +212,27 @@ defmodule TimeManager.Accounts do
       [%Role{}, ...]
 
   """
-  def list_roles do
-    Repo.all(Role)
+  def list_roles(page \\ 1, page_size \\ 10) do
+    total_count = Repo.aggregate(Role, :count, :id)
+
+    roles =
+      Role
+      |> order_by([r], asc: r.name)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
+
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: roles,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
 
   @doc """
