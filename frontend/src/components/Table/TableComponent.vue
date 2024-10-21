@@ -45,7 +45,6 @@
                 class="text-gray-500 hover:text-gray-700"
                 @click="toggleMenu(rowIndex)"
               >
-                >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -66,8 +65,14 @@
                 class="absolute z-10 bg-white shadow-md p-2 rounded"
               >
                 <button
+                  class="block px-4 py-2 text-blue-500 hover:bg-gray-100"
+                  @click="$emit('edit-item', item)"
+                >
+                  Modifier
+                </button>
+                <button
                   class="block px-4 py-2 text-red-500 hover:bg-gray-100"
-                  @click="confirmDelete(rowIndex)"
+                  @click="$emit('delete-item', item)"
                 >
                   Supprimer
                 </button>
@@ -118,7 +123,7 @@ export default defineComponent({
       default: 5,
     },
   },
-  emits: ['delete-item'],
+  emits: ['delete-item', 'edit-item'],
   data() {
     return {
       currentPage: 1,
@@ -137,11 +142,6 @@ export default defineComponent({
   methods: {
     toggleMenu(rowIndex: number): void {
       this.activeRow = this.activeRow === rowIndex ? null : rowIndex;
-    },
-    confirmDelete(rowIndex: number): void {
-      this.$emit('delete-item', this.data[rowIndex]);
-      console.log("Suppression de l'élément :", this.data[rowIndex]);
-      this.activeRow = null;
     },
     formatValue(value: string | number): string {
       const date = new Date(value as string);

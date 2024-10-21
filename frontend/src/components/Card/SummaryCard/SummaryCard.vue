@@ -11,10 +11,7 @@
           cardIconClass(card.type),
         ]"
       >
-        <i
-          :class="card.icon"
-          style="font-size: 1.5rem"
-        />
+        <i :class="card.icon" style="font-size: 1.5rem" />
       </div>
       <div class="p-4 text-right">
         <p
@@ -43,9 +40,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from 'vue';
-import { useAuthenticateStore } from '../../../app/store/store';
-import { useWorkingTimesStore } from '../../../app/store/store';
+import { defineComponent, computed, watch } from 'vue';
+import {
+  useAuthenticateStore,
+  useWorkingTimesStore,
+} from '../../../app/store/store';
 
 export default defineComponent({
   name: 'SummaryCard',
@@ -61,7 +60,16 @@ export default defineComponent({
       }
     };
 
-    onMounted(fetchUserData);
+    // Surveillance de l'utilisateur et récupération des données dès qu'il est disponible
+    watch(
+      () => userId.value,
+      newUserId => {
+        if (newUserId) {
+          fetchUserData();
+        }
+      },
+      { immediate: true }
+    );
 
     const userStats = computed(() => workingTimesStore.stats);
 
