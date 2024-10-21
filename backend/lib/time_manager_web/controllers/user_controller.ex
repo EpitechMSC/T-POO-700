@@ -52,7 +52,7 @@ defmodule TimeManagerWeb.UserController do
   end
 
   def me(conn, _params) do
-    user_id = conn.assigns[:current_user]
+    user_id = conn.assigns[:current_user]["id"]
 
     case Accounts.get_user(user_id) do
       {:ok, user} ->
