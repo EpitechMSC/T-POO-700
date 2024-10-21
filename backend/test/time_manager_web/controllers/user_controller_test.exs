@@ -63,7 +63,7 @@ defmodule TimeManagerWeb.UserControllerTest do
           }
         )
 
-      assert %{"id" => id, "username" => ^username, "email" => ^email, "role" => ^role_id} =
+      assert %{"username" => ^username, "email" => ^email, "role" => ^role_id} =
                json_response(conn, 201)
     end
 
@@ -142,7 +142,7 @@ defmodule TimeManagerWeb.UserControllerTest do
   describe "update user" do
     setup [:create_user]
 
-    test "supervisor can update any field", %{conn: conn, user: %User{id: id} = user} do
+    test "supervisor can update any field", %{conn: conn, user: %User{id: id} = _user} do
       role = role_fixture(name: "Supervisor")
       supervisor = user_fixture(role: role.id)
       token = user_token_fixture(supervisor, role)
