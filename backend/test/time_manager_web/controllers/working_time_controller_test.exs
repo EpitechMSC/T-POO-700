@@ -32,6 +32,11 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       conn = get(conn, ~p"/api/workingtimes")
       assert json_response(conn, 200)["data"] == []
     end
+
+    test "returns unauthorized if no token is provided", %{conn: conn} do
+      conn = get(conn, ~p"/api/workingtimes")
+      assert json_response(conn, 401)["error"] == "Unauthorized"
+    end
   end
 
   describe "create working_time" do
@@ -79,7 +84,6 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       conn: conn,
       working_time: %WorkingTime{id: id} = working_time
     } do
-      user = user_fixture()
       role = role_fixture(name: "User")
       user = user_fixture(role: role.id)
       token = user_token_fixture(user, role)
@@ -133,9 +137,207 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
     end
   end
 
+  describe "search_by_userid" do
+    test "returns working times for a valid user with pagination", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      working_time_fixture(user: user.id)
+      working_time_fixture(user: user.id)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/user/#{user.id}?page=1&page_size=10")
+
+      assert json_response(conn, 200) != []
+    end
+
+    test "returns not_found when no working times exist for the user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+      conn = get(conn, ~p"/api/workingtimes/user/#{user.id}")
+      assert json_response(conn, 200)["data"] == []
+    end
+
+    test "returns bad_request for invalid user ID", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+      conn = get(conn, ~p"/api/workingtimes/user/invalid")
+      assert json_response(conn, 400)["error"] == "Invalid user ID"
+    end
+  end
+
+  describe "search_by_userid_and_date_range" do
+    test "returns working times in a valid date range", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      start_time = "2024-10-02T09:00:00"
+      end_time = "2024-10-03T17:00:00"
+
+      working_time_fixture(user: user.id, start: start_time, end: end_time)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/search/#{user.id}?start=2024-10-01T00:00:00&end=2024-10-08T23:59:59")
+
+      assert json_response(conn, 200)["data"] != []
+    end
+
+
+
+    test "returns not_found when no working times exist for the user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/search/#{user.id}?start=2024-10-01T00:00:00&end=2024-10-08T23:59:59")
+
+      assert json_response(conn, 404)["error"] == "WorkingTime not found"
+    end
+
+    test "returns bad_request for an invalid start date", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/search/#{user.id}?start=invalid&end=2024-10-31T23:59:59")
+
+      assert json_response(conn, 400)["error"] == "Invalid start date format"
+    end
+
+    test "returns bad_request when no start date is provided", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/search/#{user.id}?end=2024-10-31T23:59:59")
+
+      assert json_response(conn, 400)["error"] == "Start Date was not provided"
+    end
+  end
+
+
+  describe "stats" do
+    test "returns stats for a valid user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+      working_time_fixture(user: user.id)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/stats/#{user.id}")
+
+      assert json_response(conn, 200) != %{}
+    end
+
+    test "returns not_found when no stats are available for the user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/stats/#{user.id}")
+
+      assert json_response(conn, 200)
+      assert json_response(conn, 200)["percentage_change"] == 0.0
+      assert json_response(conn, 200)["total_days_worked"] == 0
+      assert json_response(conn, 200)["worked_last_month"] == 0.0
+      assert json_response(conn, 200)["worked_this_month"] == 0.0
+      assert json_response(conn, 200)["worked_today"] == 0.0
+    end
+  end
+
+  describe "weekly stats" do
+    test "returns weekly stats for a valid user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      working_time_fixture(user: user.id)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/#{user.id}/weekly")
+
+      assert json_response(conn, 200) != %{}
+    end
+
+
+    test "returns not_found when no weekly stats are available for the user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/#{user.id}/weekly")
+
+      assert json_response(conn, 200) == []
+    end
+  end
+
+  describe "monthly stats" do
+    test "returns monthly stats for a valid user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+      working_time_fixture(user: user.id)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/#{user.id}/monthly")
+
+      assert json_response(conn, 200) != %{}
+    end
+
+    test "returns not_found when no monthly stats are available for the user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/#{user.id}/monthly")
+
+      assert json_response(conn, 200) == []
+    end
+  end
+
+  describe "yearly stats" do
+    test "returns yearly stats for a valid user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+      working_time_fixture(user: user.id)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/#{user.id}/yearly")
+
+      assert json_response(conn, 200) != %{}
+    end
+
+    test "returns not_found when no yearly stats are available for the user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = get(conn, ~p"/api/workingtimes/#{user.id}/yearly")
+
+      assert json_response(conn, 200) == []
+    end
+  end
+
   defp create_working_time(_) do
-    user = user_fixture()
-    working_time = working_time_fixture(user_id: user.id)
+    working_time = working_time_fixture()
     %{working_time: working_time}
   end
 end

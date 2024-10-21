@@ -31,11 +31,9 @@ defmodule TimeManagerWeb.Router do
     get "/workingtimes/stats/:id", WorkingTimeController, :stats
     get "/workingtimes/user/:id", WorkingTimeController, :search_by_userid
     get "/workingtimes/search/:id", WorkingTimeController, :search_by_userid_and_date_range
-    get "/working_times/:user_id/weekly", WorkingTimeController, :weekly_stats
-    get "/working_times/:user_id/monthly", WorkingTimeController, :monthly_stats
-    get "/working_times/:user_id/yearly", WorkingTimeController, :yearly_stats
-    post "/clocks", ClockController, :create
-
+    get "/workingtimes/:user_id/weekly", WorkingTimeController, :weekly_stats
+    get "/workingtimes/:user_id/monthly", WorkingTimeController, :monthly_stats
+    get "/workingtimes/:user_id/yearly", WorkingTimeController, :yearly_stats
 
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]

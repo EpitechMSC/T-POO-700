@@ -12,7 +12,8 @@ defmodule TimeManager.WorkFixtures do
       attrs
       |> Enum.into(%{
         end: ~N[2024-10-07 07:47:00],
-        start: ~N[2024-10-07 07:47:00]
+        start: ~N[2024-10-07 07:47:00],
+        user: nil
       })
       |> TimeManager.Work.create_working_time()
 
