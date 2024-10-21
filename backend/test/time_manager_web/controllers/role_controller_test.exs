@@ -29,9 +29,10 @@ defmodule TimeManagerWeb.RoleControllerTest do
       response_data = json_response(conn, 200)["data"]
 
       assert length(response_data) > 0
+
       assert Enum.all?(response_data, fn role ->
-        Map.has_key?(role, "id") and Map.has_key?(role, "name")
-      end)
+               Map.has_key?(role, "id") and Map.has_key?(role, "name")
+             end)
     end
 
     test "returns forbidden for unauthenticated user", %{conn: conn} do
@@ -96,7 +97,10 @@ defmodule TimeManagerWeb.RoleControllerTest do
   describe "update role" do
     setup [:create_role]
 
-    test "renders role when data is valid and supervisor token is provided", %{conn: conn, role: %Role{id: id} = role} do
+    test "renders role when data is valid and supervisor token is provided", %{
+      conn: conn,
+      role: %Role{id: id} = role
+    } do
       supervisor_role = role_fixture(name: "Supervisor")
       supervisor = user_fixture(role: supervisor_role.id)
       token = user_token_fixture(supervisor, supervisor_role)

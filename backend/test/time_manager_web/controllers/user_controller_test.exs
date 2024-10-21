@@ -28,9 +28,10 @@ defmodule TimeManagerWeb.UserControllerTest do
       response_data = json_response(conn, 200)["data"]
 
       assert length(response_data) > 0
+
       assert Enum.all?(response_data, fn user ->
-        Map.has_key?(user, "id") and Map.has_key?(user, "username")
-      end)
+               Map.has_key?(user, "id") and Map.has_key?(user, "username")
+             end)
     end
 
     test "returns forbidden for unauthenticated user", %{conn: conn} do
@@ -62,7 +63,8 @@ defmodule TimeManagerWeb.UserControllerTest do
           }
         )
 
-      assert %{"id" => id, "username" => ^username, "email" => ^email, "role" => ^role_id} = json_response(conn, 201)
+      assert %{"id" => id, "username" => ^username, "email" => ^email, "role" => ^role_id} =
+               json_response(conn, 201)
     end
 
     test "fails when a non-supervisor tries to create a user", %{conn: conn} do
@@ -82,7 +84,8 @@ defmodule TimeManagerWeb.UserControllerTest do
           }
         )
 
-      assert json_response(conn, 403)["error"] == "Forbidden: Only Supervisors can create new users."
+      assert json_response(conn, 403)["error"] ==
+               "Forbidden: Only Supervisors can create new users."
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -201,7 +204,6 @@ defmodule TimeManagerWeb.UserControllerTest do
       assert json_response(conn, 200)["role"] == role.id
       assert json_response(conn, 200)["role"] !== supervisor_role.id
     end
-
 
     test "returns not found when user does not exist", %{conn: conn} do
       fake_user_id = 999

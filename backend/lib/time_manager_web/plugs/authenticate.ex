@@ -18,7 +18,9 @@ defmodule TimeManagerWeb.Plugs.Authenticate do
         case claims do
           %{"user_id" => user_id, "role" => role} ->
             assign(conn, :current_user, %{"id" => user_id, "role" => role})
-          _ -> unauthorized_response(conn)
+
+          _ ->
+            unauthorized_response(conn)
         end
 
       {:error, reason} ->

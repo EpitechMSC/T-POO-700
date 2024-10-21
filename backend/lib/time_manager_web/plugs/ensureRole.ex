@@ -28,6 +28,7 @@ defmodule TimeManagerWeb.Plugs.EnsureRole do
 
   defp role_allowed?(user_role, required_roles) do
     user_index = role_index(user_role)
+
     Enum.any?(required_roles, fn required_role ->
       user_index >= role_index(required_role)
     end)

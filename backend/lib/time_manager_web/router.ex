@@ -3,10 +3,12 @@ defmodule TimeManagerWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   pipeline :authenticate do
     plug TimeManagerWeb.Plugs.Authenticate
+    plug TimeManagerWeb.Plugs.CSRFProtection
   end
 
   pipeline :manager_or_supervisor do
@@ -44,8 +46,6 @@ defmodule TimeManagerWeb.Router do
     pipe_through [:supervisor_only]
 
     resources "/roles", RoleController, except: [:edit]
-
-
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

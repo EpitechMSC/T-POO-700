@@ -187,12 +187,15 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       working_time_fixture(user: user.id, start: start_time, end: end_time)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
-      conn = get(conn, ~p"/api/workingtimes/search/#{user.id}?start=2024-10-01T00:00:00&end=2024-10-08T23:59:59")
+
+      conn =
+        get(
+          conn,
+          ~p"/api/workingtimes/search/#{user.id}?start=2024-10-01T00:00:00&end=2024-10-08T23:59:59"
+        )
 
       assert json_response(conn, 200)["data"] != []
     end
-
-
 
     test "returns not_found when no working times exist for the user", %{conn: conn} do
       role = role_fixture(name: "User")
@@ -200,7 +203,12 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
-      conn = get(conn, ~p"/api/workingtimes/search/#{user.id}?start=2024-10-01T00:00:00&end=2024-10-08T23:59:59")
+
+      conn =
+        get(
+          conn,
+          ~p"/api/workingtimes/search/#{user.id}?start=2024-10-01T00:00:00&end=2024-10-08T23:59:59"
+        )
 
       assert json_response(conn, 404)["error"] == "WorkingTime not found"
     end
@@ -211,7 +219,9 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
-      conn = get(conn, ~p"/api/workingtimes/search/#{user.id}?start=invalid&end=2024-10-31T23:59:59")
+
+      conn =
+        get(conn, ~p"/api/workingtimes/search/#{user.id}?start=invalid&end=2024-10-31T23:59:59")
 
       assert json_response(conn, 400)["error"] == "Invalid start date format"
     end
@@ -227,7 +237,6 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       assert json_response(conn, 400)["error"] == "Start Date was not provided"
     end
   end
-
 
   describe "stats" do
     test "returns stats for a valid user", %{conn: conn} do
@@ -272,7 +281,6 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
 
       assert json_response(conn, 200) != %{}
     end
-
 
     test "returns not_found when no weekly stats are available for the user", %{conn: conn} do
       role = role_fixture(name: "User")

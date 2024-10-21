@@ -81,7 +81,6 @@ defmodule TimeManagerWeb.WorkingTimeController do
     end
   end
 
-
   def search_by_userid_and_date_range(conn, %{"id" => id}) do
     conn = Plug.Conn.fetch_query_params(conn)
 
@@ -92,47 +91,53 @@ defmodule TimeManagerWeb.WorkingTimeController do
     else
       start_date_as_string = conn.query_params["start"]
 
-    if is_nil(start_date_as_string) do
-      conn
-      |> put_status(:bad_request)
-      |> json(%{error: "Start Date was not provided"})
-    else
-      end_date_as_string = conn.query_params["end"]
+      if is_nil(start_date_as_string) do
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "Start Date was not provided"})
+      else
+        end_date_as_string = conn.query_params["end"]
 
-      end_date =
-        case end_date_as_string do
-          nil -> nil
-          _ ->
-            case NaiveDateTime.from_iso8601(end_date_as_string) do
-              {:ok, parsed_date} -> parsed_date
-              {:error, _reason} -> nil
-            end
-        end
+        end_date =
+          case end_date_as_string do
+            nil ->
+              nil
 
-      case NaiveDateTime.from_iso8601(start_date_as_string) do
-        {:ok, start_date} ->
-          case TimeManager.Work.find_working_time_for_user_and_date_range(id, start_date, end_date) do
-            {:ok, works} ->
-              json(conn, works)
-
-            {:error, :not_found} ->
-              conn
-              |> put_status(:not_found)
-              |> json(%{error: "WorkingTime not found"})
-
-            {:error, :bad_request} ->
-              conn
-              |> put_status(:bad_request)
-              |> json(%{error: "Start Date was not provided"})
+            _ ->
+              case NaiveDateTime.from_iso8601(end_date_as_string) do
+                {:ok, parsed_date} -> parsed_date
+                {:error, _reason} -> nil
+              end
           end
 
-        {:error, _reason} ->
-          conn
-          |> put_status(:bad_request)
-          |> json(%{error: "Invalid start date format"})
+        case NaiveDateTime.from_iso8601(start_date_as_string) do
+          {:ok, start_date} ->
+            case TimeManager.Work.find_working_time_for_user_and_date_range(
+                   id,
+                   start_date,
+                   end_date
+                 ) do
+              {:ok, works} ->
+                json(conn, works)
+
+              {:error, :not_found} ->
+                conn
+                |> put_status(:not_found)
+                |> json(%{error: "WorkingTime not found"})
+
+              {:error, :bad_request} ->
+                conn
+                |> put_status(:bad_request)
+                |> json(%{error: "Start Date was not provided"})
+            end
+
+          {:error, _reason} ->
+            conn
+            |> put_status(:bad_request)
+            |> json(%{error: "Invalid start date format"})
+        end
       end
     end
-  end
   end
 
   def stats(conn, %{"id" => id}) do

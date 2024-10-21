@@ -22,7 +22,13 @@ defmodule TimeManagerWeb.UserController do
   def login(conn, %{"email" => email, "password" => password}) do
     case Accounts.authenticate_by_email_and_password(email, password) do
       {:ok, token} ->
-        json(conn, %{token: token})
+        csrf_token = TimeManagerWeb.Plugs.CSRFProtection.generate_csrf_token()
+
+        conn = put_session(conn, "_csrf_token", csrf_token)
+
+        conn
+        |> put_status(:ok)
+        |> json(%{token: token, csrf_token: csrf_token})
 
       {:error, :invalid_credentials} ->
         conn
@@ -128,10 +134,10 @@ defmodule TimeManagerWeb.UserController do
               |> put_status(:unprocessable_entity)
               |> json(%{errors: changeset})
           end
-
         else
           if current_user_id == user.id do
-            allowed_params = Map.take(user_params, ["username", "email"]) # Exclude role from update
+            # Exclude role from update
+            allowed_params = Map.take(user_params, ["username", "email"])
 
             with {:ok, %User{} = updated_user} <- Accounts.update_user(user, allowed_params) do
               json(conn, updated_user)
@@ -154,7 +160,6 @@ defmodule TimeManagerWeb.UserController do
         |> json(%{error: "User not found"})
     end
   end
-
 
   def delete(conn, %{"id" => id}) do
     current_user_role = conn.assigns[:current_user]["role"]

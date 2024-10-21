@@ -47,10 +47,12 @@ defmodule TimeManager.Accounts do
   end
 
   def authenticate_by_email_and_password(email, password) do
-    query = from u in User,
-            join: r in Role, on: u.role == r.id,
-            where: u.email == ^email,
-            select: {u, r.name}
+    query =
+      from u in User,
+        join: r in Role,
+        on: u.role == r.id,
+        where: u.email == ^email,
+        select: {u, r.name}
 
     case Repo.one(query) do
       nil ->
