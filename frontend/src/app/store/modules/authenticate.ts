@@ -1,13 +1,21 @@
 import { defineStore } from 'pinia';
 import Authenticate from '../../api/modules/authenticate';
 import router from '../../router/router';
-import { AuthenticateState, Credentials } from '../../models/authentication';
+import { Credentials } from '../../models/authentication';
 import { User } from '../../models/user';
+
+interface AuthenticateState {
+  user: User | null;
+  token: string | null;
+  csrf_token: string | null;
+  isAuthenticated: boolean;
+}
 
 export const useAuthenticateStore = defineStore('authenticate', {
   state: (): AuthenticateState => ({
     user: null,
     token: localStorage.getItem('token') || null,
+    csrf_token: localStorage.getItem('csrf_token') || null,
     isAuthenticated: !!localStorage.getItem('token'),
   }),
 
@@ -25,10 +33,25 @@ export const useAuthenticateStore = defineStore('authenticate', {
       }
     },
 
+    setcsrf_token(csrf_token: string | null) {
+      this.csrf_token = csrf_token;
+      if (csrf_token) {
+        localStorage.setItem('csrf_token', csrf_token);
+      } else {
+        localStorage.removeItem('csrf_token');
+      }
+    },
+
     async login(credentials: Credentials): Promise<number> {
       try {
-        const response = await Authenticate.userByEmail(credentials.email, credentials.password);
+        const response = await Authenticate.userByEmail(
+          credentials.email,
+          credentials.password
+        );
+
+        console.log(response);
         this.setToken(response.token);
+        this.setcsrf_token(response.csrf_token);
         this.isAuthenticated = true;
 
         await this.fetchUser();
@@ -46,6 +69,7 @@ export const useAuthenticateStore = defineStore('authenticate', {
 
     logout() {
       this.setToken(null);
+      this.setcsrf_token(null);
       this.user = null;
       this.isAuthenticated = false;
       router.push('/login');
