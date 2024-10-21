@@ -265,30 +265,30 @@ defmodule TimeManager.Work do
         select: sum(fragment("EXTRACT(EPOCH FROM ? - ?) / 3600", w.end, w.start))
       )
 
-    worked_today = Repo.one(worked_today_query) || Decimal.new(0)
-    worked_this_week = Repo.one(worked_this_week_query) || Decimal.new(0)
-    total_days_worked = Repo.one(total_days_worked_query) || 0
-    worked_this_month = Repo.one(worked_this_month_query) || Decimal.new(0)
-    worked_last_month = Repo.one(worked_last_month_query) || Decimal.new(0)
+      worked_today = Repo.one(worked_today_query) || Decimal.new(0)
+      worked_this_week = Repo.one(worked_this_week_query) || Decimal.new(0)
+      total_days_worked = Repo.one(total_days_worked_query) || 0
+      worked_this_month = Repo.one(worked_this_month_query) || Decimal.new(0)
+      worked_last_month = Repo.one(worked_last_month_query) || Decimal.new(0)
 
-    percentage_change =
-      if Decimal.compare(worked_last_month, Decimal.new(0)) != :eq do
-        Decimal.div(Decimal.sub(worked_this_month, worked_last_month), worked_last_month)
-        |> Decimal.mult(100)
-        |> Decimal.to_float()
-        |> Float.round(2)
-      else
-        0.0
-      end
+      percentage_change =
+        if Decimal.compare(worked_last_month, Decimal.new(0)) != :eq do
+          Decimal.div(Decimal.sub(worked_this_month, worked_last_month), worked_last_month)
+          |> Decimal.mult(100)
+          |> Decimal.to_float()
+          |> Float.round(2)
+        else
+          0.0
+        end
 
-    stats = %{
-      worked_today: Float.round(Decimal.to_float(worked_today), 2),
-      worked_this_week: Float.round(Decimal.to_float(worked_this_week), 2),
-      total_days_worked: total_days_worked,
-      worked_this_month: Float.round(Decimal.to_float(worked_this_month), 2),
-      worked_last_month: Float.round(Decimal.to_float(worked_last_month), 2),
-      percentage_change: percentage_change
-    }
+      stats = %{
+        worked_today: Float.round(Decimal.to_float(worked_today), 2),
+        worked_this_week: Float.round(Decimal.to_float(worked_this_week), 2),
+        total_days_worked: total_days_worked,
+        worked_this_month: Float.round(Decimal.to_float(worked_this_month), 2),
+        worked_last_month: Float.round(Decimal.to_float(worked_last_month), 2),
+        percentage_change: percentage_change
+      }
 
     {:ok, stats}
   end
