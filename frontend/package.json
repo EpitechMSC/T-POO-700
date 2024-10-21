@@ -12,8 +12,7 @@
     "format": "prettier --write \"src/**/*.{js,vue,ts}\"",
     "test:unit": "jest",
     "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "prepare": "husky && husky install"
+    "cypress:run": "cypress run"
   },
   "husky": {
     "hooks": {
