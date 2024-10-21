@@ -88,7 +88,7 @@
       <button
         :disabled="currentPage === 1"
         class="px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
-        @click="currentPage--"
+        @click="$emit('change-page', currentPage - 1)"
       >
         Précédent
       </button>
@@ -96,7 +96,7 @@
       <button
         :disabled="currentPage === totalPages"
         class="px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
-        @click="currentPage++"
+        @click="$emit('change-page', currentPage + 1)"
       >
         Suivant
       </button>
@@ -118,25 +118,23 @@ export default defineComponent({
       type: Array as PropType<T[]>,
       required: true,
     },
+    currentPage: {
+      type: Number,
+      required: true,
+    },
+    totalPages: {
+      type: Number,
+      required: true,
+    },
     itemsPerPage: {
       type: Number,
       default: 5,
     },
   },
-  emits: ['delete-item', 'edit-item'],
-  data() {
-    return {
-      currentPage: 1,
-      activeRow: null as number | null,
-    };
-  },
+  emits: ['delete-item', 'edit-item', 'change-page'],
   computed: {
-    totalPages(): number {
-      return Math.ceil(this.data.length / this.itemsPerPage);
-    },
     paginatedData(): T[] {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      return this.data.slice(startIndex, startIndex + this.itemsPerPage);
+      return this.data;
     },
   },
   methods: {
@@ -149,6 +147,11 @@ export default defineComponent({
         ? date.toLocaleString('fr-FR')
         : String(value);
     },
+  },
+  data() {
+    return {
+      activeRow: null as number | null,
+    };
   },
 });
 

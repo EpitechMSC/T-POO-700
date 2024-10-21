@@ -60,7 +60,6 @@ export default defineComponent({
       }
     };
 
-    // Surveillance de l'utilisateur et récupération des données dès qu'il est disponible
     watch(
       () => userId.value,
       newUserId => {

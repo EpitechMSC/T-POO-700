@@ -48,7 +48,6 @@ export default defineComponent({
       }
     };
 
-    // Surveillance de l'utilisateur et appel des données dès qu'il est disponible
     watch(
       () => authStore.user,
       newUser => {

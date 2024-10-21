@@ -258,14 +258,17 @@ export const useWorkingTimesStore = defineStore('workingTimes', {
       }
     },
 
-    setPage(page: number): void {
+    async setPage(
+      fetchFunction: (
+        userId: number,
+        page: number,
+        pageSize: number
+      ) => Promise<void>,
+      userId: number,
+      page: number
+    ): Promise<void> {
       this.pagingParams.pageNumber = page;
-      this.fetchWorkingTimes();
-    },
-
-    setPageSize(pageSize: number): void {
-      this.pagingParams.pageSize = pageSize;
-      this.fetchWorkingTimes();
+      await fetchFunction(userId, page, this.pagingParams.pageSize);
     },
   },
 });

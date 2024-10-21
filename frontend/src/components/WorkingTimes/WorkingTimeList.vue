@@ -7,8 +7,12 @@
       <TableComponent
         :headers="['Jour', 'Début', 'Fin']"
         :data="workingTimes"
+        :current-page="pagingParams.pageNumber"
+        :totalPages="totalPages"
+        :items-per-page="pagingParams.pageSize"
         @edit-item="openUpdateModal"
         @delete-item="confirmDelete"
+        @change-page="changePage"
       >
         <template #cell-Jour="{ item }">
           <div>{{ formatDay(item.start) }}</div>
@@ -132,9 +136,34 @@ export default defineComponent({
       { immediate: true }
     );
 
+    watch(
+      () => workingTimesStore.pagingParams.pageNumber,
+      newPageNumber => {
+        const userId = authStore.user?.id;
+        if (userId) {
+          loadWorkingTimes();
+        }
+      }
+    );
+
     const workingTimes = computed(() => workingTimesStore.workingTimesForList);
     const loading = computed(() => workingTimesStore.loading);
     const error = computed(() => workingTimesStore.error);
+    const pagingParams = computed(() => workingTimesStore.pagingParams);
+    const totalPages = computed(
+      () => workingTimesStore.pagination?.total_pages || 0
+    );
+
+    const changePage = async (newPage: number) => {
+      const userId = authStore.user?.id;
+      if (newPage >= 1 && userId) {
+        await workingTimesStore.setPage(
+          workingTimesStore.fetchWorkingTimesByUserId,
+          userId,
+          newPage
+        );
+      }
+    };
 
     const formatDay = (dateString: string) => {
       const date = new Date(dateString);
@@ -163,6 +192,7 @@ export default defineComponent({
       if (itemToDelete.value) {
         await workingTimesStore.deleteWorkingTime(itemToDelete.value.id);
         closeDeleteConfirm();
+        loadWorkingTimes();
       }
     };
 
@@ -190,6 +220,7 @@ export default defineComponent({
           updatedTime
         );
         closeUpdateModal();
+        loadWorkingTimes();
       }
     };
 
@@ -197,63 +228,24 @@ export default defineComponent({
       workingTimes,
       loading,
       error,
-      formatDay,
-      formatTime,
-      confirmDelete,
-      deleteWorkingTime,
-      openUpdateModal,
-      closeUpdateModal,
-      updateWorkingTime,
-      updateForm,
+      changePage,
+      pagingParams,
+      totalPages,
       showUpdateModal,
       showDeleteConfirm,
+      updateForm,
+      currentWorkingTimeId,
+      itemToDelete,
+      loadWorkingTimes,
+      openUpdateModal,
+      confirmDelete,
+      deleteWorkingTime,
       closeDeleteConfirm,
+      closeUpdateModal,
+      updateWorkingTime,
+      formatDay,
+      formatTime,
     };
   },
 });
 </script>
-
-<style scoped>
-.fixed {
-  position: fixed;
-}
-
-.inset-0 {
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-}
-
-.z-50 {
-  z-index: 50;
-}
-
-.bg-white {
-  background-color: white;
-}
-
-.p-6 {
-  padding: 1.5rem;
-}
-
-.rounded {
-  border-radius: 0.5rem;
-}
-
-.shadow-md {
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.font-semibold {
-  font-weight: 600;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-</style>
