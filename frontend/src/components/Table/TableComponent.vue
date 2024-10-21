@@ -32,11 +32,7 @@
               :field="header"
               :row-index="rowIndex"
             >
-              <slot
-                name="defaultCell"
-                :item="item"
-                :field="header"
-              >
+              <slot name="defaultCell" :item="item" :field="header">
                 {{ formatValue(item[header as keyof T]) }}
               </slot>
             </slot>
@@ -114,7 +110,7 @@ export default defineComponent({
       required: true,
     },
     data: {
-      type: Array as PropType<any[]>, // On peut le remplacer plus tard par un type générique
+      type: Array as PropType<T[]>,
       required: true,
     },
     itemsPerPage: {
@@ -133,7 +129,7 @@ export default defineComponent({
     totalPages(): number {
       return Math.ceil(this.data.length / this.itemsPerPage);
     },
-    paginatedData(): T[] { // Utilisation du type générique ici
+    paginatedData(): T[] {
       const startIndex = (this.currentPage - 1) * this.itemsPerPage;
       return this.data.slice(startIndex, startIndex + this.itemsPerPage);
     },

@@ -22,7 +22,13 @@ defmodule TimeManagerWeb.UserController do
   def login(conn, %{"email" => email, "password" => password}) do
     case Accounts.authenticate_by_email_and_password(email, password) do
       {:ok, token} ->
-        json(conn, %{token: token})
+        csrf_token = TimeManagerWeb.Plugs.CSRFProtection.generate_csrf_token()
+
+        conn = put_session(conn, "_csrf_token", csrf_token)
+
+        conn
+        |> put_status(:ok)
+        |> json(%{token: token, csrf_token: csrf_token})
 
       {:error, :invalid_credentials} ->
         conn
@@ -46,7 +52,7 @@ defmodule TimeManagerWeb.UserController do
   end
 
   def me(conn, _params) do
-    user_id = conn.assigns[:current_user]
+    user_id = conn.assigns[:current_user]["id"]
 
     case Accounts.get_user(user_id) do
       {:ok, user} ->
@@ -80,11 +86,20 @@ defmodule TimeManagerWeb.UserController do
   end
 
   def create(conn, %{"user" => user_params}) do
-    with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
+    current_user_role = conn.assigns[:current_user]["role"]
+
+    if current_user_role == "Supervisor" do
+      with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
+        conn
+        |> put_status(:created)
+        |> put_resp_header("location", ~p"/api/users/#{user.id}")
+        |> json(user)
+      end
+    else
       conn
-      |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/users/#{user.id}")
-      |> json(user)
+      |> put_status(:forbidden)
+      |> json(%{error: "Forbidden: Only Supervisors can create new users."})
+      |> halt()
     end
   end
 
@@ -101,17 +116,42 @@ defmodule TimeManagerWeb.UserController do
   end
 
   def update(conn, %{"id" => id, "user" => user_params}) do
+    current_user_role = conn.assigns[:current_user]["role"]
+    current_user_id = conn.assigns[:current_user]["id"]
+
     case Accounts.get_user(id) do
       {:ok, user} ->
+        # Filter out nil values from user_params
         user_params = Enum.reject(user_params, fn {_, v} -> is_nil(v) end) |> Map.new()
 
-        with {:ok, %User{} = updated_user} <- Accounts.update_user(user, user_params) do
-          json(conn, updated_user)
+        if current_user_role == "Supervisor" do
+          # Supervisors can update any user including role
+          with {:ok, %User{} = updated_user} <- Accounts.update_user(user, user_params) do
+            json(conn, updated_user)
+          else
+            {:error, changeset} ->
+              conn
+              |> put_status(:unprocessable_entity)
+              |> json(%{errors: changeset})
+          end
         else
-          {:error, changeset} ->
+          if current_user_id == user.id do
+            # Exclude role from update
+            allowed_params = Map.take(user_params, ["username", "email"])
+
+            with {:ok, %User{} = updated_user} <- Accounts.update_user(user, allowed_params) do
+              json(conn, updated_user)
+            else
+              {:error, changeset} ->
+                conn
+                |> put_status(:unprocessable_entity)
+                |> json(%{errors: changeset})
+            end
+          else
             conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{errors: changeset})
+            |> put_status(:forbidden)
+            |> json(%{error: "Forbidden: You can only update your own account."})
+          end
         end
 
       {:error, :not_found} ->
@@ -122,21 +162,30 @@ defmodule TimeManagerWeb.UserController do
   end
 
   def delete(conn, %{"id" => id}) do
-    case Accounts.get_user(id) do
-      {:ok, user} ->
-        with {:ok, %User{}} <- Accounts.delete_user(user) do
-          send_resp(conn, :no_content, "")
-        else
-          {:error, reason} ->
-            conn
-            |> put_status(:unprocessable_entity)
-            |> json(%{error: reason})
-        end
+    current_user_role = conn.assigns[:current_user]["role"]
 
-      {:error, :not_found} ->
-        conn
-        |> put_status(:not_found)
-        |> json(%{error: "User not found"})
+    if current_user_role == "Supervisor" do
+      case Accounts.get_user(id) do
+        {:ok, user} ->
+          with {:ok, %User{}} <- Accounts.delete_user(user) do
+            send_resp(conn, :no_content, "")
+          else
+            {:error, reason} ->
+              conn
+              |> put_status(:unprocessable_entity)
+              |> json(%{error: reason})
+          end
+
+        {:error, :not_found} ->
+          conn
+          |> put_status(:not_found)
+          |> json(%{error: "User not found"})
+      end
+    else
+      conn
+      |> put_status(:forbidden)
+      |> json(%{error: "Forbidden: Only Supervisors can delete users."})
+      |> halt()
     end
   end
 end

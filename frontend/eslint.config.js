@@ -14,15 +14,13 @@ export default ts.config(
         parser: '@typescript-eslint/parser',
       },
     },
-    ignores: [".node_modules/*", ".dist/**/*"],
-    rules: {
-      eqeqeq: "off",
-      "no-unused-vars": "error",
-      "prefer-const": ["error", { ignoreReadBeforeAssign: true }],
-    },
+    ignores: ['.node_modules/*', '.dist/**/*'],
     rules: {
       ...prettierConfig.rules,
       'vue/multi-word-component-names': 'off',
+      eqeqeq: 'off',
+      'no-unused-vars': 'error',
+      'prefer-const': ['error', { ignoreReadBeforeAssign: true }],
     },
   }
 );

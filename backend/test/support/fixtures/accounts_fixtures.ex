@@ -31,11 +31,11 @@ defmodule TimeManager.AccountsFixtures do
   @doc """
   Generate a user token.
   """
-  def user_token_fixture(user) do
+  def user_token_fixture(user, role) do
     case JWT.generate_and_sign(
            %{
              "user_id" => user.id,
-             "role" => user.role,
+             "role" => role.name,
              "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
            },
            JWT.signer()

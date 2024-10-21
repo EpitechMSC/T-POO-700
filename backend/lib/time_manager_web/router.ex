@@ -3,20 +3,28 @@ defmodule TimeManagerWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+    plug :fetch_session
   end
 
   pipeline :authenticate do
     plug TimeManagerWeb.Plugs.Authenticate
+    plug TimeManagerWeb.Plugs.CSRFProtection
+  end
+
+  pipeline :manager_or_supervisor do
+    plug TimeManagerWeb.Plugs.EnsureRole, ["Manager"]
+  end
+
+  pipeline :supervisor_only do
+    plug TimeManagerWeb.Plugs.EnsureRole, ["Supervisor"]
   end
 
   scope "/api", TimeManagerWeb do
     pipe_through :api
 
     post "/login", UserController, :login
-    post "/users", UserController, :create
 
     resources "/signal", SignalController, except: [:new, :delete]
-    resources "/roles", RoleController, except: [:edit]
 
     pipe_through :authenticate
 
@@ -25,14 +33,19 @@ defmodule TimeManagerWeb.Router do
     get "/workingtimes/stats/:id", WorkingTimeController, :stats
     get "/workingtimes/user/:id", WorkingTimeController, :search_by_userid
     get "/workingtimes/search/:id", WorkingTimeController, :search_by_userid_and_date_range
-    get "/working_times/:user_id/weekly", WorkingTimeController, :weekly_stats
-    get "/working_times/:user_id/monthly", WorkingTimeController, :monthly_stats
-    get "/working_times/:user_id/yearly", WorkingTimeController, :yearly_stats
-    post "/clocks", ClockController, :create
+    get "/workingtimes/:user_id/weekly", WorkingTimeController, :weekly_stats
+    get "/workingtimes/:user_id/monthly", WorkingTimeController, :monthly_stats
+    get "/workingtimes/:user_id/yearly", WorkingTimeController, :yearly_stats
 
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
     resources "/clocks", ClockController, except: [:edit]
+
+    pipe_through [:manager_or_supervisor]
+
+    pipe_through [:supervisor_only]
+
+    resources "/roles", RoleController, except: [:edit]
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

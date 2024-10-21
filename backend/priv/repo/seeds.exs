@@ -13,7 +13,8 @@ Repo.delete_all(Signal)
 Repo.delete_all(Role)
 
 # Create roles
-admin_role = Repo.insert!(%Role{name: "Admin"})
+supervisor_role = Repo.insert!(%Role{name: "Supervisor"})
+manager_role = Repo.insert!(%Role{name: "Manager"})
 user_role = Repo.insert!(%Role{name: "User"})
 
 # Create Bat Signal
@@ -31,7 +32,7 @@ _user1 =
     email: "alex@surfhub.eu",
     username: "Alex",
     password_hash: hashed_password1,
-    role: admin_role.id
+    role: supervisor_role.id
   })
 
 hashed_password2 = Bcrypt.hash_pwd_salt("password2")
@@ -41,7 +42,7 @@ _user2 =
     email: "manu@surfhub.eu",
     username: "Manu",
     password_hash: hashed_password2,
-    role: user_role.id
+    role: manager_role.id
   })
 
 hashed_password3 = Bcrypt.hash_pwd_salt("password3")
@@ -81,7 +82,7 @@ _user6 =
     email: "batman@surfhub.eu",
     username: "Batman",
     password_hash: hashed_password6,
-    role: admin_role.id
+    role: manager_role.id
   })
 
 # Generate working times and clocks

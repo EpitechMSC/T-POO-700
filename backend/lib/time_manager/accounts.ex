@@ -47,21 +47,26 @@ defmodule TimeManager.Accounts do
   end
 
   def authenticate_by_email_and_password(email, password) do
-    case Repo.get_by(User, email: email) do
+    query =
+      from u in User,
+        join: r in Role,
+        on: u.role == r.id,
+        where: u.email == ^email,
+        select: {u, r.name}
+
+    case Repo.one(query) do
       nil ->
         {:error, :invalid_credentials}
 
-      user ->
+      {%User{} = user, role_name} ->
         if Bcrypt.verify_pass(password, user.password_hash) do
-          case JWT.generate_and_sign(
-                 %{
-                   "user_id" => user.id,
-                   "role" => user.role,
-                   "exp" =>
-                     DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
-                 },
-                 JWT.signer()
-               ) do
+          claims = %{
+            "user_id" => user.id,
+            "role" => role_name,
+            "exp" => DateTime.utc_now() |> DateTime.add(3600, :second) |> DateTime.to_unix()
+          }
+
+          case JWT.generate_and_sign(claims, JWT.signer()) do
             {:ok, token, _claims} -> {:ok, token}
             {:error, reason} -> {:error, reason}
           end
@@ -209,8 +214,27 @@ defmodule TimeManager.Accounts do
       [%Role{}, ...]
 
   """
-  def list_roles do
-    Repo.all(Role)
+  def list_roles(page \\ 1, page_size \\ 10) do
+    total_count = Repo.aggregate(Role, :count, :id)
+
+    roles =
+      Role
+      |> order_by([r], asc: r.name)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
+
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: roles,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
 
   @doc """

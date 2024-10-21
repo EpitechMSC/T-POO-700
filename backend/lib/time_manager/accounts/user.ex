@@ -2,7 +2,6 @@ defmodule TimeManager.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
 
-  alias TimeManager.Accounts.Role
   alias Bcrypt
 
   @derive {Jason.Encoder, only: [:id, :username, :email, :role]}
@@ -50,8 +49,8 @@ defmodule TimeManager.Accounts.User do
     |> hash_password()
   end
 
-  defp validate_password(changeset, attrs, update \\ false) do
-    if password = get_change(changeset, :password) do
+  defp validate_password(changeset, _attrs, update \\ false) do
+    if _password = get_change(changeset, :password) do
       changeset
       |> validate_length(:password, min: 6, message: "Password must be at least 6 characters")
     else

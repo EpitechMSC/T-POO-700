@@ -8,13 +8,13 @@ const WorkingTimes = {
     requests.get<WorkingTime>(`workingtimes/${userID}/${id}`),
 
   getUserWeeklyWorkingTimes: (userId: number): Promise<WorkingTime[]> =>
-    requests.get<WorkingTime[]>(`working_times/${userId}/weekly`),
+    requests.get<WorkingTime[]>(`workingtimes/${userId}/weekly`),
 
   getUserMonthlyWorkingTimes: (userId: number): Promise<WorkingTime[]> =>
-    requests.get<WorkingTime[]>(`working_times/${userId}/monthly`),
+    requests.get<WorkingTime[]>(`workingtimes/${userId}/monthly`),
 
   getUserYearlyWorkingTimes: (userId: number): Promise<WorkingTime[]> =>
-    requests.get<WorkingTime[]>(`working_times/${userId}/yearly`),
+    requests.get<WorkingTime[]>(`workingtimes/${userId}/yearly`),
 
   getUserWorkingTimesByUserId: (
     userId: number,

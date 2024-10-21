@@ -16,8 +16,11 @@ defmodule TimeManagerWeb.Plugs.Authenticate do
     case JWT.verify(token, JWT.signer()) do
       {:ok, claims} ->
         case claims do
-          %{"user_id" => user_id} -> assign(conn, :current_user, user_id)
-          _ -> unauthorized_response(conn)
+          %{"user_id" => user_id, "role" => role} ->
+            assign(conn, :current_user, %{"id" => user_id, "role" => role})
+
+          _ ->
+            unauthorized_response(conn)
         end
 
       {:error, reason} ->

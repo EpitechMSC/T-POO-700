@@ -4,6 +4,7 @@ import { requests } from '../config/axiosConfig';
 
 interface AuthResponse {
   token: string;
+  csrf_token: string;
 }
 
 const Authenticate = {

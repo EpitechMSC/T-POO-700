@@ -2,7 +2,6 @@ defmodule TimeManagerWeb.UserControllerTest do
   use TimeManagerWeb.ConnCase
 
   import TimeManager.AccountsFixtures
-
   alias TimeManager.Accounts.User
 
   @invalid_attrs %{username: nil, email: nil, password: nil}
@@ -14,11 +13,13 @@ defmodule TimeManagerWeb.UserControllerTest do
 
   describe "index" do
     test "lists all users when authenticated", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
+      # Create additional users to ensure listing works
       user_fixture()
       user_fixture()
 
@@ -32,19 +33,25 @@ defmodule TimeManagerWeb.UserControllerTest do
                Map.has_key?(user, "id") and Map.has_key?(user, "username")
              end)
     end
+
+    test "returns forbidden for unauthenticated user", %{conn: conn} do
+      conn = get(conn, ~p"/api/users")
+      assert response(conn, 401)
+    end
   end
 
   describe "create user" do
-    test "renders user when data is valid", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+    test "renders user when data is valid and supervisor token is provided", %{conn: conn} do
+      role = role_fixture(name: "Supervisor")
+      supervisor = user_fixture(role: role.id)
+      token = user_token_fixture(supervisor, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
       username = "user_#{:rand.uniform(1000)}"
       email = "user_#{:rand.uniform(1000)}@gmail.com"
       password = "secure_password_#{:rand.uniform(1000)}"
-      role = role_fixture()
+      role_id = role_fixture().id
 
       conn =
         post(conn, ~p"/api/users",
@@ -52,20 +59,82 @@ defmodule TimeManagerWeb.UserControllerTest do
             username: username,
             email: email,
             password: password,
-            role: role.id
+            role: role_id
           }
         )
 
-      assert %{"id" => id, "username" => ^username, "email" => ^email, "role" => role} =
+      assert %{"username" => ^username, "email" => ^email, "role" => ^role_id} =
                json_response(conn, 201)
     end
 
+    test "fails when a non-supervisor tries to create a user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+      conn =
+        post(conn, ~p"/api/users",
+          user: %{
+            username: "invalid_user",
+            email: "invalid@example.com",
+            password: "password123",
+            role: role_fixture().id
+          }
+        )
+
+      assert json_response(conn, 403)["error"] ==
+               "Forbidden: Only Supervisors can create new users."
+    end
+
     test "renders errors when data is invalid", %{conn: conn} do
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "Supervisor")
+      supervisor = user_fixture(role: role.id)
+      token = user_token_fixture(supervisor, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = post(conn, ~p"/api/users", user: @invalid_attrs)
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+
+    test "fails when required fields are missing", %{conn: conn} do
+      role = role_fixture(name: "Supervisor")
+      supervisor = user_fixture(role: role.id)
+      token = user_token_fixture(supervisor, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+      conn =
+        post(conn, ~p"/api/users",
+          user: %{
+            username: nil,
+            email: nil,
+            password: nil,
+            role: nil
+          }
+        )
+
+      assert json_response(conn, 422)["errors"] != %{}
+    end
+
+    test "fails when email format is invalid", %{conn: conn} do
+      role = role_fixture(name: "Supervisor")
+      supervisor = user_fixture(role: role.id)
+      token = user_token_fixture(supervisor, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+      conn =
+        post(conn, ~p"/api/users",
+          user: %{
+            username: "valid_username",
+            email: "invalid_email_format",
+            password: "valid_password",
+            role: role_fixture().id
+          }
+        )
+
       assert json_response(conn, 422)["errors"] != %{}
     end
   end
@@ -73,38 +142,82 @@ defmodule TimeManagerWeb.UserControllerTest do
   describe "update user" do
     setup [:create_user]
 
-    test "renders user when data is valid", %{conn: conn, user: %User{id: id} = user} do
-      token = user_token_fixture(user)
+    test "supervisor can update any field", %{conn: conn, user: %User{id: id} = _user} do
+      role = role_fixture(name: "Supervisor")
+      supervisor = user_fixture(role: role.id)
+      token = user_token_fixture(supervisor, role)
 
-      new_username = "user_#{:rand.uniform(1000)}"
-      new_email = "user.test@axel.axel"
+      new_role = role_fixture()
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
       conn =
         put(conn, ~p"/api/users/#{id}",
           user: %{
-            username: new_username,
-            email: new_email
+            username: "new_username",
+            email: "new_email@example.com",
+            role: new_role.id
           }
         )
 
-      assert %{"id" => ^id, "username" => ^new_username, "email" => ^new_email} =
-               json_response(conn, 200)
+      assert json_response(conn, 200)["username"] == "new_username"
+      assert json_response(conn, 200)["role"] == new_role.id
+    end
+
+    test "ordinary user can only update their own email and username", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+      conn =
+        put(conn, ~p"/api/users/#{user.id}",
+          user: %{
+            username: "new_user_username",
+            email: "new_user_email@example.com"
+          }
+        )
+
+      assert json_response(conn, 200)["username"] == "new_user_username"
+      assert json_response(conn, 200)["email"] == "new_user_email@example.com"
+    end
+
+    test "ordinary user cannot update role", %{conn: conn} do
+      role = role_fixture(name: "User")
+      supervisor_role = role_fixture(name: "Supervisor")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+
+      conn =
+        put(conn, ~p"/api/users/#{user.id}",
+          user: %{
+            username: "new_user_username",
+            email: "new_user_email@example.com",
+            role: supervisor_role
+          }
+        )
+
+      assert json_response(conn, 200)
+      assert json_response(conn, 200)["role"] == role.id
+      assert json_response(conn, 200)["role"] !== supervisor_role.id
     end
 
     test "returns not found when user does not exist", %{conn: conn} do
       fake_user_id = 999
-      user = user_fixture()
-      token = user_token_fixture(user)
+      role = role_fixture(name: "Supervisor")
+      supervisor = user_fixture(role: role.id)
+      token = user_token_fixture(supervisor, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
 
       conn =
         put(conn, ~p"/api/users/#{fake_user_id}",
           user: %{
-            username: "user_#{:rand.uniform(1000)}",
-            email: "user_#{:rand.uniform(1000)}@gmail.com"
+            username: "new_username",
+            email: "new_email@example.com"
           }
         )
 
@@ -115,32 +228,47 @@ defmodule TimeManagerWeb.UserControllerTest do
   describe "delete user" do
     setup [:create_user]
 
-    test "deletes chosen user", %{conn: conn, user: user} do
-      token = user_token_fixture(user)
+    test "supervisor can delete a user", %{conn: conn, user: %User{id: id}} do
+      role = role_fixture(name: "Supervisor")
+      supervisor = user_fixture(role: role.id)
+      token = user_token_fixture(supervisor, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
-      conn = delete(conn, ~p"/api/users/#{user.id}")
+      conn = delete(conn, ~p"/api/users/#{id}")
       assert response(conn, 204)
     end
 
     test "returns not found when user does not exist", %{conn: conn} do
-      token = user_token_fixture(user_fixture())
+      role = role_fixture(name: "Supervisor")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = delete(conn, ~p"/api/users/999")
       assert json_response(conn, 404)["error"] == "User not found"
     end
+
+    test "ordinary user cannot delete another user", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
+      conn = delete(conn, ~p"/api/users/#{user_fixture().id}")
+      assert json_response(conn, 403)["error"] == "Forbidden: Only Supervisors can delete users."
+    end
   end
 
   describe "find users by email or username" do
     setup do
-      user1 = user_fixture(username: "john_doe", email: "john@example.com")
-      user2 = user_fixture(username: "jane_doe", email: "jane@example.com")
-      %{user1: user1, user2: user2}
+      user = user_fixture(username: "john_doe", email: "john@example.com")
+      user1 = user_fixture(username: "jane_doe", email: "jane@example.com")
+      %{user: user, user1: user1}
     end
 
-    test "returns users matching the email", %{conn: conn, user1: user1} do
-      token = user_token_fixture(user1)
+    test "returns users matching the email", %{conn: conn, user: %User{id: user_id} = user} do
+      role = role_fixture(name: "User")
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/users/search?email=john")
@@ -149,16 +277,17 @@ defmodule TimeManagerWeb.UserControllerTest do
 
       assert response_data == [
                %{
-                 "id" => user1.id,
-                 "username" => user1.username,
-                 "email" => user1.email,
-                 "role" => user1.role
+                 "id" => user_id,
+                 "username" => user.username,
+                 "email" => user.email,
+                 "role" => user.role
                }
              ]
     end
 
-    test "returns users matching the username", %{conn: conn, user2: user2} do
-      token = user_token_fixture(user2)
+    test "returns users matching the username", %{conn: conn, user1: %User{id: user1_id} = user1} do
+      role = role_fixture(name: "User")
+      token = user_token_fixture(user1, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/users/search?username=jane")
@@ -167,16 +296,18 @@ defmodule TimeManagerWeb.UserControllerTest do
 
       assert response_data == [
                %{
-                 "id" => user2.id,
-                 "username" => user2.username,
-                 "email" => user2.email,
-                 "role" => user2.role
+                 "id" => user1_id,
+                 "username" => user1.username,
+                 "email" => user1.email,
+                 "role" => user1.role
                }
              ]
     end
 
-    test "returns error when both email and username are nil", %{conn: conn, user1: user1} do
-      token = user_token_fixture(user1)
+    test "returns error when both email and username are nil", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/users/search")
@@ -186,7 +317,9 @@ defmodule TimeManagerWeb.UserControllerTest do
     end
 
     test "returns not found when no user matches", %{conn: conn} do
-      token = user_token_fixture(user_fixture())
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/users/search?email=unknown")
