@@ -16,8 +16,8 @@
   },
   "husky": {
     "hooks": {
-        "pre-commit": "lint-staged"
-      }
+      "pre-commit": "lint-staged"
+    }
   },
   "lint-staged": {
     "*.{js,vue,ts}": "prettier --write",
@@ -79,5 +79,8 @@
       "parser": "@typescript-eslint/parser"
     },
     "rules": {}
+  },
+  "optionalDependencies": {
+    "@rollup/rollup-linux-x64-gnu": "^4.24.0"
   }
 }
