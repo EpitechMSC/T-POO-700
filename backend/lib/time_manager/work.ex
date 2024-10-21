@@ -276,7 +276,7 @@ defmodule TimeManager.Work do
       worked_this_week: Float.round(Decimal.to_float(worked_this_week), 2),
       total_days_worked: total_days_worked,
       worked_this_month: Float.round(Decimal.to_float(worked_this_month), 2),
-      worked_last_month: Float.round(Decimal.to_float(worked_last_month), 2),
+      worked_last_month: Float.round(Decimal.to_float(worked_last_month), 2)
     }
 
     {:ok, stats}
