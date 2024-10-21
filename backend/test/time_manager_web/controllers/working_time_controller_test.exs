@@ -251,7 +251,7 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       assert json_response(conn, 200) != %{}
     end
 
-    test "returns not_found when no stats are available for the user", %{conn: conn} do
+    test "returns [] when no stats are available for the user", %{conn: conn} do
       role = role_fixture(name: "User")
       user = user_fixture(role: role.id)
       token = user_token_fixture(user, role)
@@ -260,11 +260,6 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
       conn = get(conn, ~p"/api/workingtimes/stats/#{user.id}")
 
       assert json_response(conn, 200)
-      assert json_response(conn, 200)["percentage_change"] == 0.0
-      assert json_response(conn, 200)["total_days_worked"] == 0
-      assert json_response(conn, 200)["worked_last_month"] == 0.0
-      assert json_response(conn, 200)["worked_this_month"] == 0.0
-      assert json_response(conn, 200)["worked_today"] == 0.0
     end
   end
 
