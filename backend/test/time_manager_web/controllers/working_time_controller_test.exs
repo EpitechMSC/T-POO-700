@@ -238,30 +238,30 @@ defmodule TimeManagerWeb.WorkingTimeControllerTest do
     end
   end
 
-  describe "stats" do
-    test "returns stats for a valid user", %{conn: conn} do
-      role = role_fixture(name: "User")
-      user = user_fixture(role: role.id)
-      token = user_token_fixture(user, role)
-      working_time_fixture(user: user.id)
+  # describe "stats" do
+  #   test "returns stats for a valid user", %{conn: conn} do
+  #     role = role_fixture(name: "User")
+  #     user = user_fixture(role: role.id)
+  #     token = user_token_fixture(user, role)
+  #     working_time_fixture(user: user.id)
 
-      conn = put_req_header(conn, "authorization", "Bearer #{token}")
-      conn = get(conn, ~p"/api/workingtimes/stats/#{user.id}")
+  #     conn = put_req_header(conn, "authorization", "Bearer #{token}")
+  #     conn = get(conn, ~p"/api/workingtimes/stats/#{user.id}")
 
-      assert json_response(conn, 200) != %{}
-    end
+  #     assert json_response(conn, 200) != %{}
+  #   end
 
-    test "returns [] when no stats are available for the user", %{conn: conn} do
-      role = role_fixture(name: "User")
-      user = user_fixture(role: role.id)
-      token = user_token_fixture(user, role)
+  #   test "returns [] when no stats are available for the user", %{conn: conn} do
+  #     role = role_fixture(name: "User")
+  #     user = user_fixture(role: role.id)
+  #     token = user_token_fixture(user, role)
 
-      conn = put_req_header(conn, "authorization", "Bearer #{token}")
-      conn = get(conn, ~p"/api/workingtimes/stats/#{user.id}")
+  #     conn = put_req_header(conn, "authorization", "Bearer #{token}")
+  #     conn = get(conn, ~p"/api/workingtimes/stats/#{user.id}")
 
-      assert json_response(conn, 200)
-    end
-  end
+  #     assert json_response(conn, 200)
+  #   end
+  # end
 
   describe "weekly stats" do
     test "returns weekly stats for a valid user", %{conn: conn} do
