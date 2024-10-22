@@ -36,23 +36,89 @@ hashed_password8 = Bcrypt.hash_pwd_salt("password8")
 hashed_password9 = Bcrypt.hash_pwd_salt("password9")
 hashed_password10 = Bcrypt.hash_pwd_salt("password10")
 
-
 # Create users with roles
-_user1 = Repo.insert!(%User{email: "alex@surfhub.eu", username: "Alex", password_hash: hashed_password1, role: supervisor_role.id})
-_user2 = Repo.insert!(%User{email: "edward@surfhub.eu", username: "Edward", password_hash: hashed_password2, role: user_role.id})
-_user3 = Repo.insert!(%User{email: "manu@surfhub.eu", username: "Manu", password_hash: hashed_password3, role: user_role.id})
-_user4 = Repo.insert!(%User{email: "selina@surfhub.eu", username: "Selina", password_hash: hashed_password4, role: user_role.id})
-_user5 = Repo.insert!(%User{email: "jerome@surfhub.eu", username: "Jerome", password_hash: hashed_password5, role: user_role.id})
-_user6 = Repo.insert!(%User{email: "jonathan@surfhub.com", username: "Jonathan", password_hash: hashed_password6, role: user_role.id})
+_user1 =
+  Repo.insert!(%User{
+    email: "alex@surfhub.eu",
+    username: "Alex",
+    password_hash: hashed_password1,
+    role: supervisor_role.id
+  })
+
+_user2 =
+  Repo.insert!(%User{
+    email: "edward@surfhub.eu",
+    username: "Edward",
+    password_hash: hashed_password2,
+    role: user_role.id
+  })
+
+_user3 =
+  Repo.insert!(%User{
+    email: "manu@surfhub.eu",
+    username: "Manu",
+    password_hash: hashed_password3,
+    role: user_role.id
+  })
+
+_user4 =
+  Repo.insert!(%User{
+    email: "selina@surfhub.eu",
+    username: "Selina",
+    password_hash: hashed_password4,
+    role: user_role.id
+  })
+
+_user5 =
+  Repo.insert!(%User{
+    email: "jerome@surfhub.eu",
+    username: "Jerome",
+    password_hash: hashed_password5,
+    role: user_role.id
+  })
+
+_user6 =
+  Repo.insert!(%User{
+    email: "jonathan@surfhub.com",
+    username: "Jonathan",
+    password_hash: hashed_password6,
+    role: user_role.id
+  })
+
 # créer des superviseurs
-_user7 = Repo.insert!(%User{email: "jaquie@surfhub.eu", username: "Jaquie", password_hash: hashed_password7, role: manager_role.id})
-_user8 = Repo.insert!(%User{email: "michel@surfhub.eu", username: "Michel", password_hash: hashed_password8, role: manager_role.id})
+_user7 =
+  Repo.insert!(%User{
+    email: "jaquie@surfhub.eu",
+    username: "Jaquie",
+    password_hash: hashed_password7,
+    role: manager_role.id
+  })
+
+_user8 =
+  Repo.insert!(%User{
+    email: "michel@surfhub.eu",
+    username: "Michel",
+    password_hash: hashed_password8,
+    role: manager_role.id
+  })
+
 # créer un administrateur
-_user9 = Repo.insert!(%User{email: "gordon@surfhub.com", username: "Gordon", password_hash: hashed_password9, role: supervisor_role.id})
+_user9 =
+  Repo.insert!(%User{
+    email: "gordon@surfhub.com",
+    username: "Gordon",
+    password_hash: hashed_password9,
+    role: supervisor_role.id
+  })
+
 # créer dieu
-_user10 = Repo.insert!(%User{email: "batman@surfhub.eu", username: "Batman", password_hash: hashed_password10, role: supervisor_role.id})
-
-
+_user10 =
+  Repo.insert!(%User{
+    email: "batman@surfhub.eu",
+    username: "Batman",
+    password_hash: hashed_password10,
+    role: supervisor_role.id
+  })
 
 # Générer les utilisateurs
 users = [_user1, _user2, _user3, _user4, _user5, _user6, _user7, _user8, _user9, _user10]
