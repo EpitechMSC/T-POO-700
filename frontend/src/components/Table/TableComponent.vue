@@ -43,7 +43,7 @@
             <div class="relative">
               <button
                 class="text-gray-500 hover:text-gray-700"
-                @click="toggleMenu(rowIndex)"
+                @click="e => toggleMenu(e, rowIndex)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -63,15 +63,17 @@
               <div
                 v-if="activeRow === rowIndex"
                 class="absolute z-10 bg-white shadow-md p-2 rounded"
+                @click.stop
+                ref="dropdownMenus"
               >
                 <button
-                  class="block px-4 py-2 text-blue-500 hover:bg-gray-100"
+                  class="w-full block px-4 py-2 text-blue-500 hover:bg-gray-100 text-left"
                   @click="$emit('edit-item', item)"
                 >
                   Modifier
                 </button>
                 <button
-                  class="block px-4 py-2 text-red-500 hover:bg-gray-100"
+                  class="w-full block px-4 py-2 text-red-500 hover:bg-gray-100 text-left"
                   @click="$emit('delete-item', item)"
                 >
                   Supprimer
@@ -132,13 +134,19 @@ export default defineComponent({
     },
   },
   emits: ['delete-item', 'edit-item', 'change-page'],
+  data() {
+    return {
+      activeRow: null as number | null,
+    };
+  },
   computed: {
     paginatedData(): T[] {
       return this.data;
     },
   },
   methods: {
-    toggleMenu(rowIndex: number): void {
+    toggleMenu(e: MouseEvent, rowIndex: number): void {
+      e.stopPropagation();
       this.activeRow = this.activeRow === rowIndex ? null : rowIndex;
     },
     formatValue(value: string | number): string {
@@ -147,13 +155,28 @@ export default defineComponent({
         ? date.toLocaleString('fr-FR')
         : String(value);
     },
+    handleClickOutside(event: MouseEvent) {
+      const dropdownMenus = this.$refs.dropdownMenus as HTMLElement[];
+      let isInsideDropdown = false;
+
+      dropdownMenus.forEach(dropdown => {
+        if (dropdown && dropdown.contains(event.target as Node)) {
+          isInsideDropdown = true;
+        }
+      });
+
+      if (!isInsideDropdown) {
+        this.activeRow = null;
+      }
+    },
   },
-  data() {
-    return {
-      activeRow: null as number | null,
-    };
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
   },
 });
 
-type T = Record<string, any>;
+type T = Record<string, string | number>;
 </script>
