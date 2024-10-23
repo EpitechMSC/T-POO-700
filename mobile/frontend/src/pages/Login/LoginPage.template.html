@@ -1,0 +1,52 @@
+<section class="bg-gray-50 dark:bg-gray-900">
+  <div
+    class="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0"
+  >
+    <div
+      class="w-full bg-white rounded-lg shadow dark:border md:mt-0 sm:max-w-md xl:p-0 dark:bg-gray-800 dark:border-gray-700"
+    >
+      <div class="p-6 space-y-4 md:space-y-6 sm:p-8">
+        <h1
+          class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl dark:text-white"
+        >
+          Connectez-vous à votre compte
+        </h1>
+        <form class="space-y-4 md:space-y-6" @submit.prevent="handleLogin">
+          <BaseInput
+            v-model="email"
+            type="email"
+            label="Votre email"
+            name="email"
+            id="email"
+            placeholder="name@company.com"
+            required
+            :error="error"
+          />
+          <BaseInput
+            v-model="password"
+            type="password"
+            label="Votre mot de passe"
+            name="password"
+            id="password"
+            placeholder="••••••••"
+            required
+            :error="error"
+          />
+          <BaseButton type="submit" variant="primary" :fullWidth="true">
+            Se connecter
+          </BaseButton>
+        </form>
+        <p class="text-sm font-light text-gray-500 dark:text-gray-400">
+          Vous n'avez pas encore de compte ?
+          <router-link
+            to="/register"
+            class="font-medium text-gray-600 hover:underline dark:text-gray-500"
+          >
+            Inscrivez-vous
+          </router-link>
+        </p>
+        <div v-if="error" class="text-red-500 text-sm mt-2">{{ error }}</div>
+      </div>
+    </div>
+  </div>
+</section>
