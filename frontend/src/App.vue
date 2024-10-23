@@ -1,11 +1,25 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthenticateStore } from './app/store/store';
 import NavBar from './components/NavBar/NavBar.vue';
+import { executeBufferedRequests } from './app/api/handler/handleRequestWhenOffline';
 
 const router = useRouter();
 const authStore = useAuthenticateStore();
+
+onMounted(() => {
+  window.addEventListener('online', () => {
+    executeBufferedRequests();
+  });
+});
+
+onUnmounted(() => {
+  //cleanup event
+  window.removeEventListener('online', () => {
+    console.log('online');
+  });
+});
 
 onMounted(async () => {
   const token = localStorage.getItem('token');
