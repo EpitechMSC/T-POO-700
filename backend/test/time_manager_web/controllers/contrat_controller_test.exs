@@ -31,8 +31,6 @@ defmodule TimeManagerWeb.ContratControllerTest do
     end
   end
 
-
-
   defp create_contrat(_) do
     contrat = contrat_fixture()
     %{contrat: contrat}
