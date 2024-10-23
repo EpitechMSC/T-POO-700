@@ -1,4 +1,4 @@
-import { defineComponent, ref, onMounted, computed } from 'vue';
+import { defineComponent, ref, computed, watch } from 'vue';
 import {
   useAuthenticateStore,
   useWorkingTimesStore,
@@ -48,7 +48,15 @@ export default defineComponent({
       }
     };
 
-    onMounted(fetchData);
+    watch(
+      () => authStore.user,
+      newUser => {
+        if (newUser?.id) {
+          fetchData();
+        }
+      },
+      { immediate: true }
+    );
 
     const chartData = computed<ChartData<'line', number[], unknown>>(() => {
       const labels = workingTimesStore.workingTimes.map(wt => {

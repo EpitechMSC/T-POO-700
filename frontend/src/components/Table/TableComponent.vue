@@ -43,9 +43,8 @@
             <div class="relative">
               <button
                 class="text-gray-500 hover:text-gray-700"
-                @click="toggleMenu(rowIndex)"
+                @click="e => toggleMenu(e, rowIndex)"
               >
-                >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="h-6 w-6"
@@ -64,10 +63,18 @@
               <div
                 v-if="activeRow === rowIndex"
                 class="absolute z-10 bg-white shadow-md p-2 rounded"
+                @click.stop
+                ref="dropdownMenus"
               >
                 <button
-                  class="block px-4 py-2 text-red-500 hover:bg-gray-100"
-                  @click="confirmDelete(rowIndex)"
+                  class="w-full block px-4 py-2 text-blue-500 hover:bg-gray-100 text-left"
+                  @click="$emit('edit-item', item)"
+                >
+                  Modifier
+                </button>
+                <button
+                  class="w-full block px-4 py-2 text-red-500 hover:bg-gray-100 text-left"
+                  @click="$emit('delete-item', item)"
                 >
                   Supprimer
                 </button>
@@ -83,7 +90,7 @@
       <button
         :disabled="currentPage === 1"
         class="px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
-        @click="currentPage--"
+        @click="$emit('change-page', currentPage - 1)"
       >
         Précédent
       </button>
@@ -91,7 +98,7 @@
       <button
         :disabled="currentPage === totalPages"
         class="px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
-        @click="currentPage++"
+        @click="$emit('change-page', currentPage + 1)"
       >
         Suivant
       </button>
@@ -113,35 +120,34 @@ export default defineComponent({
       type: Array as PropType<T[]>,
       required: true,
     },
+    currentPage: {
+      type: Number,
+      required: true,
+    },
+    totalPages: {
+      type: Number,
+      required: true,
+    },
     itemsPerPage: {
       type: Number,
       default: 5,
     },
   },
-  emits: ['delete-item'],
+  emits: ['delete-item', 'edit-item', 'change-page'],
   data() {
     return {
-      currentPage: 1,
       activeRow: null as number | null,
     };
   },
   computed: {
-    totalPages(): number {
-      return Math.ceil(this.data.length / this.itemsPerPage);
-    },
     paginatedData(): T[] {
-      const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-      return this.data.slice(startIndex, startIndex + this.itemsPerPage);
+      return this.data;
     },
   },
   methods: {
-    toggleMenu(rowIndex: number): void {
+    toggleMenu(e: MouseEvent, rowIndex: number): void {
+      e.stopPropagation();
       this.activeRow = this.activeRow === rowIndex ? null : rowIndex;
-    },
-    confirmDelete(rowIndex: number): void {
-      this.$emit('delete-item', this.data[rowIndex]);
-      console.log("Suppression de l'élément :", this.data[rowIndex]);
-      this.activeRow = null;
     },
     formatValue(value: string | number): string {
       const date = new Date(value as string);
@@ -149,8 +155,28 @@ export default defineComponent({
         ? date.toLocaleString('fr-FR')
         : String(value);
     },
+    handleClickOutside(event: MouseEvent) {
+      const dropdownMenus = this.$refs.dropdownMenus as HTMLElement[];
+      let isInsideDropdown = false;
+
+      dropdownMenus.forEach(dropdown => {
+        if (dropdown && dropdown.contains(event.target as Node)) {
+          isInsideDropdown = true;
+        }
+      });
+
+      if (!isInsideDropdown) {
+        this.activeRow = null;
+      }
+    },
+  },
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  beforeUnmount() {
+    document.removeEventListener('click', this.handleClickOutside);
   },
 });
 
-type T = Record<string, any>;
+type T = Record<string, string | number>;
 </script>

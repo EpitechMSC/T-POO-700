@@ -9,6 +9,7 @@ import {
 import UserDashboard from '../../pages/User/UserDashboard.vue';
 import { useAuthenticateStore } from '../store/store';
 import SettingsPage from '../../pages/Settings/SettingsPage.vue';
+import WorkingTimesPage from '../../pages/WorkingTimes/WorkingTimesPage.vue';
 
 interface RouteMeta {
   requiresAuth?: boolean;
@@ -20,6 +21,12 @@ const routes: Array<RouteRecordRaw> = [
     path: '/users/:id',
     name: 'User',
     component: UserDashboard,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/times',
+    name: 'Working Times',
+    component: WorkingTimesPage,
     meta: { requiresAuth: true },
   },
   {
