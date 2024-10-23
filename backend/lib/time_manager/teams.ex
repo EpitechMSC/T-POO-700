@@ -18,18 +18,39 @@ defmodule TimeManager.Teams do
       [%Team{}, ...]
 
   """
-  def list_teams do
-    Repo.all(Team)
+  def list_teams(page \\ 1, page_size \\ 10) do
+    total_count = Repo.aggregate(Team, :count, :id)
+
+    teams =
+      Team
+      |> order_by([t], asc: t.manager_id)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
+
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: teams,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
 
   def list_team_members(team_id) do
-    query = from u in User,
-            join: tm in TeamMembership, on: u.id == tm.user_id,
-            where: tm.team_id == ^team_id,
-            select: u
+    query =
+      from u in User,
+        join: tm in TeamMembership,
+        on: u.id == tm.user_id,
+        where: tm.team_id == ^team_id,
+        select: u
 
-    # Exécuter la requête
-    Repo.all(query)
+    members = Repo.all(query)
+    {:ok, members}
   end
 
   @doc """
@@ -47,6 +68,13 @@ defmodule TimeManager.Teams do
 
   """
   def get_team!(id), do: Repo.get!(Team, id)
+
+  def get_team(id) do
+    case Repo.get(Team, id) do
+      nil -> {:error, :not_found}
+      team -> {:ok, team}
+    end
+  end
 
   @doc """
   Creates a team.
@@ -113,8 +141,6 @@ defmodule TimeManager.Teams do
     Team.changeset(team, attrs)
   end
 
-  alias TimeManager.Teams.TeamMembership
-
   @doc """
   Returns the list of team_memberships.
 
@@ -124,8 +150,27 @@ defmodule TimeManager.Teams do
       [%TeamMembership{}, ...]
 
   """
-  def list_team_memberships do
-    Repo.all(TeamMembership)
+  def list_team_memberships(page \\ 1, page_size \\ 10) do
+    total_count = Repo.aggregate(TeamMembership, :count, :id)
+
+    memberships =
+      TeamMembership
+      |> order_by([t], asc: t.team_id)
+      |> limit(^page_size)
+      |> offset(^((page - 1) * page_size))
+      |> Repo.all()
+
+    total_pages = div(total_count + page_size - 1, page_size)
+
+    {:ok,
+     %TimeManagerWeb.Response{
+       data: memberships,
+       pagination: %{
+         total_pages: total_pages,
+         current_page: page,
+         page_size: page_size
+       }
+     }}
   end
 
   @doc """
@@ -143,6 +188,13 @@ defmodule TimeManager.Teams do
 
   """
   def get_team_membership!(id), do: Repo.get!(TeamMembership, id)
+
+  def get_team_membership(id) do
+    case Repo.get(TeamMembership, id) do
+      nil -> {:error, :not_found}
+      membership -> {:ok, membership}
+    end
+  end
 
   @doc """
   Creates a team_membership.

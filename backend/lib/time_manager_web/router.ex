@@ -25,12 +25,11 @@ defmodule TimeManagerWeb.Router do
     post "/login", UserController, :login
 
     resources "/signal", SignalController, except: [:new, :delete]
-    resources "/teams", TeamController, except: [:new, :delete]
-    get "/teams/:id/members", TeamController, :list_members
-    resources "/team_memberships", TeamMembershipController, except: [:new, :delete]
 
     pipe_through :authenticate
 
+    get "/teams/:id/members", TeamController, :list_members
+    resources "/teams", TeamController
     get "/users/me", UserController, :me
     get "/users/search", UserController, :search_by_email_or_username
     get "/workingtimes/stats/:id", WorkingTimeController, :stats
@@ -45,6 +44,7 @@ defmodule TimeManagerWeb.Router do
     resources "/clocks", ClockController, except: [:edit]
 
     pipe_through [:manager_or_supervisor]
+    resources "/team_memberships", TeamMembershipController
 
     pipe_through [:supervisor_only]
 

@@ -133,7 +133,7 @@ for manager <- managers do
 end
 
 # Remaining users_without_team are left without a team
-IO.puts("Users without a team: #{Enum.map(users_without_team, &(&1.username))}")
+IO.puts("Users without a team: #{Enum.map(users_without_team, & &1.username)}")
 
 # Générer les utilisateurs
 users = [_user1, _user2, _user3, _user4, _user5, _user6, _manager1, _manager2, _user9, _user10]
@@ -191,7 +191,9 @@ for user <- users do
                   user: user.id
                 })
 
-                IO.puts("Working time generated for #{user.username} from #{start_date} to #{end_date}")
+                IO.puts(
+                  "Working time generated for #{user.username} from #{start_date} to #{end_date}"
+                )
 
               {:error, reason} ->
                 IO.puts("Failed to create end_date: #{reason}")

@@ -2,83 +2,213 @@ defmodule TimeManagerWeb.TeamControllerTest do
   use TimeManagerWeb.ConnCase
 
   import TimeManager.TeamsFixtures
+  import TimeManager.AccountsFixtures
 
   alias TimeManager.Teams.Team
 
-  @create_attrs %{
-    name: "some name"
-  }
-  @update_attrs %{
-    name: "some updated name"
-  }
-  @invalid_attrs %{name: nil}
-
-  setup %{conn: conn} do
-    {:ok, conn: put_req_header(conn, "accept", "application/json")}
-  end
-
   describe "index" do
     test "lists all teams", %{conn: conn} do
-      conn = get(conn, ~p"/api/teams")
+      user_role = role_fixture(%{name: "User"})
+      user = user_fixture(%{role: user_role.id})
+      user_token = user_token_fixture(user, user_role)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{user_token}")
+        |> get(~p"/api/teams")
+
       assert json_response(conn, 200)["data"] == []
     end
   end
 
-  describe "create team" do
-    test "renders team when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/api/teams", team: @create_attrs)
-      assert %{"id" => id} = json_response(conn, 201)["data"]
+  describe "list_members" do
+    test "lists all members of a team", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
 
-      conn = get(conn, ~p"/api/teams/#{id}")
+      team = team_fixture(%{manager_id: supervisor.id})
 
-      assert %{
-               "id" => ^id,
-               "name" => "some name"
-             } = json_response(conn, 200)["data"]
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> get(~p"/api/teams/#{team.id}/members")
+
+      assert json_response(conn, 200) == []
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, ~p"/api/teams", team: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
-    end
-  end
+    test "returns not found when team does not exist", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
 
-  describe "update team" do
-    setup [:create_team]
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> get(~p"/api/teams/999/members")
 
-    test "renders team when data is valid", %{conn: conn, team: %Team{id: id} = team} do
-      conn = put(conn, ~p"/api/teams/#{team}", team: @update_attrs)
-      assert %{"id" => ^id} = json_response(conn, 200)["data"]
-
-      conn = get(conn, ~p"/api/teams/#{id}")
-
-      assert %{
-               "id" => ^id,
-               "name" => "some updated name"
-             } = json_response(conn, 200)["data"]
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, team: team} do
-      conn = put(conn, ~p"/api/teams/#{team}", team: @invalid_attrs)
-      assert json_response(conn, 422)["errors"] != %{}
+      assert json_response(conn, 404)
     end
   end
 
-  describe "delete team" do
-    setup [:create_team]
+  describe "create" do
+    test "supervisor creates a team", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
 
-    test "deletes chosen team", %{conn: conn, team: team} do
-      conn = delete(conn, ~p"/api/teams/#{team}")
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> post(~p"/api/teams", team: %{manager_id: supervisor.id})
+
+      assert json_response(conn, 201)
+    end
+
+    test "non-supervisor cannot create a team", %{conn: conn} do
+      manager_role = role_fixture(%{name: "Manager"})
+      manager = user_fixture(%{role: manager_role.id})
+      manager_token = user_token_fixture(manager, manager_role)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{manager_token}")
+        |> post(~p"/api/teams", team: %{manager_id: manager.id})
+
+      assert json_response(conn, 403)
+    end
+  end
+
+  describe "show" do
+    test "shows a specific team", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
+
+      team = team_fixture(%{manager_id: supervisor.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> get(~p"/api/teams/#{team.id}")
+
+      assert json_response(conn, 200)["id"] == team.id
+    end
+
+    test "returns 404 for a non-existing team", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> get(~p"/api/teams/999")
+
+      assert json_response(conn, 404)
+    end
+  end
+
+  describe "update" do
+    test "supervisor updates a team", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
+
+      manager_role = role_fixture(%{name: "Manager"})
+      manager = user_fixture(%{role: manager_role.id})
+
+      team = team_fixture(%{manager_id: supervisor.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> put(~p"/api/teams/#{team.id}", team: %{manager_id: manager.id})
+
+      assert %{"id" => id} = json_response(conn, 200)
+      assert id == team.id
+    end
+
+    test "non-supervisor cannot update a team", %{conn: conn} do
+      manager_role = role_fixture(%{name: "Manager"})
+      manager = user_fixture(%{role: manager_role.id})
+      manager_token = user_token_fixture(manager, manager_role)
+
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+
+      team = team_fixture(%{manager_id: supervisor.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{manager_token}")
+        |> put(~p"/api/teams/#{team.id}", team: %{manager_id: manager.id})
+
+      assert json_response(conn, 403)
+    end
+
+    test "returns error when updating a non-existing team", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
+
+      manager_role = role_fixture(%{name: "Manager"})
+      manager = user_fixture(%{role: manager_role.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> put(~p"/api/teams/999", team: %{manager_id: manager.id})
+
+      assert json_response(conn, 404)
+    end
+  end
+
+  describe "delete" do
+    test "supervisor deletes a team", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
+
+      team = team_fixture(%{manager_id: supervisor.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> delete(~p"/api/teams/#{team.id}")
+
       assert response(conn, 204)
-
-      assert_error_sent 404, fn ->
-        get(conn, ~p"/api/teams/#{team}")
-      end
     end
-  end
 
-  defp create_team(_) do
-    team = team_fixture()
-    %{team: team}
+    test "non-supervisor cannot delete a team", %{conn: conn} do
+      manager_role = role_fixture(%{name: "Manager"})
+      manager = user_fixture(%{role: manager_role.id})
+      manager_token = user_token_fixture(manager, manager_role)
+
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+
+      team = team_fixture(%{manager_id: manager.id})
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{manager_token}")
+        |> delete(~p"/api/teams/#{team.id}")
+
+      assert json_response(conn, 403)
+    end
+
+    test "returns error when deleting a non-existing team", %{conn: conn} do
+      supervisor_role = role_fixture(%{name: "Supervisor"})
+      supervisor = user_fixture(%{role: supervisor_role.id})
+      supervisor_token = user_token_fixture(supervisor, supervisor_role)
+
+      conn =
+        conn
+        |> put_req_header("authorization", "Bearer #{supervisor_token}")
+        |> delete(~p"/api/teams/999")
+
+      assert json_response(conn, 404)
+    end
   end
 end

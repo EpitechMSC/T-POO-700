@@ -4,7 +4,6 @@ defmodule TimeManager.Teams.TeamMembership do
 
   @derive {Jason.Encoder, only: [:id, :team_id, :user_id]}
   schema "team_memberships" do
-
     field :team_id, :id
     field :user_id, :id
 
@@ -16,7 +15,5 @@ defmodule TimeManager.Teams.TeamMembership do
     team_membership
     |> cast(attrs, [:team_id, :user_id])
     |> validate_required([:team_id, :user_id])
-    |> assoc_constraint(:team)
-    |> assoc_constraint(:user)
   end
 end

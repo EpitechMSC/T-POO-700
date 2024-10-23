@@ -1,5 +1,5 @@
 defmodule TimemanagerWeb.Decorators.EnsureRole do
-  use Decorator.Define, [is_granted: 1]
+  use Decorator.Define, is_granted: 1
 
   def is_granted(roles, body, %{args: [conn, _params]}) do
     quote do

@@ -11,7 +11,7 @@ defmodule TimeManager.TeamsFixtures do
     {:ok, team} =
       attrs
       |> Enum.into(%{
-        name: "some name"
+        manager_id: nil
       })
       |> TimeManager.Teams.create_team()
 
@@ -25,7 +25,8 @@ defmodule TimeManager.TeamsFixtures do
     {:ok, team_membership} =
       attrs
       |> Enum.into(%{
-
+        team_id: nil,
+        user_id: nil
       })
       |> TimeManager.Teams.create_team_membership()
 
