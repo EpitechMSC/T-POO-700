@@ -4,6 +4,7 @@ defmodule TimeManagerWeb.UserController do
   alias TimeManager.Accounts
   alias TimeManager.Accounts.User
   alias TimeManagerWeb.Response
+  use TimemanagerWeb.Decorators.EnsureRole
 
   action_fallback TimeManagerWeb.FallbackController
 
@@ -87,21 +88,13 @@ defmodule TimeManagerWeb.UserController do
     end
   end
 
+  @decorate is_granted(["Supervisor"])
   def create(conn, %{"user" => user_params}) do
-    current_user_role = conn.assigns[:current_user]["role"]
-
-    if current_user_role == "Supervisor" do
-      with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
-        conn
-        |> put_status(:created)
-        |> put_resp_header("location", ~p"/api/users/#{user.id}")
-        |> json(user)
-      end
-    else
+    with {:ok, %User{} = user} <- Accounts.create_user(user_params) do
       conn
-      |> put_status(:forbidden)
-      |> json(%{error: "Forbidden: Only Supervisors can create new users."})
-      |> halt()
+      |> put_status(:created)
+      |> put_resp_header("location", ~p"/api/users/#{user.id}")
+      |> json(user)
     end
   end
 
@@ -163,31 +156,23 @@ defmodule TimeManagerWeb.UserController do
     end
   end
 
+  @decorate is_granted(["Supervisor"])
   def delete(conn, %{"id" => id}) do
-    current_user_role = conn.assigns[:current_user]["role"]
+    case Accounts.get_user(id) do
+      {:ok, user} ->
+        with {:ok, %User{}} <- Accounts.delete_user(user) do
+          send_resp(conn, :no_content, "")
+        else
+          {:error, reason} ->
+            conn
+            |> put_status(:unprocessable_entity)
+            |> json(%{error: reason})
+        end
 
-    if current_user_role == "Supervisor" do
-      case Accounts.get_user(id) do
-        {:ok, user} ->
-          with {:ok, %User{}} <- Accounts.delete_user(user) do
-            send_resp(conn, :no_content, "")
-          else
-            {:error, reason} ->
-              conn
-              |> put_status(:unprocessable_entity)
-              |> json(%{error: reason})
-          end
-
-        {:error, :not_found} ->
-          conn
-          |> put_status(:not_found)
-          |> json(%{error: "User not found"})
-      end
-    else
-      conn
-      |> put_status(:forbidden)
-      |> json(%{error: "Forbidden: Only Supervisors can delete users."})
-      |> halt()
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "User not found"})
     end
   end
 end

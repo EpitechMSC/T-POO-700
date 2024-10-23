@@ -41,6 +41,7 @@ defmodule TimeManager.MixProject do
       {:timex, "~> 3.7"},
       {:joken, "~> 2.0"},
       {:bcrypt_elixir, "~> 3.2"},
+      {:decorator, "~> 1.4"},
       {:phoenix_live_dashboard, "~> 0.8.3"},
       {:esbuild, "~> 0.8", runtime: Mix.env() == :dev},
       {:cors_plug, "~> 3.0"},
