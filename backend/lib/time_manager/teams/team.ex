@@ -2,6 +2,7 @@ defmodule TimeManager.Teams.Team do
   use Ecto.Schema
   import Ecto.Changeset
 
+  @derive {Jason.Encoder, only: [:id, :manager_id]}
   schema "teams" do
     field :manager_id, :id
 

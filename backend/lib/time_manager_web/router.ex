@@ -25,8 +25,9 @@ defmodule TimeManagerWeb.Router do
     post "/login", UserController, :login
 
     resources "/signal", SignalController, except: [:new, :delete]
-    resources "/teams", SignalController, except: [:new, :delete]
-    resources "/team_memberships", SignalController, except: [:new, :delete]
+    resources "/teams", TeamController, except: [:new, :delete]
+    get "/teams/:id/members", TeamController, :list_members
+    resources "/team_memberships", TeamMembershipController, except: [:new, :delete]
 
     pipe_through :authenticate
 

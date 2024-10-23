@@ -8,28 +8,33 @@ defmodule TimeManagerWeb.TeamController do
 
   def index(conn, _params) do
     teams = Teams.list_teams()
-    render(conn, :index, teams: teams)
+    json(conn, teams)
+  end
+
+  def list_members(conn, %{"id" => team_id}) do
+    members = Teams.list_team_members(team_id)
+    json(conn, %{members: members})
   end
 
   def create(conn, %{"team" => team_params}) do
     with {:ok, %Team{} = team} <- Teams.create_team(team_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", ~p"/api/teams/#{team}")
-      |> render(:show, team: team)
+      |> put_resp_header("location", Routes.team_path(conn, :show, team))
+      |> json(%{team: team})
     end
   end
 
   def show(conn, %{"id" => id}) do
     team = Teams.get_team!(id)
-    render(conn, :show, team: team)
+    json(conn, team)
   end
 
   def update(conn, %{"id" => id, "team" => team_params}) do
     team = Teams.get_team!(id)
 
-    with {:ok, %Team{} = team} <- Teams.update_team(team, team_params) do
-      render(conn, :show, team: team)
+    with {:ok, %Team{} = updated_team} <- Teams.update_team(team, team_params) do
+      json(conn, updated_team)
     end
   end
 

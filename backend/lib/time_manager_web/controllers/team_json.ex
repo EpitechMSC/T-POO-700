@@ -18,7 +18,7 @@ defmodule TimeManagerWeb.TeamJSON do
   defp data(%Team{} = team) do
     %{
       id: team.id,
-      name: team.name
+      manager_id: team.manager_id
     }
   end
 end

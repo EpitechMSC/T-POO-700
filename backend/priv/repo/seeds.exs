@@ -3,11 +3,14 @@ alias TimeManager.Accounts.{User, Role}
 alias TimeManager.Clocks.Clock
 alias TimeManager.Work.WorkingTime
 alias TimeManager.Signals.Signal
+alias TimeManager.Teams.{Team, TeamMembership}
 alias Bcrypt
 
 # Delete all records
 Repo.delete_all(Clock)
 Repo.delete_all(WorkingTime)
+Repo.delete_all(TeamMembership)
+Repo.delete_all(Team)
 Repo.delete_all(User)
 Repo.delete_all(Signal)
 Repo.delete_all(Role)
@@ -25,23 +28,14 @@ _batSignal =
   })
 
 # Create hashed passwords
-hashed_password1 = Bcrypt.hash_pwd_salt("password1")
-hashed_password2 = Bcrypt.hash_pwd_salt("password2")
-hashed_password3 = Bcrypt.hash_pwd_salt("password3")
-hashed_password4 = Bcrypt.hash_pwd_salt("password4")
-hashed_password5 = Bcrypt.hash_pwd_salt("password5")
-hashed_password6 = Bcrypt.hash_pwd_salt("password6")
-hashed_password7 = Bcrypt.hash_pwd_salt("password7")
-hashed_password8 = Bcrypt.hash_pwd_salt("password8")
-hashed_password9 = Bcrypt.hash_pwd_salt("password9")
-hashed_password10 = Bcrypt.hash_pwd_salt("password10")
+hashed_passwords = for i <- 1..10, do: Bcrypt.hash_pwd_salt("password#{i}")
 
 # Create users with roles
 _user1 =
   Repo.insert!(%User{
     email: "alex@surfhub.eu",
     username: "Alex",
-    password_hash: hashed_password1,
+    password_hash: Enum.at(hashed_passwords, 0),
     role: supervisor_role.id
   })
 
@@ -49,7 +43,7 @@ _user2 =
   Repo.insert!(%User{
     email: "edward@surfhub.eu",
     username: "Edward",
-    password_hash: hashed_password2,
+    password_hash: Enum.at(hashed_passwords, 1),
     role: user_role.id
   })
 
@@ -57,7 +51,7 @@ _user3 =
   Repo.insert!(%User{
     email: "manu@surfhub.eu",
     username: "Manu",
-    password_hash: hashed_password3,
+    password_hash: Enum.at(hashed_passwords, 2),
     role: user_role.id
   })
 
@@ -65,7 +59,7 @@ _user4 =
   Repo.insert!(%User{
     email: "selina@surfhub.eu",
     username: "Selina",
-    password_hash: hashed_password4,
+    password_hash: Enum.at(hashed_passwords, 3),
     role: user_role.id
   })
 
@@ -73,7 +67,7 @@ _user5 =
   Repo.insert!(%User{
     email: "jerome@surfhub.eu",
     username: "Jerome",
-    password_hash: hashed_password5,
+    password_hash: Enum.at(hashed_passwords, 4),
     role: user_role.id
   })
 
@@ -81,24 +75,24 @@ _user6 =
   Repo.insert!(%User{
     email: "jonathan@surfhub.com",
     username: "Jonathan",
-    password_hash: hashed_password6,
+    password_hash: Enum.at(hashed_passwords, 5),
     role: user_role.id
   })
 
-# créer des superviseurs
-_user7 =
+# créer des managers
+_manager1 =
   Repo.insert!(%User{
     email: "jaquie@surfhub.eu",
     username: "Jaquie",
-    password_hash: hashed_password7,
+    password_hash: Enum.at(hashed_passwords, 6),
     role: manager_role.id
   })
 
-_user8 =
+_manager2 =
   Repo.insert!(%User{
     email: "michel@surfhub.eu",
     username: "Michel",
-    password_hash: hashed_password8,
+    password_hash: Enum.at(hashed_passwords, 7),
     role: manager_role.id
   })
 
@@ -107,7 +101,7 @@ _user9 =
   Repo.insert!(%User{
     email: "gordon@surfhub.com",
     username: "Gordon",
-    password_hash: hashed_password9,
+    password_hash: Enum.at(hashed_passwords, 8),
     role: supervisor_role.id
   })
 
@@ -116,12 +110,33 @@ _user10 =
   Repo.insert!(%User{
     email: "batman@surfhub.eu",
     username: "Batman",
-    password_hash: hashed_password10,
+    password_hash: Enum.at(hashed_passwords, 9),
     role: supervisor_role.id
   })
 
+# Create teams for managers and add 2 users to each team
+managers = [_manager1, _manager2]
+users_without_team = [_user2, _user3, _user4, _user5, _user6]
+
+for manager <- managers do
+  team = Repo.insert!(%Team{manager_id: manager.id})
+
+  # Ajouter 2 utilisateurs à l'équipe
+  Enum.take_random(users_without_team, 2)
+  |> Enum.each(fn user ->
+    Repo.insert!(%TeamMembership{team_id: team.id, user_id: user.id})
+    IO.puts("Added #{user.username} to #{team.id}")
+  end)
+
+  # Mise à jour de la liste des utilisateurs sans équipe
+  users_without_team = users_without_team -- Enum.take_random(users_without_team, 2)
+end
+
+# Remaining users_without_team are left without a team
+IO.puts("Users without a team: #{Enum.map(users_without_team, &(&1.username))}")
+
 # Générer les utilisateurs
-users = [_user1, _user2, _user3, _user4, _user5, _user6, _user7, _user8, _user9, _user10]
+users = [_user1, _user2, _user3, _user4, _user5, _user6, _manager1, _manager2, _user9, _user10]
 
 # Plages horaires à générer
 time_slots = [
@@ -132,9 +147,6 @@ time_slots = [
 ]
 
 # Mois et jours à générer
-months_slots = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-
-# Pour générer les jours d'un mois donné
 max_day_for_month = %{
   1 => 31,
   2 => 28,
@@ -160,42 +172,33 @@ for user <- users do
 
       # Générer les différentes plages horaires avec un index
       for {start_hour, end_hour} <- time_slots do
-        index = Enum.find_index(time_slots, fn {sh, _} -> sh == start_hour end)
+        case NaiveDateTime.new(2024, month, day, start_hour, start_minute, seconds) do
+          {:ok, start_date} ->
+            # Create clock in with status true
+            Repo.insert!(%Clock{
+              time: start_date,
+              status: true,
+              user: user.id
+            })
 
-        # Générer les différentes plages horaires avec un index
-        for {start_hour, end_hour} <- time_slots do
-          index = Enum.find_index(time_slots, fn {sh, _} -> sh == start_hour end)
+            case NaiveDateTime.new(2024, month, day, end_hour, end_minute, seconds) do
+              {:ok, end_date} ->
+                Repo.insert!(%Clock{time: end_date, status: false, user: user.id})
 
-          case NaiveDateTime.new(2024, month, day, start_hour, start_minute, seconds) do
-            {:ok, start_date} ->
-              # Create clock in whit status true
-              Repo.insert!(%Clock{
-                time: start_date,
-                status: true,
-                user: user.id
-              })
+                Repo.insert!(%WorkingTime{
+                  start: start_date,
+                  end: end_date,
+                  user: user.id
+                })
 
-              # put a message in the console to know that the clock was generated correctly
-              # IO.puts("Clock generated for user #{user.id} with time: #{start_date}")
+                IO.puts("Working time generated for #{user.username} from #{start_date} to #{end_date}")
 
-              case NaiveDateTime.new(2024, month, day, end_hour, end_minute, seconds) do
-                {:ok, end_date} ->
-                  Repo.insert!(%Clock{time: end_date, status: false, user: user.id})
+              {:error, reason} ->
+                IO.puts("Failed to create end_date: #{reason}")
+            end
 
-                  working_time =
-                    Repo.insert!(%WorkingTime{start: start_date, end: end_date, user: user.id})
-
-                  IO.puts(
-                    "Working time #{index} generated for #{user.username}-##{user.id} from #{start_date} to #{end_date}"
-                  )
-
-                {:error, reason} ->
-                  IO.puts("Failed to create end_date: #{reason}")
-              end
-
-            {:error, reason} ->
-              IO.puts("Failed to create start_date: #{reason}")
-          end
+          {:error, reason} ->
+            IO.puts("Failed to create start_date: #{reason}")
         end
       end
     end

@@ -6,7 +6,8 @@ defmodule TimeManager.Teams do
   import Ecto.Query, warn: false
   alias TimeManager.Repo
 
-  alias TimeManager.Teams.Team
+  alias TimeManager.Teams.{Team, TeamMembership}
+  alias TimeManager.Accounts.User
 
   @doc """
   Returns the list of teams.
@@ -19,6 +20,16 @@ defmodule TimeManager.Teams do
   """
   def list_teams do
     Repo.all(Team)
+  end
+
+  def list_team_members(team_id) do
+    query = from u in User,
+            join: tm in TeamMembership, on: u.id == tm.user_id,
+            where: tm.team_id == ^team_id,
+            select: u
+
+    # Exécuter la requête
+    Repo.all(query)
   end
 
   @doc """
