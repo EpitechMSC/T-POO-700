@@ -58,7 +58,7 @@ _user1 =
   Repo.insert!(%User{
     email: "alex@surfhub.eu",
     username: "Alex",
-    contrat: 1
+    contrat: 1,
     password_hash: Enum.at(hashed_passwords, 0),
     role: supervisor_role.id
   })
