@@ -67,6 +67,7 @@ _user2 =
   Repo.insert!(%User{
     email: "edward@surfhub.eu",
     username: "Edward",
+    contrat: 2,
     password_hash: Enum.at(hashed_passwords, 1),
     role: user_role.id
   })
@@ -75,6 +76,7 @@ _user3 =
   Repo.insert!(%User{
     email: "manu@surfhub.eu",
     username: "Manu",
+    contrat: 3,
     password_hash: Enum.at(hashed_passwords, 2),
     role: user_role.id
   })
@@ -83,6 +85,7 @@ _user4 =
   Repo.insert!(%User{
     email: "selina@surfhub.eu",
     username: "Selina",
+    contrat: 1,
     password_hash: Enum.at(hashed_passwords, 3),
     role: user_role.id
   })
@@ -91,6 +94,7 @@ _user5 =
   Repo.insert!(%User{
     email: "jerome@surfhub.eu",
     username: "Jerome",
+    contrat: 2,
     password_hash: Enum.at(hashed_passwords, 4),
     role: user_role.id
   })
@@ -99,6 +103,7 @@ _user6 =
   Repo.insert!(%User{
     email: "jonathan@surfhub.com",
     username: "Jonathan",
+    contrat: 3,
     password_hash: Enum.at(hashed_passwords, 5),
     role: user_role.id
   })
@@ -108,6 +113,7 @@ _manager1 =
   Repo.insert!(%User{
     email: "jaquie@surfhub.eu",
     username: "Jaquie",
+    contrat: 2,
     password_hash: Enum.at(hashed_passwords, 6),
     role: manager_role.id
   })
@@ -116,6 +122,7 @@ _manager2 =
   Repo.insert!(%User{
     email: "michel@surfhub.eu",
     username: "Michel",
+    contrat: 1,
     password_hash: Enum.at(hashed_passwords, 7),
     role: manager_role.id
   })
@@ -125,6 +132,7 @@ _user9 =
   Repo.insert!(%User{
     email: "gordon@surfhub.com",
     username: "Gordon",
+    contrat: 3,
     password_hash: Enum.at(hashed_passwords, 8),
     role: supervisor_role.id
   })
@@ -134,6 +142,7 @@ _user10 =
   Repo.insert!(%User{
     email: "batman@surfhub.eu",
     username: "Batman",
+    contrat: 3,
     password_hash: Enum.at(hashed_passwords, 9),
     role: supervisor_role.id
   })
