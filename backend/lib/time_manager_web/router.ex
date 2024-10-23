@@ -24,7 +24,6 @@ defmodule TimeManagerWeb.Router do
 
     post "/login", UserController, :login
 
-    post "/contrats/upload", ContratController, :upload_file
     pipe_through :authenticate
 
     resources "/signal", SignalController, except: [:new, :delete]

@@ -2,7 +2,9 @@ defmodule TimeManagerWeb.SignalControllerTest do
   use TimeManagerWeb.ConnCase
 
   import TimeManager.SignalsFixtures
+  import TimeManager.AccountsFixtures
 
+  alias TimeManager.Accounts.User
   alias TimeManager.Signals.Signal
 
   @create_attrs %{
@@ -21,6 +23,11 @@ defmodule TimeManagerWeb.SignalControllerTest do
 
   describe "index" do
     test "lists all signals", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/signal")
       assert json_response(conn, 200)["data"] == []
     end
@@ -28,6 +35,11 @@ defmodule TimeManagerWeb.SignalControllerTest do
 
   describe "create signal" do
     test "renders signal when data is valid", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = post(conn, ~p"/api/signal", signal: @create_attrs)
       assert %{"id" => id} = json_response(conn, 201)["data"]
 
@@ -41,6 +53,11 @@ defmodule TimeManagerWeb.SignalControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = post(conn, ~p"/api/signal", signal: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end
@@ -50,6 +67,11 @@ defmodule TimeManagerWeb.SignalControllerTest do
     setup [:create_signal]
 
     test "renders signal when data is valid", %{conn: conn, signal: %Signal{id: id} = signal} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = put(conn, ~p"/api/signal/#{signal}", signal: @update_attrs)
       assert %{"id" => ^id} = json_response(conn, 200)["data"]
 
@@ -63,6 +85,11 @@ defmodule TimeManagerWeb.SignalControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, signal: signal} do
+      role = role_fixture(name: "User")
+      user = user_fixture(role: role.id)
+      token = user_token_fixture(user, role)
+
+      conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = put(conn, ~p"/api/signal/#{signal}", signal: @invalid_attrs)
       assert json_response(conn, 422)["errors"] != %{}
     end

@@ -261,8 +261,8 @@ defmodule TimeManagerWeb.UserControllerTest do
 
   describe "find users by email or username" do
     setup do
-      user = user_fixture(username: "john_doe", email: "john@example.com")
-      user1 = user_fixture(username: "jane_doe", email: "jane@example.com")
+      user = user_fixture(username: "john_doe", email: "john@example.com", contrat: 1)
+      user1 = user_fixture(username: "jane_doe", email: "jane@example.com", contrat: 2)
       %{user: user, user1: user1}
     end
 
@@ -280,7 +280,8 @@ defmodule TimeManagerWeb.UserControllerTest do
                  "id" => user_id,
                  "username" => user.username,
                  "email" => user.email,
-                 "role" => user.role
+                 "role" => user.role,
+                 "contrat" => user.contrat
                }
              ]
     end
@@ -299,7 +300,8 @@ defmodule TimeManagerWeb.UserControllerTest do
                  "id" => user1_id,
                  "username" => user1.username,
                  "email" => user1.email,
-                 "role" => user1.role
+                 "role" => user1.role,
+                 "contrat" => user1.contrat
                }
              ]
     end

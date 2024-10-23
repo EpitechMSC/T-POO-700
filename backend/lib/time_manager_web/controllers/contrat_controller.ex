@@ -21,28 +21,6 @@ defmodule TimeManagerWeb.ContratController do
     end
   end
 
-  def upload_file(conn, %{"file" => upload, "contrat_id" => contrat_id}) do
-    contrat = Repo.get(Contrat, contrat_id)
-
-    if contrat do
-      changeset = Contrat.changeset(contrat, %{"upload" => upload})
-
-      case Repo.update(changeset) do
-        {:ok, _record} ->
-          json(conn, %{message: "File uploaded and associated with contract successfully"})
-
-        {:error, changeset} ->
-          conn
-          |> put_status(:unprocessable_entity)
-          |> json(%{errors: changeset.errors})
-      end
-    else
-      conn
-      |> put_status(:not_found)
-      |> json(%{error: "Contract not found"})
-    end
-  end
-
   def show(conn, %{"id" => id}) do
     contrat = Contrats.get_contrat!(id)
     render(conn, :show, contrat: contrat)
