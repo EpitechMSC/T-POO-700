@@ -26,13 +26,11 @@ _batSignal =
     status: false
   })
 
-
-
 # Create Contrats
 
 _35h =
   Repo.insert!(%Contrat{
-    temps: 35,
+    temps: 35
   })
 
 _39h =

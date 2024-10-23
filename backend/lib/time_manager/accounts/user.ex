@@ -4,7 +4,7 @@ defmodule TimeManager.Accounts.User do
 
   alias Bcrypt
 
-  @derive {Jason.Encoder, only: [:id, :username, :email, :role,:contrat]}
+  @derive {Jason.Encoder, only: [:id, :username, :email, :role, :contrat]}
   schema "users" do
     field :username, :string
     field :email, :string

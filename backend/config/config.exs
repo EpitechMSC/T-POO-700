@@ -51,7 +51,7 @@ config :waffle,
   # in order to have a different storage directory from url
   storage_dir_prefix: "priv/waffle/private",
   # add custom host to url
-  asset_host:  {:system, "ASSET_HOST"}
+  asset_host: {:system, "ASSET_HOST"}
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

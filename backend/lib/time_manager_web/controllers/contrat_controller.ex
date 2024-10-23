@@ -30,6 +30,7 @@ defmodule TimeManagerWeb.ContratController do
       case Repo.update(changeset) do
         {:ok, _record} ->
           json(conn, %{message: "File uploaded and associated with contract successfully"})
+
         {:error, changeset} ->
           conn
           |> put_status(:unprocessable_entity)

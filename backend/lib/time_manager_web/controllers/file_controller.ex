@@ -25,10 +25,10 @@ defmodule TimeManagerWeb.FileController do
   #   render(conn, :show, file: file)
   # end
 
-  def upload_file( conn,  %{"upload" => %Plug.Upload{} = upload}) do
-    IO.inspect upload.uploadFile
+  def upload_file(conn, %{"upload" => %Plug.Upload{} = upload}) do
+    IO.inspect(upload.uploadFile)
     json(conn, "Uploaded #{upload.uploadFile.filename}")
-  end  
+  end
 
   # def update(conn, %{"id" => id, "file" => file_params}) do
   #   file = Files.get_file!(id)
