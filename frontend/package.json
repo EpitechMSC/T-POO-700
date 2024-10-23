@@ -24,12 +24,19 @@
     "*.js": "eslint --cache --fix"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.15",
+    "@fullcalendar/daygrid": "^6.1.15",
+    "@fullcalendar/interaction": "^6.1.15",
+    "@fullcalendar/timegrid": "^6.1.15",
+    "@fullcalendar/vue3": "^6.1.15",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "install": "^0.13.0",
     "npm": "^10.9.0",
     "pinia": "^2.2.4",
     "primeicons": "^7.0.0",
+    "sweetalert2": "^11.14.4",
+    "undefined": "^0.1.0",
     "vue": "^3.5.10",
     "vue-chartjs": "^5.3.1",
     "vue-router": "^4.4.5"

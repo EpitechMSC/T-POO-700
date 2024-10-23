@@ -28,6 +28,8 @@ defmodule TimeManagerWeb.Router do
 
     pipe_through :authenticate
 
+    get "/teams/:id/members", TeamController, :list_members
+    resources "/teams", TeamController
     get "/users/me", UserController, :me
     get "/users/search", UserController, :search_by_email_or_username
     get "/workingtimes/stats/:id", WorkingTimeController, :stats
@@ -42,6 +44,7 @@ defmodule TimeManagerWeb.Router do
     resources "/clocks", ClockController, except: [:edit]
 
     pipe_through [:manager_or_supervisor]
+    resources "/team_memberships", TeamMembershipController
 
     pipe_through [:supervisor_only]
 

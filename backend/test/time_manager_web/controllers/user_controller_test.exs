@@ -85,7 +85,7 @@ defmodule TimeManagerWeb.UserControllerTest do
         )
 
       assert json_response(conn, 403)["error"] ==
-               "Forbidden: Only Supervisors can create new users."
+               "Access Forbidden."
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -255,7 +255,7 @@ defmodule TimeManagerWeb.UserControllerTest do
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = delete(conn, ~p"/api/users/#{user_fixture().id}")
-      assert json_response(conn, 403)["error"] == "Forbidden: Only Supervisors can delete users."
+      assert json_response(conn, 403)["error"] == "Access Forbidden."
     end
   end
 
