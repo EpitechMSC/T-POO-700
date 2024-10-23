@@ -4,6 +4,7 @@ defmodule TimeManager.Repo.Migrations.CreateContrats do
   def change do
     create table(:contrats) do
       add :temps, :integer
+      add :upload, :string 
 
       timestamps(type: :utc_datetime)
     end

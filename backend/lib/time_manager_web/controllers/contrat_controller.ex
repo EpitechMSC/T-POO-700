@@ -1,6 +1,7 @@
 defmodule TimeManagerWeb.ContratController do
   use TimeManagerWeb, :controller
 
+  alias TimeManager.Repo
   alias TimeManager.Contrats
   alias TimeManager.Contrats.Contrat
 
@@ -17,6 +18,27 @@ defmodule TimeManagerWeb.ContratController do
       |> put_status(:created)
       |> put_resp_header("location", ~p"/api/contrats/#{contrat}")
       |> render(:show, contrat: contrat)
+    end
+  end
+
+  def upload_file(conn, %{"file" => upload, "contrat_id" => contrat_id}) do
+    contrat = Repo.get(Contrat, contrat_id)
+
+    if contrat do
+      changeset = Contrat.changeset(contrat, %{"upload" => upload})
+
+      case Repo.update(changeset) do
+        {:ok, _record} ->
+          json(conn, %{message: "File uploaded and associated with contract successfully"})
+        {:error, changeset} ->
+          conn
+          |> put_status(:unprocessable_entity)
+          |> json(%{errors: changeset.errors})
+      end
+    else
+      conn
+      |> put_status(:not_found)
+      |> json(%{error: "Contract not found"})
     end
   end
 

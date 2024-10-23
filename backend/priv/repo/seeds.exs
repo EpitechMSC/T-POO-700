@@ -26,11 +26,12 @@ _batSignal =
     status: false
   })
 
+
 # Create Contrats
 
 _35h =
   Repo.insert!(%Contrat{
-    temps: 35
+    temps: 35,
   })
 
 _39h =
@@ -52,7 +53,8 @@ _user1 =
     email: "alex@surfhub.eu",
     username: "Alex",
     password_hash: hashed_password1,
-    role: supervisor_role.id
+    role: supervisor_role.id,
+    contrat: 1
   })
 
 hashed_password2 = Bcrypt.hash_pwd_salt("password2")

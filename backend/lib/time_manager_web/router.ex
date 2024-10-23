@@ -24,10 +24,13 @@ defmodule TimeManagerWeb.Router do
 
     post "/login", UserController, :login
 
+    post "/contrats/upload", ContratController,  :upload_file
+    pipe_through :authenticate
+
     resources "/signal", SignalController, except: [:new, :delete]
     resources "/contrats", ContratController, except: [:new, :delete, :update, :create, :edit]
+    #resources "/files", FileController
 
-    pipe_through :authenticate
 
     get "/users/me", UserController, :me
     get "/users/search", UserController, :search_by_email_or_username
