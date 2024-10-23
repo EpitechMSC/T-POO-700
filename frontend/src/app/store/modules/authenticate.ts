@@ -3,12 +3,14 @@ import Authenticate from '../../api/modules/authenticate';
 import router from '../../router/router';
 import { Credentials } from '../../models/authentication';
 import { User } from '../../models/user';
+import { jwtDecode } from 'jwt-decode';
 
 interface AuthenticateState {
   user: User | null;
   token: string | null;
   csrf_token: string | null;
   isAuthenticated: boolean;
+  role: string | null;
 }
 
 export const useAuthenticateStore = defineStore('authenticate', {
@@ -17,10 +19,12 @@ export const useAuthenticateStore = defineStore('authenticate', {
     token: localStorage.getItem('token') || null,
     csrf_token: localStorage.getItem('csrf_token') || null,
     isAuthenticated: !!localStorage.getItem('token'),
+    role: null,
   }),
 
   getters: {
     getUser: (state): User | null => state.user,
+    getUserRole: (state): string | null => state.role,
   },
 
   actions: {
@@ -28,8 +32,11 @@ export const useAuthenticateStore = defineStore('authenticate', {
       this.token = token;
       if (token) {
         localStorage.setItem('token', token);
+        const decodedToken = this.decodeToken(token);
+        this.role = decodedToken?.role || null;
       } else {
         localStorage.removeItem('token');
+        this.role = null;
       }
     },
 
@@ -71,6 +78,7 @@ export const useAuthenticateStore = defineStore('authenticate', {
       this.setToken(null);
       this.setcsrf_token(null);
       this.user = null;
+      this.role = null;
       this.isAuthenticated = false;
       router.push('/login');
     },
@@ -85,6 +93,15 @@ export const useAuthenticateStore = defineStore('authenticate', {
         throw new Error(
           'Échec de la récupération des informations utilisateur'
         );
+      }
+    },
+
+    decodeToken(token: string) {
+      try {
+        return jwtDecode<{ role: string }>(token);
+      } catch (error) {
+        console.error('Erreur de décodage du token:', error);
+        return null;
       }
     },
   },
