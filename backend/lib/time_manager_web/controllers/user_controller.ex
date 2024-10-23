@@ -32,6 +32,8 @@ defmodule TimeManagerWeb.UserController do
         |> json(%{token: token, csrf_token: csrf_token})
 
       {:error, :invalid_credentials} ->
+        IO.inspect("csrf_token")
+
         conn
         |> put_status(:unauthorized)
         |> json(%{error: "Invalid email or password"})

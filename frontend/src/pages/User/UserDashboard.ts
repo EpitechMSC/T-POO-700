@@ -4,6 +4,7 @@ import WorkingTimeChart from '../../components/Chart/WorkingTimeChart/WorkingTim
 import WorkingTimeList from '../../components/WorkingTimes/WorkingTimeList.vue';
 import TopBar from '../../components/TopBar/TopBar.vue';
 import BatSignal from '../../components/BatSignalBar/BatSignal.vue';
+import Balance from '../../components/Balance/BalanceComponent.vue';
 
 export default defineComponent({
   name: 'UserDashboardPage',
@@ -13,5 +14,6 @@ export default defineComponent({
     WorkingTimeChart,
     WorkingTimeList,
     BatSignal,
+    Balance,
   },
 });
