@@ -110,7 +110,6 @@
         <!-- Delete Account -->
         <div class="mb-10">
           <p class="py-2 text-xl font-semibold">Supprimer le compte</p>
-          <p class="py-2 text-xl font-semibold">Supprimer le compte</p>
           <p
             class="inline-flex items-center rounded-full bg-rose-100 px-4 py-1 text-rose-600"
           >
