@@ -1,6 +1,5 @@
 import { defineStore } from 'pinia';
 import Authenticate from '../../api/modules/authenticate';
-import router from '../../router/router';
 import { Credentials } from '../../models/authentication';
 import { User } from '../../models/user';
 import { jwtDecode } from 'jwt-decode';
@@ -80,7 +79,6 @@ export const useAuthenticateStore = defineStore('authenticate', {
       this.user = null;
       this.role = null;
       this.isAuthenticated = false;
-      router.push('/login');
     },
 
     async fetchUser() {
