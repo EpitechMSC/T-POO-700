@@ -4,7 +4,6 @@
     <div class="grid grid-cols-8 pt-3 sm:grid-cols-10">
       <!-- Navigation Section -->
       <SettingsNavigationMenu />
-      <SettingsNavigationMenu />
 
       <!-- Content Section -->
       <div
@@ -99,8 +98,6 @@
             Enregistrer l'e-mail
           </button>
         </div>
-
-        <hr class="mt-4 mb-8" />
         <!-- <UploadFileComponent/> -->
         <hr class="mt-4 mb-8" />
         <!-- Delete Account -->
