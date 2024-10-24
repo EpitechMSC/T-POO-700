@@ -19,15 +19,12 @@ defmodule TimeManagerWeb.Router do
     plug TimeManagerWeb.Plugs.EnsureRole, ["Supervisor"]
   end
 
-  scope "/documents", TimeManagerWeb do
-    pipe_through [:fetch_session, :authenticate]
-    get "/:filename", DocumentController, :download
-  end
-
   scope "/api", TimeManagerWeb do
     pipe_through :api
 
     post "/login", UserController, :login
+
+    get "/documents/:filename", DocumentController, :download
 
     pipe_through :authenticate
     resources "/signal", SignalController, except: [:new, :delete]
