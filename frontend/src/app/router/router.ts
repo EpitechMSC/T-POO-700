@@ -1,6 +1,5 @@
 import { RouteRecordRaw, createRouter, createWebHistory } from 'vue-router';
 import UserDashboard from '../../pages/User/UserDashboard.vue';
-import SettingsPage from '../../pages/Settings/SettingsPage.vue';
 import WorkingTimesPage from '../../pages/WorkingTimes/WorkingTimesPage.vue';
 import Calendar from '../../pages/Calendar/Calendar.vue';
 import beforeEachGuard from './auth-guard';
