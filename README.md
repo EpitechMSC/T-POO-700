@@ -128,7 +128,18 @@ Before using the application, make sure to configure the following:
 
 Modify the `config/dev.exs` file to adjust the project’s settings, such as database information and port configurations.
 
-<!-- For run test you need to  -->
+To ensure the project is functioning correctly, you can run tests for the backend.
+
+1. Make sure your dependencies and database are set up:
+    ```bash
+    mix deps.get
+    mix ecto.setup
+    ```
+
+2. Run the tests:
+    ```bash
+    mix test
+    ```
 
 ## 🔧 Usage
 
