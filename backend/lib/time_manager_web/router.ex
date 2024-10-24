@@ -19,7 +19,6 @@ defmodule TimeManagerWeb.Router do
     plug TimeManagerWeb.Plugs.EnsureRole, ["Supervisor"]
   end
 
-
   scope "/api", TimeManagerWeb do
     pipe_through :api
 

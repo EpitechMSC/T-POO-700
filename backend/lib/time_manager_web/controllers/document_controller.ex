@@ -3,7 +3,6 @@ defmodule TimeManagerWeb.DocumentController do
   require Logger
 
   def download(conn, %{"filename" => filename}) do
-
     file_path = Path.join([:code.priv_dir(:time_manager), "documents", filename])
 
     if File.exists?(file_path) do
