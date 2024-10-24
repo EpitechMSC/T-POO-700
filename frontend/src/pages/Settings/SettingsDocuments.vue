@@ -21,7 +21,10 @@
           <ul>
             <li>
               <a
-                :href="`/documents/reglementation-heures-de-travail.pdf`"
+                :href="
+                  baseUrl +
+                  '/api/documents/reglementation-heures-de-travail.pdf'
+                "
                 target="_blank"
                 class="text-blue-600 underline"
               >
@@ -30,7 +33,7 @@
             </li>
             <li>
               <a
-                :href="`/documents/contrat_35h.pdf`"
+                :href="baseUrl + '/api/documents/contrat_35h.pdf'"
                 target="_blank"
                 class="text-blue-600 underline"
               >
@@ -39,7 +42,7 @@
             </li>
             <li>
               <a
-                :href="`/documents/reglement.pdf`"
+                :href="baseUrl + '/api/documents/reglement.pdf'"
                 target="_blank"
                 class="text-blue-600 underline"
               >
@@ -65,9 +68,11 @@ export default defineComponent({
   },
   setup() {
     const authStore = useAuthenticateStore();
+    const baseUrl = window.location.origin;
 
     return {
       user: authStore.getUser,
+      baseUrl,
     };
   },
 });
