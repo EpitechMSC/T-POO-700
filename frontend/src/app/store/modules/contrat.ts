@@ -25,6 +25,7 @@ export const useContratStore = defineStore('contrat', {
       this.error = null;
       try {
         const response: Contrat = await agent.Contrats.getContratSummary(id);
+        console.log('response', response);
 
         this.contratOfConnectedUser = response;
       } catch (err: unknown) {

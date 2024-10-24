@@ -1,9 +1,13 @@
 import { defineComponent, computed } from 'vue';
 import { useAuthenticateStore } from '../../app/store/store';
 import { useDropdown } from '../../app/hook/useDropdown';
+import BatSignal from '../../components/BatSignalBar/BatSignal.vue';
 
 export default defineComponent({
   name: 'NavBarComponent',
+  components: {
+    BatSignal,
+  },
   setup() {
     const store = useAuthenticateStore();
     const { isDropdownOpen, toggleDropdown, closeDropdown, stopPropagation } =
@@ -37,6 +41,7 @@ export default defineComponent({
       logout,
       stopPropagation,
       user,
+      BatSignal,
     };
   },
 });
