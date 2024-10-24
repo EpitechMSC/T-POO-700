@@ -1,40 +1,32 @@
 <template>
-  <div
-    v-for="(card, index) in cards"
-    :key="index"
-    class="relative flex flex-col bg-clip-border rounded-xl col-span-12 md:col-span-6 xl:col-span-3 bg-white text-gray-700 shadow-md mb-5 h-full"
-  >
+  <section class="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
     <div
-      :class="[
-        'card__icon mx-4 rounded-xl overflow-hidden shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center',
-        cardIconClass(card.type),
-      ]"
+      v-for="(card, index) in cards"
+      :key="index"
+      class="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md mb-5 h-full"
     >
-      <i :class="card.icon" style="font-size: 1.5rem" />
-    </div>
-    <div class="p-4 text-right">
-      <p
-        class="block antialiased font-sans text-sm leading-normal font-normal text-gray-500"
+      <div
+        :class="[
+          'card__icon mx-4 rounded-xl overflow-hidden shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center',
+          cardIconClass(card.type),
+        ]"
       >
-        {{ card.title }}
-      </p>
-      <h4
-        class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-gray-900"
-      >
-        {{ card.amount }}
-      </h4>
+        <i :class="card.icon" style="font-size: 1.5rem" />
+      </div>
+      <div class="p-4 text-right">
+        <p
+          class="block antialiased font-sans text-sm leading-normal font-normal text-gray-500"
+        >
+          {{ card.title }}
+        </p>
+        <h4
+          class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-gray-900"
+        >
+          {{ card.amount }}
+        </h4>
+      </div>
     </div>
-    <div class="border-t border-gray-50 p-4">
-      <p
-        class="block antialiased font-sans text-base leading-relaxed font-normal text-gray-500"
-      >
-        <strong :class="card.isPositive ? 'text-green-500' : 'text-red-500'">
-          {{ card.percentageChange }}
-        </strong>
-        &nbsp;than last month
-      </p>
-    </div>
-  </div>
+  </section>
 </template>
 
 <script lang="ts">
@@ -76,32 +68,24 @@ export default defineComponent({
           {
             title: 'Worked today',
             amount: '0:00',
-            percentageChange: 'N/A',
-            isPositive: false,
             type: 'worked_today',
             icon: 'fas fa-clock',
           },
           {
             title: 'Number of clocked',
             amount: '0',
-            percentageChange: 'N/A',
-            isPositive: false,
             type: 'clocked',
             icon: 'fas fa-users',
           },
           {
             title: 'Working times',
             amount: '0',
-            percentageChange: 'N/A',
-            isPositive: false,
             type: 'working_times',
             icon: 'fas fa-briefcase',
           },
           {
             title: 'Worked this week',
             amount: '0:00',
-            percentageChange: 'N/A',
-            isPositive: false,
             type: 'worked_week',
             icon: 'fas fa-calendar-week',
           },
@@ -111,8 +95,6 @@ export default defineComponent({
       const { worked_today, worked_this_week, total_days_worked } =
         userStats.value;
 
-      const percentageChange = '+5%';
-
       return [
         {
           title: 'Worked today',
@@ -121,24 +103,18 @@ export default defineComponent({
           )
             .toString()
             .padStart(2, '0')}`,
-          percentageChange,
-          isPositive: true,
           type: 'worked_today',
           icon: 'fas fa-clock',
         },
         {
           title: 'Number of clocked',
           amount: workingTimesStore.workingTimeCount.toString(),
-          percentageChange: '-3%',
-          isPositive: false,
           type: 'clocked',
           icon: 'fas fa-users',
         },
         {
           title: 'Working times',
           amount: total_days_worked.toString(),
-          percentageChange,
-          isPositive: true,
           type: 'working_times',
           icon: 'fas fa-briefcase',
         },
@@ -149,8 +125,6 @@ export default defineComponent({
           )
             .toString()
             .padStart(2, '0')}`,
-          percentageChange: '+12%',
-          isPositive: true,
           type: 'worked_week',
           icon: 'fas fa-calendar-week',
         },

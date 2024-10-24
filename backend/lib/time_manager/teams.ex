@@ -80,8 +80,6 @@ defmodule TimeManager.Teams do
     query =
       from tm in TeamMembership,
         where: tm.user_id == ^user_id,
-        order_by: [asc: tm.inserted_at],
-        limit: 1,
         select: tm.team_id
 
     case Repo.one(query) do
@@ -95,7 +93,6 @@ defmodule TimeManager.Teams do
         end
     end
   end
-
 
   @doc """
   Creates a team.
