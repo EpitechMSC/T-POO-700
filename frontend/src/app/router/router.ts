@@ -28,7 +28,19 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/users/:id/settings',
     name: 'Settings',
-    component: SettingsPage,
+    component: () => import('../../pages/Settings/SettingsPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/users/:id/documents',
+    name: 'Documents',
+    component: () => import('../../pages/Settings/SettingsDocuments.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/users/:id/documents',
+    name: 'Documents',
+    component: () => import('../../pages/Settings/SettingsDocuments.vue'),
     meta: { requiresAuth: true }, //, roles: ['Supervisor', 'Manager']
   },
   {

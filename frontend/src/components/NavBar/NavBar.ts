@@ -14,7 +14,9 @@ export default defineComponent({
       const currentPath = window.location.pathname;
       return (
         (page === 'home' && currentPath === '/') ||
-        (page === 'times' && currentPath === '/times')
+        (page === 'home' && currentPath === '/users/:id') || // --- à revoir --- //
+        (page === 'times' && currentPath === '/times') ||
+        (page === 'calendar' && currentPath === '/calendar')
       );
     };
 

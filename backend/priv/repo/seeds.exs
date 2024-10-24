@@ -1,3 +1,7 @@
+#########
+# to run seeds: mix run priv/repo/seeds.exs
+#########
+
 alias TimeManager.Repo
 alias TimeManager.Accounts.{User, Role}
 alias TimeManager.Clocks.Clock
@@ -147,6 +151,21 @@ _user10 =
     role: supervisor_role.id
   })
 
+time_slots_1 = [
+  {Enum.random(2..4), Enum.random(4..6)},
+  {Enum.random(18..20), Enum.random(21..23)}
+]
+
+time_slots_2 = [
+  {Enum.random(8..9), Enum.random(10..12)},
+  {Enum.random(13..15), Enum.random(16..17)}
+]
+
+time_slots_3 = [
+  {Enum.random(8..10), Enum.random(11..14)},
+  {Enum.random(14..16), Enum.random(18..20)}
+]
+
 # Create teams for managers and add 2 users to each team
 managers = [_manager1, _manager2]
 users_without_team = [_user2, _user3, _user4, _user5, _user6]
@@ -171,14 +190,6 @@ IO.puts("Users without a team: #{Enum.map(users_without_team, & &1.username)}")
 # Générer les utilisateurs
 users = [_user1, _user2, _user3, _user4, _user5, _user6, _manager1, _manager2, _user9, _user10]
 
-# Plages horaires à générer
-time_slots = [
-  {Enum.random(2..4), Enum.random(4..6)},
-  {Enum.random(8..10), Enum.random(10..12)},
-  {Enum.random(13..15), Enum.random(15..17)},
-  {Enum.random(18..20), Enum.random(21..23)}
-]
-
 # Mois et jours à générer
 max_day_for_month = %{
   1 => 31,
@@ -199,24 +210,31 @@ max_day_for_month = %{
 for user <- users do
   for month <- 1..10 do
     for day <- 1..max_day_for_month[month] do
-      start_minute = Enum.random(0..59)
-      end_minute = Enum.random(0..59)
-      seconds = Enum.random(0..59)
+      for {start_hour, end_hour} <- time_slots_2 do
+        start_minute = Enum.random(0..59)
+        end_minute = Enum.random(0..59)
+        seconds = Enum.random(0..59)
 
-      # Générer les différentes plages horaires avec un index
-      for {start_hour, end_hour} <- time_slots do
         case NaiveDateTime.new(2024, month, day, start_hour, start_minute, seconds) do
           {:ok, start_date} ->
-            # Create clock in with status true
-            Repo.insert!(%Clock{
-              time: start_date,
-              status: true,
-              user: user.id
-            })
+            existing_clock_in = Repo.get_by(Clock, time: start_date, user: user.id, status: true)
+
+            if existing_clock_in == nil do
+              Repo.insert!(%Clock{time: start_date, status: true, user: user.id})
+            end
 
             case NaiveDateTime.new(2024, month, day, end_hour, end_minute, seconds) do
               {:ok, end_date} ->
-                Repo.insert!(%Clock{time: end_date, status: false, user: user.id})
+                existing_clock_out =
+                  Repo.get_by(Clock, time: end_date, user: user.id, status: false)
+
+                if existing_clock_out == nil do
+                  Repo.insert!(%Clock{
+                    time: end_date,
+                    status: false,
+                    user: user.id
+                  })
+                end
 
                 Repo.insert!(%WorkingTime{
                   start: start_date,

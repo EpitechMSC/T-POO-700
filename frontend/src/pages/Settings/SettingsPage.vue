@@ -3,20 +3,7 @@
     <h1 class="border-b py-6 text-4xl font-semibold">Paramètres</h1>
     <div class="grid grid-cols-8 pt-3 sm:grid-cols-10">
       <!-- Navigation Section -->
-      <div class="col-span-2 hidden sm:block">
-        <ul>
-          <li
-            class="mt-5 cursor-pointer border-l-2 border-transparent px-2 py-2 font-semibold transition hover:border-l-blue-700 hover:text-blue-700"
-          >
-            Équipes
-          </li>
-          <li
-            class="mt-5 cursor-pointer border-l-2 border-l-blue-700 px-2 py-2 font-semibold text-blue-700 transition hover:border-l-blue-700 hover:text-blue-700"
-          >
-            Compte
-          </li>
-        </ul>
-      </div>
+      <SettingsNavigationMenu />
 
       <!-- Content Section -->
       <div
@@ -106,6 +93,7 @@
             Enregistrer l'e-mail
           </button>
         </div>
+
         <!-- <UploadFileComponent/> -->
         <hr class="mt-4 mb-8" />
         <!-- Delete Account -->
@@ -147,12 +135,12 @@
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue';
 import { useAuthenticateStore, useUsersStore } from '../../app/store/store';
-import UploadFileComponent from '../../components/UploadFile/UploadFileComponent.vue';
+import SettingsNavigationMenu from './SettingsNavigationMenu.vue';
 
 export default defineComponent({
   name: 'SettingsPage',
   components: {
-    UploadFileComponent,
+    SettingsNavigationMenu,
   },
   setup() {
     const authStore = useAuthenticateStore();
