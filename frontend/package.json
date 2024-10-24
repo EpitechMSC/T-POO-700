@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
+    "build:mobile": "vue-tsc -b && vite build --outDir ../mobile/www/ --emptyOutDir",
     "preview": "vite preview",
     "lint": "eslint . ",
     "lint:fix": "eslint .  --fix",
@@ -24,9 +25,12 @@
     "*.js": "eslint --cache --fix"
   },
   "dependencies": {
+    "@types/lokijs": "^1.5.14",
     "axios": "^1.7.7",
     "chart.js": "^4.4.4",
     "install": "^0.13.0",
+    "loki": "^0.35.1",
+    "lokijs": "^1.5.12",
     "npm": "^10.9.0",
     "pinia": "^2.2.4",
     "primeicons": "^7.0.0",
