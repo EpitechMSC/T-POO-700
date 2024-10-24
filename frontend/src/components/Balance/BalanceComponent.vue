@@ -1,7 +1,7 @@
 <template>
   <div
     :class="bgColorClass"
-    class="metronome-container relative w-96 h-72 mx-auto rounded-lg border-1 border-red-800 flex justify-center items-center"
+    class="metronome-container relative h-72 mx-auto rounded-lg border-1 border-red-800 flex justify-center items-center"
   >
     <div
       class="metronome-needle absolute bottom-8 w-1 h-56 bg-black rounded-full origin-bottom transition-transform duration-1000 ease-in-out"
@@ -10,7 +10,7 @@
     <div
       class="work-percentage-label absolute bottom-1 text-lg font-semibold text-gray-800"
     >
-      {{ (workedThisWeek / hoursPerWeek) * 100 }}% worked
+      {{ ((workedThisWeek / hoursPerWeek) * 100).toFixed(2) }}% worked
     </div>
   </div>
 </template>
@@ -34,6 +34,7 @@ export default defineComponent({
 
     const workedThisWeek = ref('');
     const hoursPerWeek = ref('');
+    const contratId = ref('');
 
     const fetchUserData = async () => {
       if (userId.value) {
@@ -54,11 +55,23 @@ export default defineComponent({
     );
 
     const userData = computed(() => authStore.user);
-    const contratId = userData.value.contrat;
-    const fetchHoursPerWeek = async () => {
-      await contratStore.getContratInfo(contratId);
-    };
-    onMounted(fetchHoursPerWeek);
+    watch(
+      () => userData.value,
+      user => {
+        if (user && user.contrat !== undefined) {
+          contratId.value = user.contrat;
+        }
+      }
+    );
+    watch(
+      () => contratId.value,
+      id => {
+        const fetchHoursPerWeek = async () => {
+          await contratStore.getContratInfo(id);
+        };
+        fetchHoursPerWeek();
+      }
+    );
 
     const contratTime = computed(() => contratStore.contratOfConnectedUser);
     watch(
@@ -74,8 +87,14 @@ export default defineComponent({
     const computedAngle = computed(() => {
       const minAngle = -45;
       const maxAngle = 45;
-      // Calculate the angle based on the percentage worked
-      return (maxAngle - minAngle) * (workedThisWeek.value / 100) + minAngle;
+      let angle =
+        (maxAngle - minAngle) * (workedThisWeek.value / hoursPerWeek.value) +
+        minAngle;
+
+      // Clamp the angle to be between minAngle and maxAngle
+      angle = Math.max(minAngle, Math.min(angle, maxAngle));
+
+      return angle;
     });
 
     const bgColorClass = computed(() => {
