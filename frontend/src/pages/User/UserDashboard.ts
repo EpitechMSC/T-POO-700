@@ -3,7 +3,6 @@ import SummaryCard from '../../components/Card/SummaryCard/SummaryCard.vue';
 import WorkingTimeChart from '../../components/Chart/WorkingTimeChart/WorkingTimeChart.vue';
 import WorkingTimeList from '../../components/WorkingTimes/WorkingTimeList.vue';
 import TopBar from '../../components/TopBar/TopBar.vue';
-import BatSignal from '../../components/BatSignalBar/BatSignal.vue';
 import Balance from '../../components/Balance/BalanceComponent.vue';
 
 export default defineComponent({
@@ -13,7 +12,6 @@ export default defineComponent({
     SummaryCard,
     WorkingTimeChart,
     WorkingTimeList,
-    BatSignal,
     Balance,
   },
 });

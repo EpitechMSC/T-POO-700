@@ -10,7 +10,7 @@
     <div
       class="work-percentage-label absolute bottom-1 text-lg font-semibold text-gray-800"
     >
-      {{ (workedThisWeek / hoursPerWeek) * 100 }}% worked
+      {{ ((workedThisWeek / hoursPerWeek) * 100).toFixed(2) }}% worked
     </div>
   </div>
 </template>
@@ -63,13 +63,15 @@ export default defineComponent({
         }
       }
     );
-    console.log(userData);
-
-    //
-    const fetchHoursPerWeek = async () => {
-      await contratStore.getContratInfo(contratId);
-    };
-    onMounted(fetchHoursPerWeek);
+    watch(
+      () => contratId.value,
+      id => {
+        const fetchHoursPerWeek = async () => {
+          await contratStore.getContratInfo(id);
+        };
+        fetchHoursPerWeek();
+      }
+    );
 
     const contratTime = computed(() => contratStore.contratOfConnectedUser);
     watch(
@@ -85,8 +87,14 @@ export default defineComponent({
     const computedAngle = computed(() => {
       const minAngle = -45;
       const maxAngle = 45;
-      // Calculate the angle based on the percentage worked
-      return (maxAngle - minAngle) * (workedThisWeek.value / 100) + minAngle;
+      let angle =
+        (maxAngle - minAngle) * (workedThisWeek.value / hoursPerWeek.value) +
+        minAngle;
+
+      // Clamp the angle to be between minAngle and maxAngle
+      angle = Math.max(minAngle, Math.min(angle, maxAngle));
+
+      return angle;
     });
 
     const bgColorClass = computed(() => {
