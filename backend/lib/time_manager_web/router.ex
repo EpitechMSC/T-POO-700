@@ -31,6 +31,9 @@ defmodule TimeManagerWeb.Router do
     resources "/contrats", ContratController, except: [:new, :delete, :update, :create, :edit]
     # resources "/files", FileController
 
+    # get "/contrats/:id", ContratController, :show
+
+
     get "/teams/:id/members", TeamController, :list_members
     resources "/teams", TeamController
     get "/users/me", UserController, :me
