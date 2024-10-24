@@ -14,6 +14,8 @@
           <h1 class="py-2 text-2xl font-semibold">Paramètres du compte</h1>
         </div>
         <hr class="mt-4 mb-8" />
+        <hr class="mt-4 mb-8" />
+        <hr class="mt-4 mb-8" />
 
         <!-- Nom d'utilisateur -->
         <p class="py-2 text-xl font-semibold">Nom d'utilisateur</p>
@@ -55,6 +57,7 @@
           </button>
         </div>
 
+        <hr class="mt-4 mb-8" />
         <hr class="mt-4 mb-8" />
 
         <!-- Email -->
