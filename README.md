@@ -1,4 +1,3 @@
-
 # T-POO-700
 
 ##### V1.0.0
@@ -18,55 +17,57 @@ Used by heroes, this project is essential to maintaining order in Gotham… or a
 Whether you are a simple police officer or a masked vigilante, our solution helps you stay organized in the fight against crime.
 
 ---
+
 ---
 
 **Main Features**:
 
 - Work schedule management:
-  
+
   The application primarily allows the logging of work hours for each employee, police officer, and vigilante.
-  
+
   The application also allows effective team planning while trying to respect legal quotas and the tough working conditions in Gotham.
-  
+
   Some situations require police officers to remain on alert, ready to intervene.
-  
+
   Night shifts and overtime are increased.
 
 - User management:
-  
+
   The system allows for the addition, modification, and complete management of users and their roles.
-  
+
   Each vigilante or police officer has a well-defined role!
 
 - Statistics and data visualization:
-    
+
   With the integration of various charts, it is possible to monitor performance and analyze attendance and efficiency statistics.
 
 - Mobile optimization with Cordova:
-  
+
   The project is designed to be usable on both desktop and mobile, thanks to Cordova, so even in the field, each hero can access their schedule.
 
 **Technologies used**:
 
 - Backend:
-  
+
   [Elixir](https://elixir-lang.org/) and [Phoenix](https://www.phoenixframework.org/)
 
 - Frontend:
-  
+
   [Vue.js](https://vuejs.org/)
 
 - Database:
-  
+
   [PostgreSQL](https://www.postgresql.org/)
 
 - Docker & Kubernetes
 
 - CI/CD and monitoring:
-  
+
   Grafana 🕓 and SonarQube.
 
 ---
+
 ---
 
 ## 🏁 Installation
@@ -127,9 +128,11 @@ Before using the application, make sure to configure the following:
 
 Modify the `config/dev.exs` file to adjust the project’s settings, such as database information and port configurations.
 
+<!-- For run test you need to  -->
+
 ## 🔧 Usage
 
-Launch the *backend server*:
+Launch the _backend server_:
 
 Start the **Phoenix** server:
 
@@ -139,7 +142,7 @@ mix phx.server
 
 The server will be available at http://localhost:4000.
 
-Launch the *frontend server*:
+Launch the _frontend server_:
 
 Start the **frontend** application:
 
@@ -188,7 +191,7 @@ git push origin <your-branch>
 ```
 
 - Open a Pull Request on the main repository.
-<br>✨
+  <br>✨
 
 ## 📚 Project Management
 
