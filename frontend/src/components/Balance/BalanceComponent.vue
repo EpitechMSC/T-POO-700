@@ -1,7 +1,7 @@
 <template>
   <div
     :class="bgColorClass"
-    class="metronome-container relative w-96 h-72 mx-auto rounded-lg border-1 border-red-800 flex justify-center items-center"
+    class="metronome-container relative h-72 mx-auto rounded-lg border-1 border-red-800 flex justify-center items-center"
   >
     <div
       class="metronome-needle absolute bottom-8 w-1 h-56 bg-black rounded-full origin-bottom transition-transform duration-1000 ease-in-out"
@@ -34,6 +34,7 @@ export default defineComponent({
 
     const workedThisWeek = ref('');
     const hoursPerWeek = ref('');
+    const contratId = ref('');
 
     const fetchUserData = async () => {
       if (userId.value) {
@@ -54,7 +55,17 @@ export default defineComponent({
     );
 
     const userData = computed(() => authStore.user);
-    const contratId = userData.value.contrat;
+    watch(
+      () => userData.value,
+      user => {
+        if (user && user.contrat !== undefined) {
+          contratId.value = user.contrat;
+        }
+      }
+    );
+    console.log(userData);
+
+    //
     const fetchHoursPerWeek = async () => {
       await contratStore.getContratInfo(contratId);
     };
