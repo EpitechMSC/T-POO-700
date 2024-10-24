@@ -27,9 +27,12 @@ defmodule TimeManagerWeb.Router do
     get "/documents/:filename", DocumentController, :download
 
     pipe_through :authenticate
+    resources "/teams/:id/events", EventController
+
     resources "/signal", SignalController, except: [:new, :delete]
     resources "/contrats", ContratController, except: [:new, :delete, :update, :create, :edit]
     # resources "/files", FileController
+    get "/teams/user/:user_id", TeamController, :get_team_by_user_id
 
     # get "/contrats/:id", ContratController, :show
 
