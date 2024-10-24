@@ -206,6 +206,8 @@ max_day_for_month = %{
   12 => 31
 }
 
+
+
 # Générer les horloges et les temps de travail
 for user <- users do
   for month <- 1..10 do
