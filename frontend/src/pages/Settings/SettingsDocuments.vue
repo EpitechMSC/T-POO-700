@@ -17,7 +17,6 @@
         <hr class="mt-4 mb-8" />
 
         <div class="mt-8">
-          <h2 class="py-2 text-xl font-semibold">Réglementations</h2>
           <ul>
             <li>
               <a
@@ -31,13 +30,17 @@
                 Réglementation des Heures de Travail
               </a>
             </li>
-            <li>
+            <li v-if="contractDetails">
               <a
-                :href="baseUrl + '/api/documents/contrat_35h.pdf'"
-                target="_blank"
+                :href="
+                  baseUrl +
+                  '/api/documents/contrat_' +
+                  contractDetails +
+                  'h.pdf'
+                "
                 class="text-blue-600 underline"
               >
-                Réglementation des Contrats
+                Télécharger le contrat
               </a>
             </li>
             <li>
@@ -46,7 +49,16 @@
                 target="_blank"
                 class="text-blue-600 underline"
               >
-                Réglementation des Poubelles Jaunes
+                Réglement Intérieur
+              </a>
+            </li>
+            <li>
+              <a
+                :href="baseUrl + '/api/documents/FAQ.pdf'"
+                target="_blank"
+                class="text-blue-600 underline"
+              >
+                FAQ
               </a>
             </li>
           </ul>
@@ -58,7 +70,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue';
-import { useAuthenticateStore } from '../../app/store/store';
+import { useContratStore } from '../../app/store/store';
 import SettingsNavigationMenu from './SettingsNavigationMenu.vue';
 
 export default defineComponent({
@@ -67,12 +79,13 @@ export default defineComponent({
     SettingsNavigationMenu,
   },
   setup() {
-    const authStore = useAuthenticateStore();
+    const contractStore = useContratStore();
     const baseUrl = window.location.origin;
+    const contractDetails = contractStore.contratOfConnectedUser?.data.temps;
 
     return {
-      user: authStore.getUser,
       baseUrl,
+      contractDetails,
     };
   },
 });
