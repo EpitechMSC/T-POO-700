@@ -1,7 +1,6 @@
 <template>
   <div class="mx-4 min-h-screen max-w-screen-xl sm:mx-8 xl:mx-auto">
     <h1 class="border-b py-6 text-4xl font-semibold">Paramètres</h1>
-    <h1 class="border-b py-6 text-4xl font-semibold">Paramètres</h1>
     <div class="grid grid-cols-8 pt-3 sm:grid-cols-10">
       <!-- Navigation Section -->
       <SettingsNavigationMenu />
@@ -13,14 +12,12 @@
       >
         <div class="pt-4">
           <h1 class="py-2 text-2xl font-semibold">Paramètres du compte</h1>
-          <h1 class="py-2 text-2xl font-semibold">Paramètres du compte</h1>
         </div>
         <hr class="mt-4 mb-8" />
         <hr class="mt-4 mb-8" />
         <hr class="mt-4 mb-8" />
 
         <!-- Nom d'utilisateur -->
-        <p class="py-2 text-xl font-semibold">Nom d'utilisateur</p>
         <p class="py-2 text-xl font-semibold">Nom d'utilisateur</p>
         <div
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
@@ -64,7 +61,6 @@
         <hr class="mt-4 mb-8" />
 
         <!-- Email -->
-        <p class="py-2 text-xl font-semibold">Adresse e-mail</p>
         <p class="py-2 text-xl font-semibold">Adresse e-mail</p>
         <div
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
@@ -147,19 +143,12 @@
 import { defineComponent, ref, onMounted } from 'vue';
 import { useAuthenticateStore, useUsersStore } from '../../app/store/store';
 import SettingsNavigationMenu from './SettingsNavigationMenu.vue';
-import SettingsNavigationMenu from './SettingsNavigationMenu.vue';
-import SettingsNavigationMenu from './SettingsNavigationMenu.vue';
 
 export default defineComponent({
   name: 'SettingsPage',
   components: {
     SettingsNavigationMenu,
   },
-  components: {
-    SettingsNavigationMenu,
-    SettingsNavigationMenu,
-  },
-
   setup() {
     const authStore = useAuthenticateStore();
     const usersStore = useUsersStore();
