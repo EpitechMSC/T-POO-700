@@ -8,7 +8,6 @@ import {
 } from 'vue-router';
 import UserDashboard from '../../pages/User/UserDashboard.vue';
 import { useAuthenticateStore } from '../store/store';
-import SettingsPage from '../../pages/Settings/SettingsPage.vue';
 import WorkingTimesPage from '../../pages/WorkingTimes/WorkingTimesPage.vue';
 import Calendar from '../../pages/Calendar/Calendar.vue';
 
@@ -39,7 +38,13 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/users/:id/settings',
     name: 'Settings',
-    component: SettingsPage,
+    component: () => import('../../pages/Settings/SettingsPage.vue'),
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/users/:id/documents',
+    name: 'Documents',
+    component: () => import('../../pages/Settings/SettingsDocuments.vue'),
     meta: { requiresAuth: true },
   },
   {
