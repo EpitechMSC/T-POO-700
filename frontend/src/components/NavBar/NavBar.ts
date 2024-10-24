@@ -1,6 +1,5 @@
 import { defineComponent, computed } from 'vue';
 import { useAuthenticateStore } from '../../app/store/store';
-import router from '../../app/router/router';
 import { useDropdown } from '../../app/hook/useDropdown';
 
 export default defineComponent({
@@ -24,7 +23,6 @@ export default defineComponent({
       try {
         store.logout();
         closeDropdown();
-        await router.push('/login');
       } catch (error) {
         console.error('Logout failed:', error);
       }

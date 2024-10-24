@@ -13,6 +13,8 @@
           <h1 class="py-2 text-2xl font-semibold">Paramètres du compte</h1>
         </div>
         <hr class="mt-4 mb-8" />
+        <hr class="mt-4 mb-8" />
+        <hr class="mt-4 mb-8" />
 
         <!-- Nom d'utilisateur -->
         <p class="py-2 text-xl font-semibold">Nom d'utilisateur</p>
@@ -44,6 +46,7 @@
               class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
               placeholder="Nouveau nom d'utilisateur"
             />
+            />
           </div>
           <button
             class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
@@ -53,6 +56,7 @@
           </button>
         </div>
 
+        <hr class="mt-4 mb-8" />
         <hr class="mt-4 mb-8" />
 
         <!-- Email -->
@@ -85,6 +89,7 @@
               class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
               placeholder="Nouvelle adresse e-mail"
             />
+            />
           </div>
           <button
             class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
@@ -93,7 +98,6 @@
             Enregistrer l'e-mail
           </button>
         </div>
-
         <!-- <UploadFileComponent/> -->
         <hr class="mt-4 mb-8" />
         <!-- Delete Account -->
