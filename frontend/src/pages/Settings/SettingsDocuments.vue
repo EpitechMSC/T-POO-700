@@ -81,7 +81,7 @@ export default defineComponent({
   setup() {
     const contractStore = useContratStore();
     const baseUrl = window.location.origin;
-    const contractDetails = contractStore.contratOfConnectedUser?.data.temps;
+    const contractDetails = contractStore.contratOfConnectedUser?.temps;
 
     return {
       baseUrl,
