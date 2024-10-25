@@ -200,4 +200,18 @@ defmodule TimeManager.Clocks do
   def change_clock(%Clock{} = clock, attrs \\ %{}) do
     Clock.changeset(clock, attrs)
   end
+
+  def get_last_clock(user) do
+    query =
+      from(c in Clock,
+        where: c.user == ^user,
+        order_by: [desc: c.inserted_at],
+        limit: 1
+      )
+
+    case Repo.one(query) do
+      nil -> {:error, "No clock entry found for user with id #{user}"}
+      clock -> {:ok, clock}
+    end
+  end
 end

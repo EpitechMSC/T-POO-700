@@ -29,6 +29,7 @@ defmodule TimeManagerWeb.Router do
     pipe_through :authenticate
     resources "/signal", SignalController, except: [:new, :delete]
     resources "/contrats", ContratController, except: [:new, :delete, :update, :create, :edit]
+
     # resources "/files", FileController
 
     # get "/contrats/:id", ContratController, :show
@@ -47,6 +48,7 @@ defmodule TimeManagerWeb.Router do
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
     resources "/clocks", ClockController, except: [:edit]
+    get "/clocks/get_last/:user", ClockController, :last_clock
 
     pipe_through [:manager_or_supervisor]
     resources "/team_memberships", TeamMembershipController

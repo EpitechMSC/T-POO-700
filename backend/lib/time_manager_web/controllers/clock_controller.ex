@@ -19,6 +19,18 @@ defmodule TimeManagerWeb.ClockController do
     end
   end
 
+  def last_clock(conn, %{"user" => user}) do
+    case Clocks.get_last_clock(user) do
+      {:ok, %Clock{} = clock} ->
+        json(conn, clock)
+
+      {:error, reason} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: reason})
+    end
+  end
+
   def create(conn, %{"clock" => clock_params}) do
     with {:ok, %Clock{} = clock} <- Clocks.create_clock(clock_params) do
       conn

@@ -13,6 +13,8 @@ const Clocks = {
   update: (id: number, clock: Clock): Promise<Clock> =>
     requests.put<Clock>(`clocks/${id}`, { clock }),
   remove: (id: number): Promise<void> => requests.delete(`clocks/${id}`),
+  getLastByUserId: (id: number): Promise<Clock> =>
+    requests.get(`clocks/get_last/${id}`),
 };
 
 export default Clocks;
