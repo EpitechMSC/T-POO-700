@@ -90,7 +90,7 @@
               type="email"
               class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
               placeholder="Nouvelle adresse e-mail"
-            >
+            />
           </div>
           <button
             class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
