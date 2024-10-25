@@ -1,42 +1,40 @@
 <template>
-  <section class="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
+  <div
+    v-for="(card, index) in cards"
+    :key="index"
+    class="relative flex flex-col bg-clip-border rounded-xl col-span-12 md:col-span-6 xl:col-span-3 bg-white text-gray-700 shadow-md mb-5 h-full"
+  >
     <div
-      v-for="(card, index) in cards"
-      :key="index"
-      class="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 shadow-md mb-5 h-full"
+      :class="[
+        'card__icon mx-4 rounded-xl overflow-hidden shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center',
+        cardIconClass(card.type),
+      ]"
     >
-      <div
-        :class="[
-          'card__icon mx-4 rounded-xl overflow-hidden shadow-lg absolute -mt-4 grid h-16 w-16 place-items-center',
-          cardIconClass(card.type),
-        ]"
-      >
-        <i :class="card.icon" style="font-size: 1.5rem" />
-      </div>
-      <div class="p-4 text-right">
-        <p
-          class="block antialiased font-sans text-sm leading-normal font-normal text-gray-500"
-        >
-          {{ card.title }}
-        </p>
-        <h4
-          class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-gray-900"
-        >
-          {{ card.amount }}
-        </h4>
-      </div>
-      <div class="border-t border-gray-50 p-4">
-        <p
-          class="block antialiased font-sans text-base leading-relaxed font-normal text-gray-500"
-        >
-          <strong :class="card.isPositive ? 'text-green-500' : 'text-red-500'">
-            {{ card.percentageChange }}
-          </strong>
-          &nbsp;than last month
-        </p>
-      </div>
+      <i :class="card.icon" style="font-size: 1.5rem" />
     </div>
-  </section>
+    <div class="p-4 text-right">
+      <p
+        class="block antialiased font-sans text-sm leading-normal font-normal text-gray-500"
+      >
+        {{ card.title }}
+      </p>
+      <h4
+        class="block antialiased tracking-normal font-sans text-2xl font-semibold leading-snug text-gray-900"
+      >
+        {{ card.amount }}
+      </h4>
+    </div>
+    <div class="border-t border-gray-50 p-4">
+      <p
+        class="block antialiased font-sans text-base leading-relaxed font-normal text-gray-500"
+      >
+        <strong :class="card.isPositive ? 'text-green-500' : 'text-red-500'">
+          {{ card.percentageChange }}
+        </strong>
+        &nbsp;than last month
+      </p>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">

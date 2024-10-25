@@ -1,18 +1,11 @@
-<div class="p-6">
+<div
+  class="relative flex rounded-xl col-span-12 md:col-span-6 xl:col-span-3 bg-white text-gray-700 shadow-md p-2 py-5 ">
   <div v-if="loading" class="text-gray-500">Chargement...</div>
   <div v-if="error" class="text-red-600">{{ error }}</div>
-
   <div v-if="!loading && !error">
-    <TableComponent
-      :headers="['Jour', 'Début', 'Fin']"
-      :data="workingTimes"
-      :current-page="pagingParams.pageNumber"
-      :totalPages="totalPages"
-      :items-per-page="pagingParams.pageSize"
-      @edit-item="openUpdateModal"
-      @delete-item="confirmDelete"
-      @change-page="changePage"
-    >
+    <TableComponent :headers="['Jour', 'Début', 'Fin']" :data="workingTimes" :current-page="pagingParams.pageNumber"
+      :totalPages="totalPages" :items-per-page="pagingParams.pageSize" @edit-item="openUpdateModal"
+      @delete-item="confirmDelete" @change-page="changePage">
       <template #cell-Jour="{ item }">
         <div>{{ formatDay(item.start) }}</div>
       </template>
@@ -29,28 +22,14 @@
     <ModalComponent v-model="showUpdateModal">
       <h2 class="text-lg font-semibold mb-4">Modifier le temps de travail</h2>
       <label class="block mb-2">Début:</label>
-      <input
-        type="datetime-local"
-        v-model="updateForm.start"
-        class="border border-gray-300 rounded p-2 w-full mb-4"
-      />
+      <input type="datetime-local" v-model="updateForm.start" class="border border-gray-300 rounded p-2 w-full mb-4" />
       <label class="block mb-2">Fin:</label>
-      <input
-        type="datetime-local"
-        v-model="updateForm.end"
-        class="border border-gray-300 rounded p-2 w-full mb-4"
-      />
+      <input type="datetime-local" v-model="updateForm.end" class="border border-gray-300 rounded p-2 w-full mb-4" />
       <div class="flex justify-end">
-        <button
-          class="px-4 py-2 bg-blue-500 text-white rounded"
-          @click="updateWorkingTime"
-        >
+        <button class="px-4 py-2 bg-blue-500 text-white rounded" @click="updateWorkingTime">
           Mettre à jour
         </button>
-        <button
-          class="ml-2 px-4 py-2 bg-gray-300 rounded"
-          @click="closeUpdateModal"
-        >
+        <button class="ml-2 px-4 py-2 bg-gray-300 rounded" @click="closeUpdateModal">
           Annuler
         </button>
       </div>
@@ -60,16 +39,10 @@
       <h2 class="text-lg font-semibold mb-4">Confirmer la suppression</h2>
       <p>Êtes-vous sûr de vouloir supprimer ce temps de travail ?</p>
       <div class="flex justify-end mt-4">
-        <button
-          class="px-4 py-2 bg-red-500 text-white rounded"
-          @click="deleteWorkingTime"
-        >
+        <button class="px-4 py-2 bg-red-500 text-white rounded" @click="deleteWorkingTime">
           Supprimer
         </button>
-        <button
-          class="ml-2 px-4 py-2 bg-gray-300 rounded"
-          @click="closeDeleteConfirm"
-        >
+        <button class="ml-2 px-4 py-2 bg-gray-300 rounded" @click="closeDeleteConfirm">
           Annuler
         </button>
       </div>
