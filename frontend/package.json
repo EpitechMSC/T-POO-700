@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "build:mobile": "vue-tsc -b && vite build --outDir ../mobile/www/ --emptyOutDir",
+    "build:mobile": "vue-tsc -b && vite build --mode mobile --outDir ../mobile/www/ --emptyOutDir",
     "preview": "vite preview",
     "lint": "eslint . ",
     "lint:fix": "eslint .  --fix",
