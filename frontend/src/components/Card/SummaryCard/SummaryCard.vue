@@ -28,11 +28,12 @@
       <p
         class="block antialiased font-sans text-base leading-relaxed font-normal text-gray-500"
       >
-        <strong :class="card.isPositive ? 'text-green-500' : 'text-red-500'">
+      <strong :class="card.isPositive ? 'text-green-500' : 'text-red-500'">
           {{ card.percentageChange }}
         </strong>
         &nbsp;than last month
       </p>
+
     </div>
   </div>
 </template>
@@ -76,32 +77,24 @@ export default defineComponent({
           {
             title: 'Worked today',
             amount: '0:00',
-            percentageChange: 'N/A',
-            isPositive: false,
             type: 'worked_today',
             icon: 'fas fa-clock',
           },
           {
             title: 'Number of clocked',
             amount: '0',
-            percentageChange: 'N/A',
-            isPositive: false,
             type: 'clocked',
             icon: 'fas fa-users',
           },
           {
             title: 'Working times',
             amount: '0',
-            percentageChange: 'N/A',
-            isPositive: false,
             type: 'working_times',
             icon: 'fas fa-briefcase',
           },
           {
             title: 'Worked this week',
             amount: '0:00',
-            percentageChange: 'N/A',
-            isPositive: false,
             type: 'worked_week',
             icon: 'fas fa-calendar-week',
           },
@@ -111,8 +104,6 @@ export default defineComponent({
       const { worked_today, worked_this_week, total_days_worked } =
         userStats.value;
 
-      const percentageChange = '+5%';
-
       return [
         {
           title: 'Worked today',
@@ -121,24 +112,18 @@ export default defineComponent({
           )
             .toString()
             .padStart(2, '0')}`,
-          percentageChange,
-          isPositive: true,
           type: 'worked_today',
           icon: 'fas fa-clock',
         },
         {
           title: 'Number of clocked',
           amount: workingTimesStore.workingTimeCount.toString(),
-          percentageChange: '-3%',
-          isPositive: false,
           type: 'clocked',
           icon: 'fas fa-users',
         },
         {
           title: 'Working times',
           amount: total_days_worked.toString(),
-          percentageChange,
-          isPositive: true,
           type: 'working_times',
           icon: 'fas fa-briefcase',
         },
@@ -149,8 +134,6 @@ export default defineComponent({
           )
             .toString()
             .padStart(2, '0')}`,
-          percentageChange: '+12%',
-          isPositive: true,
           type: 'worked_week',
           icon: 'fas fa-calendar-week',
         },
