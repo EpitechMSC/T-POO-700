@@ -14,10 +14,11 @@ export default defineComponent({
       useDropdown();
 
     const isActive = (page: string) => {
+      const homepage = /^\/users\/\d+$/;
       const currentPath = window.location.pathname;
       return (
-        (page === 'home' && currentPath === '/') ||
-        (page === 'home' && currentPath === '/users/:id') || // --- à revoir --- //
+        (page === 'home' &&
+          (currentPath === '/' || homepage.test(currentPath))) ||
         (page === 'times' && currentPath === '/times') ||
         (page === 'calendar' && currentPath === '/calendar')
       );

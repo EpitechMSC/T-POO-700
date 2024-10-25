@@ -10,7 +10,7 @@
     <div
       class="work-percentage-label absolute bottom-1 text-lg font-semibold text-gray-800"
     >
-      {{ ((workedThisWeek / hoursPerWeek) * 100).toFixed(2) }}% worked
+      {{ ((workedThisWeek / hoursPerWeek) * 100).toFixed(0) }}% worked
     </div>
   </div>
 </template>
@@ -87,21 +87,27 @@ export default defineComponent({
     const computedAngle = computed(() => {
       const minAngle = -45;
       const maxAngle = 45;
-      let angle =
-        (maxAngle - minAngle) * (workedThisWeek.value / hoursPerWeek.value) +
-        minAngle;
+      const targetPercentage = 1; // 100 % correspond à 0°
 
-      // Clamp the angle to be between minAngle and maxAngle
+      // Calcul de l'angle centré sur 0° pour 100 %
+      let angle =
+        (maxAngle - minAngle) *
+          (workedThisWeek.value / hoursPerWeek.value - targetPercentage) +
+        0;
+
+      // Limiter l'angle entre minAngle et maxAngle
       angle = Math.max(minAngle, Math.min(angle, maxAngle));
 
       return angle;
     });
 
     const bgColorClass = computed(() => {
-      if ((workedThisWeek.value / hoursPerWeek.value) * 100 > 80) {
-        return 'bg-green-500'; // Green background if more than 80%
+      if ((workedThisWeek.value / hoursPerWeek.value) * 100 > 90) {
+        return 'bg-gradient-to-tr from-green-600 to-green-400'; // Green background if more than 80%
+      } else if ((workedThisWeek.value / hoursPerWeek.value) * 100 > 60) {
+        return 'bg-gradient-to-tr from-orange-400 to-orange-200'; // Yellow background if more than 50%
       } else {
-        return 'bg-red-200'; // Default light gray background
+        return 'bg-gradient-to-tr from-red-900 to-red-400'; // else it RED ✨ !
       }
     });
 
