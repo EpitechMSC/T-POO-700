@@ -37,6 +37,12 @@ const routes: Array<RouteRecordRaw> = [
     meta: { requiresAuth: true }, //, roles: ['Supervisor', 'Manager']
   },
   {
+    path: '/users/employees',
+    name: 'Employee',
+    component: () => import('../../pages/Settings/SettingsEmployees.vue'),
+    meta: { requiresAuth: true, roles: ['Supervisor', 'Manager'] }, //, roles: ['Supervisor', 'Manager']
+  },
+  {
     path: '/login',
     name: 'Login',
     component: () => import('../../pages/Login/LoginPage.vue'),

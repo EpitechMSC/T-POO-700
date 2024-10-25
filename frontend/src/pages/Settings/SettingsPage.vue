@@ -1,7 +1,6 @@
 <template>
   <div class="mx-4 min-h-screen max-w-screen-xl sm:mx-8 xl:mx-auto">
     <h1 class="border-b py-6 text-4xl font-semibold">Paramètres</h1>
-    <h1 class="border-b py-6 text-4xl font-semibold">Paramètres</h1>
     <div class="grid grid-cols-8 pt-3 sm:grid-cols-10">
       <!-- Navigation Section -->
       <SettingsNavigationMenu />
@@ -13,8 +12,6 @@
         <div class="pt-4">
           <h1 class="py-2 text-2xl font-semibold">Paramètres du compte</h1>
         </div>
-        <hr class="mt-4 mb-8" />
-        <hr class="mt-4 mb-8" />
         <hr class="mt-4 mb-8" />
 
         <!-- Nom d'utilisateur -->
@@ -58,10 +55,8 @@
         </div>
 
         <hr class="mt-4 mb-8" />
-        <hr class="mt-4 mb-8" />
 
         <!-- Email -->
-        <p class="py-2 text-xl font-semibold">Adresse e-mail</p>
         <p class="py-2 text-xl font-semibold">Adresse e-mail</p>
         <div
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
@@ -102,7 +97,7 @@
         <!-- <UploadFileComponent/> -->
         <hr class="mt-4 mb-8" />
         <!-- Delete Account -->
-        <div class="mb-10">
+        <div v-if="userRole === 'Supervisor'" class="mb-10">
           <p class="py-2 text-xl font-semibold">Supprimer le compte</p>
           <p
             class="inline-flex items-center rounded-full bg-rose-100 px-4 py-1 text-rose-600"
@@ -151,6 +146,7 @@ export default defineComponent({
     const authStore = useAuthenticateStore();
     const usersStore = useUsersStore();
     const user = ref(authStore.getUser);
+    const userRole = ref(authStore.getUserRole);
 
     const username = ref(user.value?.username || '');
     const email = ref(user.value?.email || '');
@@ -204,6 +200,7 @@ export default defineComponent({
     return {
       user,
       username,
+      userRole,
       email,
       isEditingUsername,
       isEditingEmail,
