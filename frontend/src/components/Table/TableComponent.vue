@@ -10,7 +10,9 @@
           >
             {{ header }}
           </th>
-          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+          <th
+            class="px-4 py-2 text-left text-sm font-semibold text-gray-600 text-center"
+          >
             Options
           </th>
         </tr>
@@ -42,12 +44,12 @@
           <td class="px-4 py-3">
             <div class="relative">
               <button
-                class="text-gray-500 hover:text-gray-700"
+                class="text-gray-500 hover:text-gray-700 w-full"
                 @click="e => toggleMenu(e, rowIndex)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
+                  class="h-6 w-6 mx-auto"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"

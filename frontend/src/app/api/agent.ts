@@ -5,6 +5,7 @@ import Authenticate from './modules/authenticate';
 import Contrats from './modules/contrat';
 import Events from './modules/events';
 import Teams from './modules/teams';
+import Roles from './modules/roles';
 
 const agent = {
   Users,
@@ -14,6 +15,7 @@ const agent = {
   Contrats,
   Events,
   Teams,
+  Roles,
 };
 
 export default agent;
