@@ -6,7 +6,7 @@ const Teams = {
 
   getById: (id: number): Promise<Team> => requests.get(`teams/${id}`),
 
-  getByUserId: (userId: number): Promise<Team> =>
+  getByUserId: (userId: number): Promise<Team[]> =>
     requests.get(`teams/user/${userId}`),
 
   create: (team: Team): Promise<Team> => requests.post('teams', team),

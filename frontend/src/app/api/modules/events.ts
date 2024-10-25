@@ -11,6 +11,8 @@ const Events = {
     axios
       .get<PaginatedResult<Event[]>>(`teams/${teamId}/events`, { params })
       .then(responseBody),
+  listByUserId: (userId: number): Promise<Event[]> =>
+    requests.get<Event[]>(`users/${userId}/events`),
   create: (teamId: number, event: Event): Promise<Event> =>
     requests.post<Event>(`teams/${teamId}/events`, { event }),
   update: (teamId: number, id: number, event: Event): Promise<Event> =>
