@@ -77,20 +77,22 @@ defmodule TimeManager.Teams do
   end
 
   def get_team_by_user_id(user_id) do
-    query =
+    membership_query =
       from tm in TeamMembership,
         where: tm.user_id == ^user_id,
         select: tm.team_id
 
-    case Repo.one(query) do
-      nil ->
+    query =
+      from t in Team,
+        where: t.id in subquery(membership_query) or t.manager_id == ^user_id,
+        select: t.id
+
+    case Repo.all(query) do
+      [] ->
         {:error, :not_found}
 
-      team_id ->
-        case get_team(team_id) do
-          {:ok, team} -> {:ok, team}
-          {:error, :not_found} -> {:error, :not_found}
-        end
+      team_ids ->
+        {:ok, team_ids}
     end
   end
 

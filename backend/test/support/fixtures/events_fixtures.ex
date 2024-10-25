@@ -15,7 +15,7 @@ defmodule TimeManager.EventsFixtures do
         end: ~U[2024-10-23 09:08:00Z],
         start: ~U[2024-10-23 09:08:00Z],
         title: "some title",
-        team_id: nil,
+        team_id: nil
       })
       |> TimeManager.Events.create_event()
 

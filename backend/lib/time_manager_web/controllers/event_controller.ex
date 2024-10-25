@@ -48,6 +48,23 @@ defmodule TimeManagerWeb.EventController do
     end
   end
 
+  def get_user_events(conn, %{"user_id" => user_id}) do
+    case Events.get_user_events(user_id) do
+      {:ok, events} ->
+        json(conn, events)
+
+      {:error, :no_teams_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "No teams found for the user."})
+
+      {:error, _reason} ->
+        conn
+        |> put_status(:internal_server_error)
+        |> json(%{error: "Failed to retrieve events."})
+    end
+  end
+
   @decorate is_granted(["Supervisor", "Manager"])
   def update(conn, %{"id" => id, "event" => event_params}) do
     case Events.get_event(id) do

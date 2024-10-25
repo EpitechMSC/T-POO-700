@@ -22,7 +22,6 @@ defmodule TimeManager.EventsTest do
       assert response.data == [event]
     end
 
-
     test "get_event!/1 returns the event with given id" do
       manager_role = role_fixture(%{name: "Manager"})
       manager = user_fixture(%{role: manager_role.id})
@@ -33,11 +32,12 @@ defmodule TimeManager.EventsTest do
       assert found_event == event
     end
 
-
     test "create_event/1 with valid data creates an event" do
       manager_role = role_fixture(%{name: "Manager"})
-      manager = user_fixture(%{role: manager_role.id})  # Crée un Manager
-      team = team_fixture(%{manager_id: manager.id})    # Associe une équipe au Manager
+      # Crée un Manager
+      manager = user_fixture(%{role: manager_role.id})
+      # Associe une équipe au Manager
+      team = team_fixture(%{manager_id: manager.id})
 
       valid_attrs = %{
         start: ~U[2024-10-23 09:08:00Z],
@@ -90,7 +90,6 @@ defmodule TimeManager.EventsTest do
       assert unchanged_event == event
     end
 
-
     test "delete_event/1 deletes the event" do
       manager_role = role_fixture(%{name: "Manager"})
       manager = user_fixture(%{role: manager_role.id})
@@ -100,7 +99,6 @@ defmodule TimeManager.EventsTest do
       assert {:ok, %Event{}} = Events.delete_event(event)
       assert {:error, :not_found} = Events.get_event(event.id)
     end
-
 
     test "change_event/1 returns an event changeset" do
       manager_role = role_fixture(%{name: "Manager"})

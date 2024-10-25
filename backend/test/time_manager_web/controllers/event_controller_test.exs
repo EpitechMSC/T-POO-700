@@ -35,7 +35,15 @@ defmodule TimeManagerWeb.EventControllerTest do
       conn =
         conn
         |> put_req_header("authorization", "Bearer #{manager_token}")
-        |> post(~p"/api/teams/#{team.id}/events", event: %{title: "some title", start: ~U[2024-10-23 09:08:00Z], end: ~U[2024-10-23 09:08:00Z], all_day: true, team_id: team.id})
+        |> post(~p"/api/teams/#{team.id}/events",
+          event: %{
+            title: "some title",
+            start: ~U[2024-10-23 09:08:00Z],
+            end: ~U[2024-10-23 09:08:00Z],
+            all_day: true,
+            team_id: team.id
+          }
+        )
 
       assert json_response(conn, 201)
     end
@@ -86,7 +94,15 @@ defmodule TimeManagerWeb.EventControllerTest do
       conn =
         conn
         |> put_req_header("authorization", "Bearer #{supervisor_token}")
-        |> put(~p"/api/teams/#{team.id}/events/#{event.id}", event: %{title: "updated title", start: ~U[2024-10-24 09:08:00Z], end: ~U[2024-10-24 09:08:00Z], all_day: false, team_id: team.id})
+        |> put(~p"/api/teams/#{team.id}/events/#{event.id}",
+          event: %{
+            title: "updated title",
+            start: ~U[2024-10-24 09:08:00Z],
+            end: ~U[2024-10-24 09:08:00Z],
+            all_day: false,
+            team_id: team.id
+          }
+        )
 
       assert %{"id" => id} = json_response(conn, 200)
       assert id == event.id
@@ -105,7 +121,9 @@ defmodule TimeManagerWeb.EventControllerTest do
       conn =
         conn
         |> put_req_header("authorization", "Bearer #{supervisor_token}")
-        |> put(~p"/api/teams/#{team.id}/events/999", event: %{title: "updated title", team_id: team.id})
+        |> put(~p"/api/teams/#{team.id}/events/999",
+          event: %{title: "updated title", team_id: team.id}
+        )
 
       assert json_response(conn, 404)
     end
@@ -126,7 +144,6 @@ defmodule TimeManagerWeb.EventControllerTest do
         |> delete(~p"/api/teams/#{team.id}/events/#{event.id}")
 
       assert response(conn, 204)
-
     end
 
     test "returns error when deleting a non-existing event", %{conn: conn} do

@@ -6,6 +6,7 @@ defmodule TimeManager.Events do
   import Ecto.Query, warn: false
   alias TimeManager.Repo
   alias TimeManager.Events.Event
+  alias TimeManager.Teams.{Team, TeamMembership}
   alias TimeManagerWeb.Response
 
   @doc """
@@ -88,6 +89,34 @@ defmodule TimeManager.Events do
          page_size: page_size
        }
      }}
+  end
+
+  def get_user_events(user_id) do
+    membership_query =
+      from tm in TeamMembership,
+        where: tm.user_id == ^user_id,
+        select: tm.team_id
+
+    manager_query =
+      from t in Team,
+        where: t.manager_id == ^user_id,
+        select: t.id
+
+    team_ids =
+      Repo.all(membership_query) ++ Repo.all(manager_query)
+
+    if team_ids == [] do
+      {:ok, []}
+    else
+      events_query =
+        from e in Event,
+          where: e.team_id in ^team_ids,
+          select: e
+
+      events = Repo.all(events_query)
+
+      {:ok, events}
+    end
   end
 
   @doc """

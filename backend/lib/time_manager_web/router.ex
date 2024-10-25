@@ -28,6 +28,7 @@ defmodule TimeManagerWeb.Router do
 
     pipe_through :authenticate
     resources "/teams/:id/events", EventController
+    get "/users/:user_id/events", EventController, :get_user_events
 
     resources "/signal", SignalController, except: [:new, :delete]
     resources "/contrats", ContratController, except: [:new, :delete, :update, :create, :edit]
