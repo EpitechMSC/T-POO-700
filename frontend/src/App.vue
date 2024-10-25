@@ -1,11 +1,32 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted, onBeforeMount, onUnmounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuthenticateStore } from './app/store/store';
 import NavBar from './components/NavBar/NavBar.vue';
+import { executeBufferedRequests } from './app/api/handler/handleRequestWhenOffline';
 
 const router = useRouter();
 const authStore = useAuthenticateStore();
+
+const handleOnline = () => {
+  console.log('online');
+  executeBufferedRequests();
+};
+
+const handleOffline = () => {
+  console.log('offline');
+};
+
+onBeforeMount(() => {
+  // initialise loki db
+  window.addEventListener('online', handleOnline);
+  window.addEventListener('offline', handleOffline);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('online', handleOnline);
+  window.removeEventListener('offline', handleOffline);
+});
 
 onMounted(async () => {
   const token = localStorage.getItem('token');

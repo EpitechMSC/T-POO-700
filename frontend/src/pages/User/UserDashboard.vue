@@ -1,3 +1,2 @@
 <template src="./UserDashboard.template.html"></template>
 <script src="./UserDashboard.ts"></script>
-<style src="./UserDashboard.css"></style>
