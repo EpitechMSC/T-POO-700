@@ -76,6 +76,26 @@ defmodule TimeManager.Teams do
     end
   end
 
+  def get_team_by_user_id(user_id) do
+    membership_query =
+      from tm in TeamMembership,
+        where: tm.user_id == ^user_id,
+        select: tm.team_id
+
+    query =
+      from t in Team,
+        where: t.id in subquery(membership_query) or t.manager_id == ^user_id,
+        select: t.id
+
+    case Repo.all(query) do
+      [] ->
+        {:error, :not_found}
+
+      team_ids ->
+        {:ok, team_ids}
+    end
+  end
+
   @doc """
   Creates a team.
 

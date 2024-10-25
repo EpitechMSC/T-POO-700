@@ -40,6 +40,18 @@ defmodule TimeManagerWeb.TeamController do
     end
   end
 
+  def get_team_by_user_id(conn, %{"user_id" => user_id}) do
+    case Teams.get_team_by_user_id(user_id) do
+      {:ok, team} ->
+        json(conn, team)
+
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "Team not found for this user"})
+    end
+  end
+
   @decorate is_granted(["Supervisor"])
   def create(conn, %{"team" => team_params}) do
     with {:ok, %Team{} = team} <- Teams.create_team(team_params) do
