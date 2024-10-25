@@ -3,6 +3,7 @@ defmodule TimeManager.Contrats.Contrat do
   import Ecto.Changeset
   use Waffle.Ecto.Schema
 
+  @derive {Jason.Encoder, only: [:id, :temps, :upload]}
   schema "contrats" do
     field :temps, :integer
     field :upload, TimeManagerWeb.Uploaders.FileUploader.Type
