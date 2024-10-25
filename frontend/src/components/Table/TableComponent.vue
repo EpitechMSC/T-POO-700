@@ -11,6 +11,7 @@
             {{ header }}
           </th>
           <th
+            v-if="isAuthorized"
             class="px-4 py-2 text-left text-sm font-semibold text-gray-600 text-center"
           >
             Options
@@ -40,8 +41,7 @@
             </slot>
           </td>
 
-          <!-- Options Column -->
-          <td class="px-4 py-3">
+          <td v-if="isAuthorized" class="px-4 py-3">
             <div class="relative">
               <button
                 class="text-gray-500 hover:text-gray-700 w-full"
@@ -87,7 +87,6 @@
       </tbody>
     </table>
 
-    <!-- Pagination Controls -->
     <div class="flex justify-end mt-4 space-x-2">
       <button
         :disabled="currentPage === 1"
@@ -110,6 +109,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
+import { useAuthenticateStore } from '../../app/store/store';
 
 export default defineComponent({
   name: 'TableComponent',
@@ -144,6 +144,11 @@ export default defineComponent({
   computed: {
     paginatedData(): T[] {
       return this.data;
+    },
+    isAuthorized() {
+      const authStore = useAuthenticateStore();
+      const userRole = authStore.role;
+      return userRole === 'Manager' || userRole === 'Supervisor';
     },
   },
   methods: {

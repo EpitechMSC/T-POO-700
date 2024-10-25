@@ -9,6 +9,7 @@
       :current-page="pagingParams.pageNumber"
       :totalPages="totalPages"
       :items-per-page="pagingParams.pageSize"
+      :isAuthorized="isAuthorized"
       @edit-item="openUpdateModal"
       @delete-item="confirmDelete"
       @change-page="changePage"
