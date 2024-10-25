@@ -61,8 +61,7 @@ export const useTeamStore = defineStore('team', {
       this.error = null;
       try {
         const team = await agent.Teams.getByUserId(userId);
-        console.log(team);
-        this.team = team;
+        this.teams = team;
       } catch (err: unknown) {
         if (err instanceof Error) {
           this.error =

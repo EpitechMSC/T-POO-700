@@ -6,7 +6,7 @@ import {
   PagingParams,
   PaginatedResult,
 } from '../../models/pagination';
-import { useTeamStore } from '../store';
+import { useTeamStore, useAuthenticateStore } from '../store';
 
 interface EventsState {
   events: Event[];
@@ -65,20 +65,42 @@ export const useEventsStore = defineStore('events', {
       }
     },
 
-    async createEvent(event: Event): Promise<void> {
+    async fetchUserEvents(): Promise<void> {
       this.loading = true;
       this.error = null;
-      const teamStore = useTeamStore();
+      const authenticateStore = useAuthenticateStore();
 
-      if (!teamStore.team) {
-        this.error = 'Équipe non sélectionnée';
+      if (!authenticateStore.user) {
+        this.error = 'Utilisateur non connecté';
         this.loading = false;
         return;
       }
 
       try {
-        const response = await agent.Events.create(teamStore.team.id, event);
-        console.log(event);
+        const response: Event[] = await agent.Events.listByUserId(
+          authenticateStore.user.id
+        );
+        this.events = response;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            "Erreur lors de la récupération des événements de l'utilisateur";
+        } else {
+          this.error =
+            "Erreur inconnue lors de la récupération des événements de l'utilisateur";
+        }
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async createEvent(event: Event): Promise<void> {
+      this.loading = true;
+      this.error = null;
+
+      try {
+        const response = await agent.Events.create(event.team_id, event);
         this.events.push(response);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -125,19 +147,12 @@ export const useEventsStore = defineStore('events', {
       }
     },
 
-    async deleteEvent(id: number): Promise<void> {
+    async deleteEvent(id: number, team_id: number): Promise<void> {
       this.loading = true;
       this.error = null;
-      const teamStore = useTeamStore();
-
-      if (!teamStore.team) {
-        this.error = 'Équipe non sélectionnée';
-        this.loading = false;
-        return;
-      }
 
       try {
-        await agent.Events.remove(teamStore.team.id, id);
+        await agent.Events.remove(team_id, id);
         this.events = this.events.filter(e => e.id !== id);
       } catch (err: unknown) {
         if (err instanceof Error) {

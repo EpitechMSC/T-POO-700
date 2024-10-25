@@ -6,3 +6,11 @@ export interface Event {
   all_day: boolean;
   team_id: number;
 }
+
+export interface CalendarEvent {
+  title: string;
+  start: Date | string;
+  end: Date | string;
+  allDay: boolean;
+  id: number | undefined;
+}
