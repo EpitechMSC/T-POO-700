@@ -32,6 +32,7 @@ defmodule TimeManagerWeb.Router do
 
     resources "/signal", SignalController, except: [:new, :delete]
     resources "/contrats", ContratController, except: [:new, :delete, :update, :create, :edit]
+
     # resources "/files", FileController
     get "/teams/user/:user_id", TeamController, :get_team_by_user_id
 
@@ -51,6 +52,7 @@ defmodule TimeManagerWeb.Router do
     resources "/workingtimes", WorkingTimeController, except: [:new, :edit]
     resources "/users", UserController, except: [:edit]
     resources "/clocks", ClockController, except: [:edit]
+    get "/clocks/get_last/:user", ClockController, :last_clock
 
     pipe_through [:manager_or_supervisor]
     resources "/team_memberships", TeamMembershipController

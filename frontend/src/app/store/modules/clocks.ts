@@ -13,6 +13,8 @@ interface ClocksState {
   error: string | null;
   pagination: Pagination | null;
   pagingParams: PagingParams;
+  clockIn: string | null;
+  lastClock: Clock | null;
 }
 
 export const useClocksStore = defineStore('clocks', {
@@ -22,6 +24,8 @@ export const useClocksStore = defineStore('clocks', {
     error: null,
     pagination: null,
     pagingParams: new PagingParams(),
+    clockIn: null,
+    lastClock: null,
   }),
   getters: {
     clockCount: state => state.clocks.length,
@@ -39,6 +43,9 @@ export const useClocksStore = defineStore('clocks', {
           await agent.Clocks.list(params);
         this.clocks = response.data;
         this.pagination = response.pagination;
+        console.log('hola', params);
+
+        this.lastClock = response.data[-1];
       } catch (err: unknown) {
         if (err instanceof Error) {
           this.error =
@@ -106,15 +113,30 @@ export const useClocksStore = defineStore('clocks', {
         this.loading = false;
       }
     },
-
-    setPage(page: number): void {
-      this.pagingParams.pageNumber = page;
-      this.fetchClocks();
+    setClockIn(time: string | null): void {
+      this.clockIn = time;
     },
+    getClockIn(): string | null {
+      return this.clockIn;
+    },
+    async fetchLastClockOfUser(id: number): Promise<void> {
+      this.loading = true;
+      this.error = null;
 
-    setPageSize(pageSize: number): void {
-      this.pagingParams.pageSize = pageSize;
-      this.fetchClocks();
+      try {
+        const response = await agent.Clocks.getLastByUserId(id);
+        this.lastClock = response;
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          this.error =
+            err.message ||
+            'Erreur lors de la récupération de la derniere horloge';
+        } else {
+          this.error = 'Erreur lors de la récupération de la derniere horloge';
+        }
+      } finally {
+        this.loading = false;
+      }
     },
   },
 });

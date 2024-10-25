@@ -10,18 +10,12 @@
       style="border-radius: 50%"
       @click="toggleBatSignal"
     >
-      <img
-        src="../../assets/batman-logo-circleless-11.png"
-        class="w-32"
-      >
+      <img src="../../assets/batman-logo-circleless-11.png" class="w-32" />
     </div>
 
     <div class="clock flex items-center">
       <span class="flex">
-        <p
-          v-if="!isClocked"
-          class="text-xl mr-1"
-        >{{ timeOfClockedIn }} -</p>
+        <p v-if="!isClocked" class="text-xl mr-1">{{ timeOfClockedIn }} -</p>
         <p class="text-xl mr-2 w-20">{{ time }}</p>
       </span>
       <button
@@ -46,11 +40,7 @@
           </g>
           <defs>
             <clipPath id="clip0_15_254">
-              <rect
-                width="34"
-                height="34"
-                fill="white"
-              />
+              <rect width="34" height="34" fill="white" />
             </clipPath>
           </defs>
         </svg>
@@ -108,16 +98,33 @@ export default defineComponent({
       time.value = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
       date.value = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
     };
+    const fetchLastClockIn = async () => {
+      await authenticateStore.fetchUser();
+      await clockStore.fetchLastClockOfUser(authenticateStore.$state.user.id);
+      const date = new Date(clockStore.lastClock.time);
+      // Format as hh:mm:ss
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const seconds = date.getSeconds().toString().padStart(2, '0');
 
+      const formattedTime = `${hours}:${minutes}:${seconds}`;
+      if (clockStore.lastClock.status == true) {
+        timeOfClockedIn.value = formattedTime;
+        isClocked.value = false;
+        dateOfClock.value.start = clockStore.lastClock.time;
+      }
+    };
     const clocking = async () => {
       const dataToSend = {
         clock: {
           time: date.value,
           status: isClocked.value,
+          user: authenticateStore.$state.user.id,
         },
       };
       try {
         await clockStore.createClock(dataToSend);
+        clockStore.setClockIn(date.value);
       } catch (error) {
         console.error('There was an error during clocking', error);
       }
@@ -140,6 +147,7 @@ export default defineComponent({
         };
         try {
           await workingTimesStore.createWorkingTime(workingTimeDataToSend);
+          clockStore.setClockIn(null);
         } catch (error) {
           console.error(
             'There was an error when creating a working time',
@@ -148,14 +156,19 @@ export default defineComponent({
         }
       }
     };
-
+    const getStoredClockIn = () => {
+      timeOfClockedIn.value = clockStore.getClockIn();
+    };
     onMounted(() => {
+      fetchLastClockIn();
+      getStoredClockIn();
       updateUsername();
       workingTimesStore.getWorkingTimeById(1);
       updateTime();
       updateStatus();
       setInterval(updateTime, 1000);
       setInterval(updateStatus, 1000);
+      console.log(authenticateStore);
     });
     return {
       time,
