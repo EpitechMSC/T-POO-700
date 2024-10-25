@@ -24,17 +24,7 @@
         {{ card.amount }}
       </h4>
     </div>
-    <div class="border-t border-gray-50 p-4">
-      <p
-        class="block antialiased font-sans text-base leading-relaxed font-normal text-gray-500"
-      >
-      <strong :class="card.isPositive ? 'text-green-500' : 'text-red-500'">
-          {{ card.percentageChange }}
-        </strong>
-        &nbsp;than last month
-      </p>
-
-    </div>
+    <div class="border-t border-gray-50 p-4"></div>
   </div>
 </template>
 
