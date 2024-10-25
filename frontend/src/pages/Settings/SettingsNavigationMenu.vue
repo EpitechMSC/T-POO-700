@@ -6,14 +6,14 @@
         class="mt-5 cursor-pointer border-l-2 border-transparent px-2 py-2 font-semibold transition hover:border-l-blue-700 hover:text-blue-700"
         :class="{ 'border-l-blue-700 text-blue-700': isActive('settings') }"
       >
-        <router-link :to="`/users/${user?.id}/settings`"> Compte </router-link>
+        <router-link :to="`/users/${user?.id}/settings`"> Account </router-link>
       </li>
 
       <!-- Lien pour la page des équipes -->
       <li
         class="mt-5 cursor-pointer border-l-2 border-transparent px-2 py-2 font-semibold transition hover:border-l-blue-700 hover:text-blue-700"
       >
-        Équipes
+        <router-link :to="`/users/employees`"> Employees </router-link>
       </li>
 
       <!-- Lien vers la page des documents -->

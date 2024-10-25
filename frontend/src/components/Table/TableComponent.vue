@@ -10,7 +10,10 @@
           >
             {{ header }}
           </th>
-          <th class="px-4 py-2 text-left text-sm font-semibold text-gray-600">
+          <th
+            v-if="isAuthorized"
+            class="px-4 py-2 text-left text-sm font-semibold text-gray-600 text-center"
+          >
             Options
           </th>
         </tr>
@@ -38,16 +41,15 @@
             </slot>
           </td>
 
-          <!-- Options Column -->
-          <td class="px-4 py-3">
+          <td v-if="isAuthorized" class="px-4 py-3">
             <div class="relative">
               <button
-                class="text-gray-500 hover:text-gray-700"
+                class="text-gray-500 hover:text-gray-700 w-full"
                 @click="e => toggleMenu(e, rowIndex)"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  class="h-6 w-6"
+                  class="h-6 w-6 mx-auto"
                   fill="none"
                   viewBox="0 0 24 24"
                   stroke="currentColor"
@@ -85,7 +87,6 @@
       </tbody>
     </table>
 
-    <!-- Pagination Controls -->
     <div class="flex justify-end mt-4 space-x-2">
       <button
         :disabled="currentPage === 1"
@@ -108,6 +109,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
+import { useAuthenticateStore } from '../../app/store/store';
 
 export default defineComponent({
   name: 'TableComponent',
@@ -142,6 +144,11 @@ export default defineComponent({
   computed: {
     paginatedData(): T[] {
       return this.data;
+    },
+    isAuthorized() {
+      const authStore = useAuthenticateStore();
+      const userRole = authStore.role;
+      return userRole === 'Manager' || userRole === 'Supervisor';
     },
   },
   methods: {

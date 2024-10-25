@@ -27,7 +27,7 @@ defmodule TimeManagerWeb.ContratControllerTest do
 
       conn = put_req_header(conn, "authorization", "Bearer #{token}")
       conn = get(conn, ~p"/api/contrats")
-      assert json_response(conn, 200)["data"] == []
+      assert json_response(conn, 200) == []
     end
   end
 
