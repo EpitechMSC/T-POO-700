@@ -256,6 +256,4 @@ for user <- users do
       end
     end
   end
-
-  Repo.delete_all(Clock)
 end
