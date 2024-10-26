@@ -83,6 +83,8 @@ export default defineComponent({
     const baseUrl = window.location.origin;
     const contractDetails = contractStore.contratOfConnectedUser?.temps;
 
+    console.log(contractDetails);
+
     return {
       baseUrl,
       contractDetails,
