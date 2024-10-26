@@ -35,7 +35,7 @@
                 :href="
                   baseUrl +
                   '/api/documents/contrat_' +
-                  contractDetails +
+                  contractDetails.temps +
                   'h.pdf'
                 "
                 class="text-blue-600 underline"
@@ -69,8 +69,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useContratStore } from '../../app/store/store';
+import { defineComponent, ref, onMounted } from 'vue';
+import { useAuthenticateStore } from '../../app/store/store';
 import SettingsNavigationMenu from './SettingsNavigationMenu.vue';
 
 export default defineComponent({
@@ -79,11 +79,34 @@ export default defineComponent({
     SettingsNavigationMenu,
   },
   setup() {
-    const contractStore = useContratStore();
+    const authStore = useAuthenticateStore();
+    const user = ref(authStore.getUser);
     const baseUrl = window.location.origin;
-    const contractDetails = contractStore.contratOfConnectedUser?.temps;
+    const contractDetails = ref(null);
 
-    console.log(contractDetails);
+    onMounted(async () => {
+      if (!user.value) {
+        await authStore.fetchUser();
+        user.value = authStore.getUser;
+      }
+      if (user.value?.contrat) {
+        if (user.value.contrat == 1) {
+          contractDetails.value = {
+            temps: 35,
+          };
+        } else if (user.value.contrat == 2) {
+          contractDetails.value = {
+            temps: 39,
+          };
+        } else if (user.value.contrat == 3) {
+          contractDetails.value = {
+            temps: 42,
+          };
+        } else {
+          contractDetails.value = null;
+        }
+      }
+    });
 
     return {
       baseUrl,
