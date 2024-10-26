@@ -36,8 +36,6 @@ export default defineComponent({
     const userId = computed(() => authStore.user?.id);
     const userContract = computed(() => authStore.user?.contrat);
 
-    console.log(userContract.value);
-
     // Set hours per week based on user contract value
     const setHoursPerWeek = () => {
       switch (userContract.value) {
@@ -76,14 +74,16 @@ export default defineComponent({
     });
 
     const computedAngle = computed(() => {
-      const minAngle = -45;
-      const maxAngle = 45;
-      const targetPercentage = 1; // 100% corresponds to 0°
+      const minAngle = -45; // -100%
+      const maxAngle = 45; // +100%
+      const targetPercentage = 1; // 100%
 
       const angle =
         (maxAngle - minAngle) *
           (workedThisWeek.value / hoursPerWeek.value - targetPercentage) +
         0;
+
+      console.log(angle);
 
       return Math.max(minAngle, Math.min(angle, maxAngle));
     });
