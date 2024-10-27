@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@babel/preset-env": "^7.25.7",
+    "@types/lokijs": "^1.5.14",
     "@types/node": "^22.7.5",
     "@types/vue-router": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^8.10.0",
