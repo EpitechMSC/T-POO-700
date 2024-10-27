@@ -87,7 +87,7 @@ export default defineComponent({
         user.value = authStore.getUser;
       }
 
-      contractDetails.value = user.value?.contract.temps ?? null;
+      contractDetails.value = user.value?.contrat.temps ?? null;
     });
 
     const documents = computed(() => [

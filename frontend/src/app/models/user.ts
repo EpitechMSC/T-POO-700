@@ -5,7 +5,7 @@ export interface User {
   username: string;
   email: string;
   role: number;
-  contract: Contrat;
+  contrat: Contrat;
 }
 
 export interface UserPayload {
