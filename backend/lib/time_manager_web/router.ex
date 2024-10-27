@@ -36,7 +36,7 @@ defmodule TimeManagerWeb.Router do
     # resources "/files", FileController
     get "/teams/user/:user_id", TeamController, :get_team_by_user_id
 
-    # get "/contrats/:id", ContratController, :show
+    get "/contrats/time/user/:user_id", ContratController, :get_contrat_time_by_user_id
 
     get "/teams/:id/members", TeamController, :list_members
     resources "/teams", TeamController

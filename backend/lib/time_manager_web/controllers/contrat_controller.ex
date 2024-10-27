@@ -3,6 +3,7 @@ defmodule TimeManagerWeb.ContratController do
 
   alias TimeManager.Repo
   alias TimeManager.Contrats
+  alias TimeManager.Accounts.User
   alias TimeManager.Contrats.Contrat
 
   action_fallback TimeManagerWeb.FallbackController
@@ -76,6 +77,26 @@ defmodule TimeManagerWeb.ContratController do
         conn
         |> put_status(:not_found)
         |> json(%{error: "Contrat not found"})
+    end
+  end
+
+  def get_contrat_time_by_user_id(conn, %{"user_id" => user_id}) do
+    case Repo.get(User, user_id) do
+      nil ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "User not found"})
+
+      user ->
+        case Repo.get(Contrat, user.contrat) do
+          nil ->
+            conn
+            |> put_status(:not_found)
+            |> json(%{error: "Contrat not found for this user"})
+
+          %Contrat{temps: temps} ->
+            json(conn, %{temps: temps})
+        end
     end
   end
 end

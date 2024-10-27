@@ -10,7 +10,7 @@
     <div
       class="work-percentage-label absolute bottom-1 text-lg font-semibold text-gray-800"
     >
-      {{ ((workedThisWeek / hoursPerWeek) * 100).toFixed(0) }}% worked
+      {{ percentageWorked }}% worked
     </div>
   </div>
 </template>
@@ -18,102 +18,95 @@
 <script>
 import {
   useAuthenticateStore,
-  useContratStore,
   useWorkingTimesStore,
 } from '../../app/store/store';
-import { defineComponent, onMounted, computed, watch, ref } from 'vue';
+import { defineComponent, onMounted, computed, ref, watch } from 'vue';
 
 export default defineComponent({
   name: 'Balance',
   setup() {
-    const contratStore = useContratStore();
     const authStore = useAuthenticateStore();
     const workingTimesStore = useWorkingTimesStore();
 
-    const userId = computed(() => authStore.user?.id);
+    // Reactive Variables
+    const workedThisWeek = ref(0);
+    const hoursPerWeek = ref(0);
 
-    const workedThisWeek = ref('');
-    const hoursPerWeek = ref('');
-    const contratId = ref('');
+    // Get User ID and User Contract
+    const userId = computed(() => authStore.user?.id);
+    const userContract = computed(() => authStore.user?.contrat);
+
+    // Set hours per week based on user contract value
+    const setHoursPerWeek = () => {
+      switch (userContract.value) {
+        case 1:
+          hoursPerWeek.value = 35;
+          break;
+        case 2:
+          hoursPerWeek.value = 39;
+          break;
+        case 3:
+          hoursPerWeek.value = 42;
+          break;
+        default:
+          hoursPerWeek.value = 0;
+      }
+    };
 
     const fetchUserData = async () => {
-      if (userId.value) {
-        await workingTimesStore.fetchWorkingTimeStats(userId.value);
+      try {
+        if (userId.value) {
+          await workingTimesStore.fetchWorkingTimeStats(userId.value);
+        }
+        setHoursPerWeek();
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
       }
     };
 
     onMounted(fetchUserData);
+
     const workingTimes = computed(() => workingTimesStore.stats);
-    watch(
-      () => workingTimes.value,
-      newStats => {
-        // Log only when stats are updated and available
-        if (newStats && newStats.worked_this_week !== undefined) {
-          workedThisWeek.value = newStats.worked_this_week;
-        }
-      }
-    );
 
-    const userData = computed(() => authStore.user);
-    watch(
-      () => userData.value,
-      user => {
-        if (user && user.contrat !== undefined) {
-          contratId.value = user.contrat;
-        }
-      }
-    );
-    watch(
-      () => contratId.value,
-      id => {
-        const fetchHoursPerWeek = async () => {
-          await contratStore.getContratInfo(id);
-        };
-        fetchHoursPerWeek();
-      }
-    );
+    const percentageWorked = computed(() => {
+      if (hoursPerWeek.value === 0) return 0;
+      return ((workedThisWeek.value / hoursPerWeek.value) * 100).toFixed(0);
+    });
 
-    const contratTime = computed(() => contratStore.contratOfConnectedUser);
-    watch(
-      () => contratTime.value,
-      contrat => {
-        // Log only when stats are updated and available
-        if (contrat && contrat.data !== undefined) {
-          hoursPerWeek.value = contrat.data.temps;
-        }
-      }
-    );
-    // Computed property to calculate the needle's angle based on workedPercentage
     const computedAngle = computed(() => {
-      const minAngle = -45;
-      const maxAngle = 45;
-      const targetPercentage = 1; // 100 % correspond à 0°
+      const minAngle = -45; // -100%
+      const maxAngle = 45; // +100%
+      const targetPercentage = 1; // 100%
 
-      // Calcul de l'angle centré sur 0° pour 100 %
-      let angle =
+      const angle =
         (maxAngle - minAngle) *
           (workedThisWeek.value / hoursPerWeek.value - targetPercentage) +
         0;
 
-      // Limiter l'angle entre minAngle et maxAngle
-      angle = Math.max(minAngle, Math.min(angle, maxAngle));
-
-      return angle;
+      return Math.max(minAngle, Math.min(angle, maxAngle));
     });
 
     const bgColorClass = computed(() => {
-      if ((workedThisWeek.value / hoursPerWeek.value) * 100 > 90) {
-        return 'bg-gradient-to-tr from-green-600 to-green-400'; // Green background if more than 80%
-      } else if ((workedThisWeek.value / hoursPerWeek.value) * 100 > 60) {
-        return 'bg-gradient-to-tr from-orange-400 to-orange-200'; // Yellow background if more than 50%
+      const percentage = (workedThisWeek.value / hoursPerWeek.value) * 100;
+      if (percentage > 90) {
+        return 'bg-gradient-to-tr from-green-600 to-green-400';
+      } else if (percentage > 60) {
+        return 'bg-gradient-to-tr from-orange-400 to-orange-200';
       } else {
-        return 'bg-gradient-to-tr from-red-900 to-red-400'; // else it RED ✨ !
+        return 'bg-gradient-to-tr from-red-900 to-red-400';
       }
     });
 
+    const updateValues = () => {
+      if (workingTimes.value) {
+        workedThisWeek.value = workingTimes.value.worked_this_week || 0;
+      }
+    };
+
+    watch(workingTimes, updateValues, { immediate: true });
+
     return {
-      workedThisWeek,
-      hoursPerWeek,
+      percentageWorked,
       computedAngle,
       bgColorClass,
     };

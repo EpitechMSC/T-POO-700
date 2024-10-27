@@ -34,7 +34,6 @@ _batSignal =
   })
 
 # Create Contrats
-
 _35h =
   Repo.insert!(%Contrat{
     temps: 35
@@ -49,9 +48,6 @@ _42h =
   Repo.insert!(%Contrat{
     temps: 42
   })
-
-# Create users
-# Create users with roles and hashed passwords
 
 # Create hashed passwords
 
@@ -162,7 +158,7 @@ time_slots_2 = [
 ]
 
 time_slots_3 = [
-  {Enum.random(8..10), Enum.random(11..14)},
+  {Enum.random(8..10), Enum.random(11..13)},
   {Enum.random(14..16), Enum.random(18..20)}
 ]
 
@@ -201,7 +197,7 @@ max_day_for_month = %{
   7 => 31,
   8 => 31,
   9 => 30,
-  10 => 31,
+  10 => 25,
   11 => 30,
   12 => 31
 }

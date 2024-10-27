@@ -16,50 +16,35 @@
         </div>
         <hr class="mt-4 mb-8" />
 
-        <div class="mt-8">
+        <div class="mx-4 mb-8">
           <ul>
-            <li>
+            <li
+              v-for="(doc, index) in documents"
+              :key="index"
+              class="flex gap-2 my-1"
+            >
               <a
-                :href="
-                  baseUrl +
-                  '/api/documents/reglementation-heures-de-travail.pdf'
-                "
+                v-if="doc.show"
+                :href="baseUrl + doc.path"
                 target="_blank"
                 class="text-blue-600 underline"
               >
-                Réglementation des Heures de Travail
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="currentColor"
+                  class="size-6"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M19.5 14.25v-2.625a3.375 3.375 0 0 0-3.375-3.375h-1.5A1.125 1.125 0 0 1 13.5 7.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 0 0-9-9Z"
+                  />
+                </svg>
               </a>
-            </li>
-            <li v-if="contractDetails">
-              <a
-                :href="
-                  baseUrl +
-                  '/api/documents/contrat_' +
-                  contractDetails +
-                  'h.pdf'
-                "
-                class="text-blue-600 underline"
-              >
-                Télécharger le contrat
-              </a>
-            </li>
-            <li>
-              <a
-                :href="baseUrl + '/api/documents/reglement.pdf'"
-                target="_blank"
-                class="text-blue-600 underline"
-              >
-                Réglement Intérieur
-              </a>
-            </li>
-            <li>
-              <a
-                :href="baseUrl + '/api/documents/FAQ.pdf'"
-                target="_blank"
-                class="text-blue-600 underline"
-              >
-                FAQ
-              </a>
+              {{ doc.label }}
             </li>
           </ul>
         </div>
@@ -69,8 +54,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useContratStore } from '../../app/store/store';
+import { defineComponent, ref, onMounted, computed } from 'vue';
+import { useAuthenticateStore } from '../../app/store/store';
 import SettingsNavigationMenu from './SettingsNavigationMenu.vue';
 
 export default defineComponent({
@@ -79,13 +64,54 @@ export default defineComponent({
     SettingsNavigationMenu,
   },
   setup() {
-    const contractStore = useContratStore();
+    const authStore = useAuthenticateStore();
+    const user = ref(authStore.getUser);
     const baseUrl = window.location.origin;
-    const contractDetails = contractStore.contratOfConnectedUser?.temps;
+    const contractDetails = ref(null);
+
+    onMounted(async () => {
+      if (!user.value) {
+        await authStore.fetchUser();
+        user.value = authStore.getUser;
+      }
+      if (user.value?.contrat) {
+        const contractMapping = {
+          1: { temps: 35 },
+          2: { temps: 39 },
+          3: { temps: 42 },
+        };
+        contractDetails.value = contractMapping[user.value.contrat] || null;
+      }
+    });
+
+    const documents = computed(() => [
+      {
+        label: 'Réglementation des Heures de Travail',
+        path: '/api/documents/reglementation-heures-de-travail.pdf',
+        show: true,
+      },
+      {
+        label: 'Télécharger votre contrat',
+        path: contractDetails.value
+          ? `/api/documents/contrat_${contractDetails.value.temps}h.pdf`
+          : '',
+        show: contractDetails.value !== null,
+      },
+      {
+        label: 'Réglement Intérieur',
+        path: '/api/documents/reglement.pdf',
+        show: true,
+      },
+      {
+        label: 'FAQ',
+        path: '/api/documents/FAQ.pdf',
+        show: true,
+      },
+    ]);
 
     return {
       baseUrl,
-      contractDetails,
+      documents,
     };
   },
 });

@@ -24,7 +24,7 @@
           </p>
           <button
             class="inline-flex text-sm font-semibold text-blue-600 underline decoration-2"
-            @click="toggleUsernameEdit"
+            @click="toggleEdit('username')"
           >
             Modifier
           </button>
@@ -35,22 +35,17 @@
           v-if="isEditingUsername"
           class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
         >
-          <div
-            class="relative flex overflow-hidden rounded-md border-2 transition focus-within:border-blue-600"
-          >
-            <input
-              v-model="username"
-              type="text"
-              class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
-              placeholder="Nouveau nom d'utilisateur"
-            />
-            />
-          </div>
+          <input
+            v-model="username"
+            type="text"
+            class="w-full rounded-md border py-2 px-4 text-base focus:border-blue-600"
+            placeholder="Nouveau nom d'utilisateur"
+          />
           <button
             class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
-            @click="saveUsername"
+            @click="saveChanges('username')"
           >
-            Enregistrer le nom d'utilisateur
+            Enregistrer
           </button>
         </div>
 
@@ -66,7 +61,7 @@
           </p>
           <button
             class="inline-flex text-sm font-semibold text-blue-600 underline decoration-2"
-            @click="toggleEmailEdit"
+            @click="toggleEdit('email')"
           >
             Modifier
           </button>
@@ -77,48 +72,42 @@
           v-if="isEditingEmail"
           class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
         >
-          <div
-            class="relative flex overflow-hidden rounded-md border-2 transition focus-within:border-blue-600"
-          >
-            <input
-              v-model="email"
-              type="email"
-              class="w-full flex-shrink appearance-none border-gray-300 bg-white py-2 px-4 text-base text-gray-700 placeholder-gray-400 focus:outline-none"
-              placeholder="Nouvelle adresse e-mail"
-            />
-          </div>
+          <input
+            v-model="email"
+            type="email"
+            class="w-full rounded-md border py-2 px-4 text-base focus:border-blue-600"
+            placeholder="Nouvelle adresse e-mail"
+          />
           <button
             class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
-            @click="saveEmail"
+            @click="saveChanges('email')"
           >
-            Enregistrer l'e-mail
+            Enregistrer
           </button>
         </div>
-        <!-- <UploadFileComponent/> -->
+
         <hr class="mt-4 mb-8" />
-        <!-- Delete Account -->
+
+        <!-- Contrat -->
+        <div class="mb-10">
+          <p class="py-2 text-xl font-semibold">Votre contrat</p>
+          <p class="text-gray-600">
+            Vous avez un contrat de
+            <strong>{{
+              contractDetails ? contractDetails.temps : 'Contrat non défini'
+            }}</strong>
+            heures par semaine.
+          </p>
+        </div>
+
+        <hr class="mt-4 mb-8" />
+
+        <!-- Supprimer le compte -->
         <div v-if="userRole === 'Supervisor'" class="mb-10">
           <p class="py-2 text-xl font-semibold">Supprimer le compte</p>
-          <p
-            class="inline-flex items-center rounded-full bg-rose-100 px-4 py-1 text-rose-600"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="mr-2 h-5 w-5"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
-                clip-rule="evenodd"
-              />
-            </svg>
-            Proceed with caution
-          </p>
           <p class="mt-2">
-            Assurez-vous d'avoir fait une sauvegarde de votre compte. Il n'y a
-            aucun moyen d'accéder à votre compte après cette action.
+            Assurez-vous d'avoir sauvegardé votre compte. Cette action est
+            irréversible.
           </p>
           <button
             class="ml-auto text-sm font-semibold text-rose-600 underline decoration-2"
@@ -145,41 +134,36 @@ export default defineComponent({
   setup() {
     const authStore = useAuthenticateStore();
     const usersStore = useUsersStore();
+
     const user = ref(authStore.getUser);
     const userRole = ref(authStore.getUserRole);
-
     const username = ref(user.value?.username || '');
     const email = ref(user.value?.email || '');
     const isEditingUsername = ref(false);
     const isEditingEmail = ref(false);
+    const contractDetails = ref(null);
 
-    const toggleUsernameEdit = () => {
-      isEditingUsername.value = !isEditingUsername.value;
+    const toggleEdit = (field: string) => {
+      if (field === 'username')
+        isEditingUsername.value = !isEditingUsername.value;
+      if (field === 'email') isEditingEmail.value = !isEditingEmail.value;
     };
 
-    const toggleEmailEdit = () => {
-      isEditingEmail.value = !isEditingEmail.value;
-    };
-
-    const saveUsername = async () => {
+    const saveChanges = async (field: string) => {
       if (user.value) {
+        const updatedData =
+          field === 'username'
+            ? { username: username.value }
+            : { email: email.value };
         await usersStore.updateUser(user.value.id, {
           ...user.value,
-          username: username.value,
+          ...updatedData,
         });
-        user.value.username = username.value;
-        toggleUsernameEdit();
-      }
-    };
 
-    const saveEmail = async () => {
-      if (user.value) {
-        await usersStore.updateUser(user.value.id, {
-          ...user.value,
-          email: email.value,
-        });
-        user.value.email = email.value;
-        toggleEmailEdit();
+        // Update user locally
+        if (field === 'username') user.value.username = username.value;
+        if (field === 'email') user.value.email = email.value;
+        toggleEdit(field);
       }
     };
 
@@ -190,28 +174,44 @@ export default defineComponent({
       }
     };
 
+    // Fetch contract details based on user's contract ID
     onMounted(async () => {
       if (!user.value) {
         await authStore.fetchUser();
         user.value = authStore.getUser;
       }
+
+      if (user.value?.contrat) {
+        if (user.value.contrat == 1) {
+          contractDetails.value = {
+            temps: 35,
+          };
+        } else if (user.value.contrat == 2) {
+          contractDetails.value = {
+            temps: 39,
+          };
+        } else if (user.value.contrat == 3) {
+          contractDetails.value = {
+            temps: 42,
+          };
+        } else {
+          contractDetails.value = null;
+        }
+      }
     });
 
     return {
       user,
-      username,
       userRole,
+      username,
       email,
       isEditingUsername,
       isEditingEmail,
-      toggleUsernameEdit,
-      saveUsername,
-      toggleEmailEdit,
-      saveEmail,
+      toggleEdit,
+      saveChanges,
       deleteAccount,
+      contractDetails,
     };
   },
 });
 </script>
-
-<style scoped></style>
