@@ -1,3 +1,7 @@
+Here’s an updated README with your instructions incorporated:
+
+---
+
 # T-POO-700
 
 ##### V1.0.0
@@ -162,6 +166,30 @@ npm run dev
 ```
 
 The application will be accessible at http://127.0.0.1:5173/.
+
+---
+
+### 📱 Mobile Build and Development
+
+To build for mobile and deploy on an emulator or Android device:
+
+1. Navigate to the `frontend` folder and run:
+
+    ```bash
+    npm run build:mobile
+    ```
+
+2. Then, navigate to the `mobile` folder and run:
+
+    ```bash
+    cordova run android
+    ```
+
+   This command connects the build to your emulator or Android device for testing.
+
+To develop for mobile with a local backend, start the backend server and update `.env.mobile` in the frontend folder with your machine’s IP address to ensure it points to your local setup. By default, it will connect to the production server.
+
+---
 
 ## 🐙 Contributions
 
