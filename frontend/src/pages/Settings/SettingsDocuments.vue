@@ -79,21 +79,15 @@ export default defineComponent({
     const authStore = useAuthenticateStore();
     const user = ref(authStore.getUser);
     const baseUrl = window.location.origin;
-    const contractDetails = ref(null);
+    const contractDetails = ref<number | null>(null);
 
     onMounted(async () => {
       if (!user.value) {
         await authStore.fetchUser();
         user.value = authStore.getUser;
       }
-      if (user.value?.contrat) {
-        const contractMapping = {
-          1: { temps: 35 },
-          2: { temps: 39 },
-          3: { temps: 42 },
-        };
-        contractDetails.value = contractMapping[user.value.contrat] || null;
-      }
+
+      contractDetails.value = user.value?.contract.temps ?? null;
     });
 
     const documents = computed(() => [
@@ -105,7 +99,7 @@ export default defineComponent({
       {
         label: 'Your contract',
         path: contractDetails.value
-          ? `/api/documents/contrat_${contractDetails.value.temps}h.pdf`
+          ? `/api/documents/contrat_${contractDetails.value}h.pdf`
           : '',
         show: contractDetails.value !== null,
       },
