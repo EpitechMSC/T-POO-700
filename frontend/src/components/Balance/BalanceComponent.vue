@@ -40,29 +40,11 @@ export default defineComponent({
     const userId = computed(() => authStore.user?.id);
     const userContract = computed(() => authStore.user?.contrat);
 
-    // Set hours per week based on user contract value
-    const setHoursPerWeek = () => {
-      switch (userContract.value) {
-        case 1:
-          hoursPerWeek.value = 35;
-          break;
-        case 2:
-          hoursPerWeek.value = 39;
-          break;
-        case 3:
-          hoursPerWeek.value = 42;
-          break;
-        default:
-          hoursPerWeek.value = 0;
-      }
-    };
-
     const fetchUserData = async () => {
       try {
         if (userId.value) {
           await workingTimesStore.fetchWorkingTimeStats(userId.value);
         }
-        setHoursPerWeek();
       } catch (error) {
         console.error('Failed to fetch data:', error);
       }
@@ -72,10 +54,11 @@ export default defineComponent({
 
     const workingTimes = computed(() => workingTimesStore.stats);
 
-    const percentageWorked = computed(() => {
-      if (hoursPerWeek.value === 0) return 0;
-      return ((workedThisWeek.value / hoursPerWeek.value) * 100).toFixed(0);
-    });
+    const percentageWorked = computed(() =>
+      userContract.value.temps === 0
+        ? 0
+        : ((workedThisWeek.value / hoursPerWeek.value) * 100).toFixed(0)
+    );
 
     const computedAngle = computed(() => {
       const minAngle = -45; // -100%
