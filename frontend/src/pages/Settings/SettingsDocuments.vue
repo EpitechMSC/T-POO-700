@@ -10,8 +10,20 @@
         class="col-span-8 overflow-hidden rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow"
       >
         <div class="pt-4">
-          <h1 class="py-2 text-2xl font-semibold">
-            Vos Documents à Télécharger
+          <h1 class="flex items-center gap-4 py-2 text-2xl font-semibold">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-6"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M19.5 21a3 3 0 0 0 3-3V9a3 3 0 0 0-3-3h-5.379a.75.75 0 0 1-.53-.22L11.47 3.66A2.25 2.25 0 0 0 9.879 3H4.5a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h15Zm-6.75-10.5a.75.75 0 0 0-1.5 0v4.19l-1.72-1.72a.75.75 0 0 0-1.06 1.06l3 3a.75.75 0 0 0 1.06 0l3-3a.75.75 0 1 0-1.06-1.06l-1.72 1.72V10.5Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Your Documents to Download
           </h1>
         </div>
         <hr class="mt-4 mb-8" />
@@ -21,7 +33,7 @@
             <li
               v-for="(doc, index) in documents"
               :key="index"
-              class="flex gap-2 my-1"
+              class="flex gap-2 mt-3"
             >
               <a
                 v-if="doc.show"
@@ -86,19 +98,19 @@ export default defineComponent({
 
     const documents = computed(() => [
       {
-        label: 'Réglementation des Heures de Travail',
+        label: 'Working Hours Regulations',
         path: '/api/documents/reglementation-heures-de-travail.pdf',
         show: true,
       },
       {
-        label: 'Télécharger votre contrat',
+        label: 'Your contract',
         path: contractDetails.value
           ? `/api/documents/contrat_${contractDetails.value.temps}h.pdf`
           : '',
         show: contractDetails.value !== null,
       },
       {
-        label: 'Réglement Intérieur',
+        label: 'Internal Regulations',
         path: '/api/documents/reglement.pdf',
         show: true,
       },

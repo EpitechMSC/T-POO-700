@@ -27,118 +27,118 @@ export default defineComponent({
           {
             element: '#navigation_primary',
             popover: {
-              title: 'Votre Boussole de Navigation',
+              title: 'Your Navigation Compass',
               description:
-                "Voici la barre de navigation principale.<br>Votre point de départ pour explorer chaque coin de l'application, sans effort.",
+                'This is the main navigation bar.<br>Your starting point to effortlessly explore every corner of the application.',
             },
           },
           {
             element: '#navbar-user',
             popover: {
-              title: 'Naviguez avec Fluidité',
+              title: 'Navigate Smoothly',
               description:
-                "Tous les onglets dont vous avez besoin, exactement là où vous les attendez.<br>Accédez à l'ensemble de l'application, rapidement et sans effort.",
+                'All the tabs you need, right where you expect them.<br>Access the entire application, quickly and easily.',
             },
           },
           {
             element: '#navigation_home',
             popover: {
-              title: 'Le Cœur de votre Expérience',
+              title: 'The Heart of Your Experience',
               description:
-                "Un clic, et vous voilà de retour à l'accueil. Simple et instantané.",
+                "One click, and you're back home. Simple and instant.",
             },
           },
           {
             element: '#navigation_time',
             popover: {
-              title: 'Maîtrisez Votre Temps',
+              title: 'Master Your Time',
               description:
-                "Un coup d'œil, et vous avez la vision complète de vos heures de travail.<br>C'est votre espace de contrôle.",
+                'A quick glance, and you have a complete view of your working hours.<br>This is your control space.',
             },
           },
           {
             element: '#navigation_calendar',
             popover: {
-              title: 'Votre Calendrier, Votre Agenda',
+              title: 'Your Calendar, Your Agenda',
               description:
-                'Toute votre semaine en un coup d’œil. Planifiez, visualisez, maîtrisez.',
+                'Your entire week at a glance. Plan, visualize, master.',
             },
           },
           {
             element: '#navigation_burger',
             popover: {
-              title: 'Tout est ici',
+              title: 'Everything Is Here',
               description:
-                "Le menu qui centralise l'ensemble des fonctionnalités.<br>Vos paramètres, vos infos, tout en un seul endroit.",
+                'The menu that centralizes all functionalities.<br>Your settings, your info, all in one place.',
             },
           },
           {
             element: '#top-bar',
             popover: {
-              title: 'C’est ici que tout commence',
+              title: 'This Is Where It All Starts',
               description:
-                "Appuyez, pointez, commencez. C'est aussi simple que ça.<br>Votre mission débute ici.",
+                "Press, clock in, get started. It's as simple as that.<br>Your mission begins here.",
             },
           },
           {
             element: '#navigation_clock',
             popover: {
-              title: 'Votre Horloge',
+              title: 'Your Clock',
               description:
-                'Commencez ou terminez votre mission avec un simple clic. Précis, instantané, et toujours là quand vous en avez besoin.',
+                'Start or end your shift with a single click. Precise, instant, and always there when you need it.',
             },
           },
           {
             element: '#summary-card',
             popover: {
-              title: 'Votre Performance, Résumée',
+              title: 'Your Performance, Summarized',
               description:
-                'Un tableau de bord qui dit tout.<br>Consultez vos résultats, célébrez vos succès.',
+                'A dashboard that tells it all.<br>Check your results, celebrate your achievements.',
             },
           },
           {
             element: '#working-time-chart',
             popover: {
-              title: 'Visualisez Votre Progression',
+              title: 'Visualize Your Progress',
               description:
-                'Un graphique clair et puissant qui vous montre où vous en êtes.<br>Hebdo, mensuel, annuel : vos efforts prennent forme.',
+                'A clear and powerful graph that shows where you stand.<br>Weekly, monthly, yearly: your efforts take shape.',
             },
           },
           {
             element: '#balance',
             popover: {
-              title: 'La Balance du Temps',
+              title: 'The Time Balance',
               description:
-                "Cet outil change la donne.<br>Vous voyez immédiatement si vous devez faire plus d'heures ou si vous serez payé plus.<br>La clarté totale, en un coup d’œil.",
+                "This tool changes the game.<br>You can immediately see if you need to work more hours or if you'll get extra pay.<br>Total clarity, at a glance.",
             },
           },
           {
             element: '#working-time-list',
             popover: {
-              title: 'Votre Agenda de Travail',
+              title: 'Your Work Agenda',
               description:
-                'Chaque minute, chaque heure, documentée.<br>Vos efforts consignés, consultables à tout moment.',
+                'Every minute, every hour, documented.<br>Your efforts recorded, accessible anytime.',
             },
           },
           {
             element: '#working-time-list-details',
             popover: {
-              title: 'Une Vue à Couper le Souffle',
+              title: 'A Breathtaking View',
               description:
-                "Découvrez vos heures de travail dans les moindres détails.<br><br>Besoin de corriger ? Modifier ? C'est ici que ça peut se passer.",
+                'See your working hours in every detail.<br><br>Need to correct? Edit? This is where it happens.',
             },
           },
           {
             popover: {
               description:
-                "<img src='https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2k2dGtsZ2toYXA4c3l1ZWkxbW0xeXZxaXpkNWRpbzBodDZuYXUyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qVID3J8fLrlZK/giphy.gif' style='height: 100%; width: 100%;' /><span style='font-size: 15px; display: block; margin-top: 10px; text-align: center;'>Le moment est venu... Sauvez Gotham !</span>",
+                "<img src='https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExd2k2dGtsZ2toYXA4c3l1ZWkxbW0xeXZxaXpkNWRpbzBodDZuYXUyNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/qVID3J8fLrlZK/giphy.gif' style='height: 100%; width: 100%;' /><span style='font-size: 15px; display: block; margin-top: 10px; text-align: center;'>The time has come... Save Gotham!</span>",
             },
           },
           {
             popover: {
-              title: 'Un Dernier Conseil',
+              title: 'One Last Tip',
               description:
-                "<img src='https://media2.giphy.com/media/pSFEEQMaNcFAQ/200.gif?cid=ecf05e4796gg48kv091skcbwq8s9k41hoeg8frcewzofwjaf&ep=v1_gifs_related&rid=200.gif&ct=g' style='height: 100%; width: 100%;' /><span style='font-size: 15px; display: block; margin-top: 10px; text-align: center;'>Rappelez-vous, ce tutoriel est toujours accessible en cliquant sur l'icône 'i' en bas à gauche.<br>C'est votre allié, à portée de clic.</span>",
+                "<img src='https://media2.giphy.com/media/pSFEEQMaNcFAQ/200.gif?cid=ecf05e4796gg48kv091skcbwq8s9k41hoeg8frcewzofwjaf&ep=v1_gifs_related&rid=200.gif&ct=g' style='height: 100%; width: 100%;' /><span style='font-size: 15px; display: block; margin-top: 10px; text-align: center;'>Remember, this tutorial is always accessible by clicking the 'i' icon at the bottom left.<br>It's your ally, just a click away.</span>",
             },
           },
         ],

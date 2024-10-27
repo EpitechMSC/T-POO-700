@@ -9,6 +9,6 @@
   </div>
   <BaseLineChart id="working-time-chart" v-if="!loading && chartData" :data="chartData" :options="chartOptions"
     class="w-full" />
-  <p v-if="loading">Chargement...</p>
+  <p v-if="loading">Loading...</p>
   <p v-if="error">{{ error }}</p>
 </div>
