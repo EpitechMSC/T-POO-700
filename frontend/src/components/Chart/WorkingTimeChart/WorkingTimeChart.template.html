@@ -2,9 +2,9 @@
   class="relative flex flex-col bg-clip-border rounded-xl bg-white text-gray-700 mb-5 col-span-12 md:col-span-8 xl:col-span-9 p-5">
   <div class="flex justify-between mb-4">
     <select v-model="selectedPeriod" @change="fetchData">
-      <option value="yearly">Année</option>
-      <option value="monthly">Mensuel</option>
-      <option value="weekly">Hebdomadaire</option>
+      <option value="yearly">yearly</option>
+      <option value="monthly">monthly</option>
+      <option value="weekly">weekly</option>
     </select>
   </div>
   <BaseLineChart v-if="!loading && chartData" :data="chartData" :options="chartOptions" class="w-full" />

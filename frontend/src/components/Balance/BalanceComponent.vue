@@ -83,8 +83,6 @@ export default defineComponent({
           (workedThisWeek.value / hoursPerWeek.value - targetPercentage) +
         0;
 
-      console.log(angle);
-
       return Math.max(minAngle, Math.min(angle, maxAngle));
     });
 
