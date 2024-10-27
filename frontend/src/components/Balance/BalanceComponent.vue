@@ -4,6 +4,9 @@
     :class="bgColorClass"
     class="metronome-container relative h-72 mx-auto rounded-lg border-1 border-red-800 flex justify-center items-center"
   >
+    <div class="absolute top-1 text-md font-semibold">
+      Work Week Completion:
+    </div>
     <div
       class="metronome-needle absolute bottom-8 w-1 h-56 bg-black rounded-full origin-bottom transition-transform duration-1000 ease-in-out"
       :style="{ transform: `rotate(${computedAngle}deg)` }"
@@ -11,7 +14,7 @@
     <div
       class="work-percentage-label absolute bottom-1 text-lg font-semibold text-gray-800"
     >
-      {{ percentageWorked }}% worked
+      {{ percentageWorked }}%
     </div>
   </div>
 </template>

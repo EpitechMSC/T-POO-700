@@ -1,6 +1,6 @@
 <template>
   <div class="mx-4 min-h-screen max-w-screen-xl sm:mx-8 xl:mx-auto">
-    <h1 class="border-b py-6 text-4xl font-semibold">Paramètres</h1>
+    <h1 class="border-b py-6 text-4xl font-semibold">Account</h1>
     <div class="grid grid-cols-8 pt-3 sm:grid-cols-10">
       <!-- Navigation Section -->
       <SettingsNavigationMenu />
@@ -10,27 +10,39 @@
         class="col-span-8 overflow-hidden rounded-xl sm:bg-gray-50 sm:px-8 sm:shadow"
       >
         <div class="pt-4">
-          <h1 class="py-2 text-2xl font-semibold">Paramètres du compte</h1>
+          <h1 class="flex items-center gap-4 py-2 text-2xl font-semibold">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-6"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M7.5 6a4.5 4.5 0 1 1 9 0 4.5 4.5 0 0 1-9 0ZM3.751 20.105a8.25 8.25 0 0 1 16.498 0 .75.75 0 0 1-.437.695A18.683 18.683 0 0 1 12 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 0 1-.437-.695Z"
+                clip-rule="evenodd"
+              />
+            </svg>
+            Account Settings
+          </h1>
         </div>
         <hr class="mt-4 mb-8" />
 
-        <!-- Nom d'utilisateur -->
-        <p class="py-2 text-xl font-semibold">Nom d'utilisateur</p>
+        <p class="py-2 text-xl font-semibold">Username</p>
         <div
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
         >
           <p class="text-gray-600">
-            Votre nom d'utilisateur est <strong>{{ user?.username }}</strong>
+            Your username is <strong>{{ user?.username }}</strong>
           </p>
           <button
             class="inline-flex text-sm font-semibold text-blue-600 underline decoration-2"
             @click="toggleEdit('username')"
           >
-            Modifier
+            Edit
           </button>
         </div>
 
-        <!-- Edit Username -->
         <div
           v-if="isEditingUsername"
           class="mt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between"
@@ -39,31 +51,43 @@
             v-model="username"
             type="text"
             class="w-full rounded-md border py-2 px-4 text-base focus:border-blue-600"
-            placeholder="Nouveau nom d'utilisateur"
+            placeholder="New username"
           />
           <button
-            class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
+            class="flex rounded-lg bg-blue-600 px-4 py-2 text-white"
             @click="saveChanges('username')"
           >
-            Enregistrer
+            Save
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-6"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
+                clip-rule="evenodd"
+              />
+            </svg>
           </button>
         </div>
 
         <hr class="mt-4 mb-8" />
 
         <!-- Email -->
-        <p class="py-2 text-xl font-semibold">Adresse e-mail</p>
+        <p class="py-2 text-xl font-semibold">Email address</p>
         <div
           class="flex flex-col sm:flex-row sm:items-center sm:justify-between"
         >
           <p class="text-gray-600">
-            Votre adresse e-mail est <strong>{{ user?.email }}</strong>
+            Your email address is <strong>{{ user?.email }}</strong>
           </p>
           <button
             class="inline-flex text-sm font-semibold text-blue-600 underline decoration-2"
             @click="toggleEdit('email')"
           >
-            Modifier
+            Edit
           </button>
         </div>
 
@@ -76,13 +100,25 @@
             v-model="email"
             type="email"
             class="w-full rounded-md border py-2 px-4 text-base focus:border-blue-600"
-            placeholder="Nouvelle adresse e-mail"
+            placeholder="New email address"
           />
           <button
-            class="mt-4 rounded-lg bg-blue-600 px-4 py-2 text-white"
-            @click="saveChanges('email')"
+            class="flex rounded-lg bg-blue-600 px-4 py-2 text-white"
+            @click="saveChanges('username')"
           >
-            Enregistrer
+            Save
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-6"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
+                clip-rule="evenodd"
+              />
+            </svg>
           </button>
         </div>
 
@@ -90,13 +126,13 @@
 
         <!-- Contrat -->
         <div class="mb-10">
-          <p class="py-2 text-xl font-semibold">Votre contrat</p>
+          <p class="py-2 text-xl font-semibold">Your contract</p>
           <p class="text-gray-600">
-            Vous avez un contrat de
+            You have a contract of
             <strong>{{
-              contractDetails ? contractDetails.temps : 'Contrat non défini'
+              contractDetails ? contractDetails.temps : '420'
             }}</strong>
-            heures par semaine.
+            hours per week.
           </p>
         </div>
 
@@ -104,16 +140,28 @@
 
         <!-- Supprimer le compte -->
         <div v-if="userRole === 'Supervisor'" class="mb-10">
-          <p class="py-2 text-xl font-semibold">Supprimer le compte</p>
+          <p class="py-2 text-xl font-semibold">Delete account</p>
           <p class="mt-2">
-            Assurez-vous d'avoir sauvegardé votre compte. Cette action est
-            irréversible.
+            Make sure you have backed up your account.<br />This action is
+            irreversible.
           </p>
           <button
-            class="ml-auto text-sm font-semibold text-rose-600 underline decoration-2"
+            class="flex gap-1 ml-auto text-sm font-semibold text-rose-600 underline decoration-2"
             @click="deleteAccount"
           >
-            Continuer avec la suppression
+            Proceed with deletion
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              class="size-6"
+            >
+              <path
+                fill-rule="evenodd"
+                d="m6.72 5.66 11.62 11.62A8.25 8.25 0 0 0 6.72 5.66Zm10.56 12.68L5.66 6.72a8.25 8.25 0 0 0 11.62 11.62ZM5.105 5.106c3.807-3.808 9.98-3.808 13.788 0 3.808 3.807 3.808 9.98 0 13.788-3.807 3.808-9.98 3.808-13.788 0-3.808-3.807-3.808-9.98 0-13.788Z"
+                clip-rule="evenodd"
+              />
+            </svg>
           </button>
         </div>
       </div>

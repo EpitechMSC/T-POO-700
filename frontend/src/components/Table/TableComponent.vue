@@ -69,16 +69,40 @@
                 ref="dropdownMenus"
               >
                 <button
-                  class="w-full block px-4 py-2 text-blue-500 hover:bg-gray-100 text-left"
+                  class="flex items-center justify-between content-center gap-1 w-full block px-4 py-2 text-blue-500 hover:bg-gray-100 text-left"
                   @click="$emit('edit-item', item)"
                 >
-                  Modifier
+                  Edit
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    class="size-4"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M11.013 2.513a1.75 1.75 0 0 1 2.475 2.474L6.226 12.25a2.751 2.751 0 0 1-.892.596l-2.047.848a.75.75 0 0 1-.98-.98l.848-2.047a2.75 2.75 0 0 1 .596-.892l7.262-7.261Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
                 </button>
                 <button
-                  class="w-full block px-4 py-2 text-red-500 hover:bg-gray-100 text-left"
+                  class="flex items-center justify-between content-center gap-1 w-full block px-4 py-2 text-red-500 hover:bg-gray-100 text-left"
                   @click="$emit('delete-item', item)"
                 >
-                  Supprimer
+                  Delet
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 16 16"
+                    fill="currentColor"
+                    class="size-4"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14Zm4-7a.75.75 0 0 0-.75-.75h-6.5a.75.75 0 0 0 0 1.5h6.5A.75.75 0 0 0 12 8Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
                 </button>
               </div>
             </div>
@@ -90,18 +114,42 @@
     <div class="flex justify-end mt-4 space-x-2">
       <button
         :disabled="currentPage === 1"
-        class="px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+        class="flex items-center gap-1 px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
         @click="$emit('change-page', currentPage - 1)"
       >
-        Précédent
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="size-4"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8Zm10.25.75a.75.75 0 0 0 0-1.5H6.56l1.22-1.22a.75.75 0 0 0-1.06-1.06l-2.5 2.5a.75.75 0 0 0 0 1.06l2.5 2.5a.75.75 0 1 0 1.06-1.06L6.56 8.75h4.69Z"
+            clip-rule="evenodd"
+          />
+        </svg>
+        Previous
       </button>
       <span>Page {{ currentPage }} sur {{ totalPages }}</span>
       <button
         :disabled="currentPage === totalPages"
-        class="px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
+        class="flex items-center gap-1 px-3 py-1 bg-gray-200 text-gray-600 rounded disabled:opacity-50"
         @click="$emit('change-page', currentPage + 1)"
       >
-        Suivant
+        Next
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 16 16"
+          fill="currentColor"
+          class="size-4"
+        >
+          <path
+            fill-rule="evenodd"
+            d="M15 8A7 7 0 1 0 1 8a7 7 0 0 0 14 0ZM4.75 7.25a.75.75 0 0 0 0 1.5h4.69L8.22 9.97a.75.75 0 1 0 1.06 1.06l2.5-2.5a.75.75 0 0 0 0-1.06l-2.5-2.5a.75.75 0 0 0-1.06 1.06l1.22 1.22H4.75Z"
+            clip-rule="evenodd"
+          />
+        </svg>
       </button>
     </div>
   </div>

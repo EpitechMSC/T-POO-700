@@ -5,7 +5,6 @@ import BaseInput from '../../components/Inputs/BaseInput/BaseInput.vue';
 import BaseButton from '../../components/Buttons/BaseButton/BaseButton.vue';
 import { Credentials } from '../../app/models/authentication';
 
-
 export default defineComponent({
   name: 'LoginPage',
   components: {
@@ -31,7 +30,7 @@ export default defineComponent({
         const userId = await authStore.login(credentials); // Passer les credentials au store
         router.push(`/users/${userId}`);
       } catch (err) {
-        error.value = 'Email ou mot de passe invalide ou échec de la connexion';
+        error.value = 'Invalid email or password,\n or connection failed.';
         console.error('Login failed:', err);
       }
     };

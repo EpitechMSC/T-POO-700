@@ -71,7 +71,7 @@ export default defineComponent({
     async function handleSelect(arg: any) {
       if (userTeams.value.length === 0) {
         Swal.fire({
-          text: 'Vous devez appartenir à une équipe pour créer des événements!',
+          text: 'You need to be part of a team to create events!',
           icon: 'error',
           confirmButtonText: 'Ok',
           customClass: {
@@ -85,18 +85,18 @@ export default defineComponent({
       if (userRole.value === 'Manager' || userRole.value === 'Supervisor') {
         const { value } = await Swal.fire({
           html: `
-            <div class="mb-4 text-lg">Créer un nouvel événement?</div>
-            <div class="font-semibold mb-3">Nom de l'événement :</div>
+            <div class="mb-4 text-lg">Create a new event?</div>
+            <div class="font-semibold mb-3">Event name:</div>
             <input type="text" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200" name="event_name" />
-            <div class="font-semibold mt-3">Choisissez une équipe :</div>
+            <div class="font-semibold mt-3">Select a team:</div>
             <select id="team_select" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring focus:ring-indigo-200">
               ${userTeams.value.map(id => `<option value="${id}">${id}</option>`).join('')}
             </select>
           `,
           icon: 'info',
           showCancelButton: true,
-          confirmButtonText: 'Oui, créer!',
-          cancelButtonText: 'Non, annuler',
+          confirmButtonText: 'Yes, create!',
+          cancelButtonText: 'No, cancel',
           customClass: {
             confirmButton:
               'bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded',
@@ -129,9 +129,9 @@ export default defineComponent({
           arg.view.calendar.unselect();
         } else if (value === null) {
           Swal.fire({
-            text: "La création de l'événement a été annulée!",
+            text: 'Event creation has been canceled!',
             icon: 'error',
-            confirmButtonText: 'Ok, compris!',
+            confirmButtonText: 'Got it!',
             customClass: {
               confirmButton:
                 'bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded',
@@ -140,7 +140,7 @@ export default defineComponent({
         }
       } else {
         Swal.fire({
-          text: "Vous n'êtes pas autorisé à créer des événements!",
+          text: 'You are not authorized to create events!',
           icon: 'error',
           confirmButtonText: 'Ok',
           customClass: {
@@ -154,11 +154,11 @@ export default defineComponent({
     async function handleEventClick(arg: any) {
       if (userRole.value === 'Manager' || userRole.value === 'Supervisor') {
         const { value } = await Swal.fire({
-          text: 'Êtes-vous sûr de vouloir supprimer cet événement?',
+          text: 'Are you sure you want to delete this event?',
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonText: 'Oui, supprimer!',
-          cancelButtonText: 'Non, retourner',
+          confirmButtonText: 'Yes, delete!',
+          cancelButtonText: 'No, go back',
           customClass: {
             confirmButton:
               'bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded',
@@ -171,9 +171,9 @@ export default defineComponent({
           await eventsStore.deleteEvent(arg.event.id, arg.event.team_id);
         } else if (value === null) {
           Swal.fire({
-            text: "L'événement n'a pas été supprimé!",
+            text: 'The event was not deleted!',
             icon: 'error',
-            confirmButtonText: 'Ok, compris!',
+            confirmButtonText: 'Got it!',
             customClass: {
               confirmButton:
                 'bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded',
@@ -182,7 +182,7 @@ export default defineComponent({
         }
       } else {
         Swal.fire({
-          text: "Vous n'êtes pas autorisé à supprimer des événements!",
+          text: 'You are not authorized to delete events!',
           icon: 'error',
           confirmButtonText: 'Ok',
           customClass: {

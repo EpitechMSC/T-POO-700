@@ -24,7 +24,7 @@ export default defineComponent({
       const userId = authStore.user?.id;
 
       if (!userId) {
-        error.value = 'Utilisateur non authentifié';
+        error.value = 'Unauthenticated user';
         loading.value = false;
         return;
       }
@@ -42,7 +42,7 @@ export default defineComponent({
             await workingTimesStore.fetchYearlyWorkingTimes(userId);
         }
       } catch {
-        error.value = 'Erreur lors du chargement des données';
+        error.value = 'Error loading data';
       } finally {
         loading.value = false;
       }
@@ -75,7 +75,7 @@ export default defineComponent({
         labels,
         datasets: [
           {
-            label: 'Heures de travail',
+            label: 'Working hours',
             backgroundColor: 'rgba(66, 165, 245, 0.5)',
             borderColor: '#42A5F5',
             borderWidth: 2,
@@ -94,7 +94,7 @@ export default defineComponent({
         },
         title: {
           display: true,
-          text: 'Heures de Travail',
+          text: 'Working hours',
         },
       },
       scales: {
@@ -102,7 +102,7 @@ export default defineComponent({
           beginAtZero: true,
           title: {
             display: true,
-            text: 'Heures',
+            text: 'Hours',
           },
         },
         x: {

@@ -24,7 +24,7 @@ export default defineComponent({
       error.value = null;
 
       if (!username.value || !email.value) {
-        error.value = 'Tous les champs sont obligatoires.';
+        error.value = 'All fields are required.';
         return;
       }
 
@@ -37,11 +37,9 @@ export default defineComponent({
         router.push('/login');
       } catch (err: unknown) {
         if (err instanceof Error) {
-          error.value =
-            err.message ||
-            "Erreur lors de l'enregistrement. Veuillez réessayer.";
+          error.value = err.message || 'Error. Please try again.';
         } else {
-          error.value = "Erreur inconnue lors de l'enregistrement.";
+          error.value = 'Unknown error';
         }
       }
     };
