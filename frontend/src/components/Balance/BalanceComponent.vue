@@ -1,5 +1,6 @@
 <template>
   <div
+    id="balance"
     :class="bgColorClass"
     class="metronome-container relative h-72 mx-auto rounded-lg border-1 border-red-800 flex justify-center items-center"
   >

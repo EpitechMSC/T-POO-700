@@ -1,5 +1,5 @@
 <template>
-  <section class="mb-12 grid gap-y-5 gap-x-4 grid-cols-12">
+  <section id="summary-card" class="mb-12 grid gap-y-5 gap-x-4 grid-cols-12">
     <div
       v-for="(card, index) in cards"
       :key="index"

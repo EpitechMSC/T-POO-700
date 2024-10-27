@@ -1,7 +1,7 @@
 <template>
   <div>
     <table class="min-w-full table-auto border-collapse">
-      <thead class="bg-gray-100">
+      <thead id="working-time-list-details" class="bg-gray-100">
         <tr class="border-b border-gray-200">
           <th
             v-for="(header, index) in headers"

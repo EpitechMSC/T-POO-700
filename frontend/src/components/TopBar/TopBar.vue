@@ -1,11 +1,13 @@
 <template>
   <div
+    id="top-bar"
     class="hello-bar flex justify-between h-24 bg-gray-100 items-center px-16 mb-10"
   >
     <h1 class="text-3xl font-semibold whitespace-nowrap dark:text-black">
-      Bonjour, {{ username }}
+      Hello, {{ username }}
     </h1>
     <div
+      id="bat-signal"
       class="hover:shadow-[0px_0px_20px_5px] hover:shadow-yellow-200 cursor-pointer hover:bg-gray-300 bg-gray-400 border-2 border-black p-2 transition ease-in-out duration-200"
       style="border-radius: 50%"
       @click="toggleBatSignal"
@@ -19,6 +21,7 @@
         <p class="text-xl mr-2 w-20">{{ time }}</p>
       </span>
       <button
+        id="navigation_clock"
         class="bg-white p-2 rounded-lg w-14 h-14 flex justify-center items-center"
         @click="clocking"
       >
@@ -186,6 +189,6 @@ export default defineComponent({
 
 <style scoped>
 .prout {
-  color: rgb(255, 255, 122);
+  color: rgb(255, 255, 122); /* Ah, visiblement il y a eu des tests ici */
 }
 </style>
