@@ -1,6 +1,6 @@
 <div v-if="loading" class="text-gray-500">Chargement...</div>
 <div v-if="error" class="text-red-600">{{ error }}</div>
-<div v-if="!loading && !error">
+<div id="working-time-list" v-if="!loading && !error">
   <TableComponent :headers="['Jour', 'Début', 'Fin']" :data="workingTimes" :current-page="pagingParams.pageNumber"
     :totalPages="totalPages" :items-per-page="pagingParams.pageSize" @edit-item="openUpdateModal"
     @delete-item="confirmDelete" @change-page="changePage">

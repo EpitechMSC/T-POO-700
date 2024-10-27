@@ -1,4 +1,4 @@
-<nav class="relative border-gray-200 shadow-sm dark:bg-gray-900">
+<nav id="navigation_primary" class="relative border-gray-200 shadow-sm dark:bg-gray-900">
   <div class="flex flex-wrap items-center justify-between p-4">
     <router-link to="/" class="flex items-center space-x-3 rtl:space-x-reverse">
       <img src="https://epitech.bj/wp-content/uploads/2020/03/EPI-LOGO-SIGNATURE-2018.png" class="h-8"
@@ -8,7 +8,7 @@
       </span>
     </router-link>
 
-    <div class="flex items-center order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
+    <div id="navigation_burger" class=" flex items-center order-2 space-x-3 md:space-x-0 rtl:space-x-reverse relative">
       <button type="button"
         class="flex text-sm dark:bg-gray-800 rounded-full md:me-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600"
         :aria-expanded="isDropdownOpen ? 'true' : 'false'" @click="toggleDropdown">
@@ -39,8 +39,7 @@
           </li>
 
           <li>
-            <router-link
-              to="/login"
+            <router-link to="/login"
               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white"
               @click.prevent="logout">
               Sign out
@@ -53,7 +52,7 @@
       class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 items-center justify-between">
       <ul
         class="flex font-medium p-0 border border-gray-100 rounded-lg space-x-8 rtl:space-x-reverse mt-0 border-0 bg-white dark:bg-gray-900 dark:border-gray-700">
-        <li>
+        <li id="navigation_home">
           <router-link :to="`/users/${user?.id}`" class="block py-2 px-3 rounded" :class="{
                 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500':
                   isActive('home'),
@@ -67,7 +66,7 @@
             </svg>
           </router-link>
         </li>
-        <li>
+        <li id="navigation_time">
           <router-link to="/times" class="block py-2 px-3 rounded" :class="{
                 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500':
                   isActive('times'),
@@ -82,7 +81,7 @@
             </svg>
           </router-link>
         </li>
-        <li>
+        <li id="navigation_calendar">
           <router-link to="/calendar" class="block py-2 px-3 rounded" :class="{
                 'text-white bg-blue-700 md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500':
                   isActive('calendar'),
@@ -102,5 +101,4 @@
     </div>
   </div>
 </nav>
-<BatSignal/>
-
+<BatSignal />
