@@ -235,19 +235,19 @@ git push origin <your-branch>
 ## 📚 Project Management
 
 **Project Management Documents**
-<br>All documents related to project management, such as technical specifications and user stories, are organized and accessible at [this address](https://t.ly/9qPXD).
+<br>All documents related to project management, such as technical specifications and user stories, are organized and accessible at [this address]([https://t.ly/9qPXD](https://epitechfr-my.sharepoint.com/:x:/r/personal/gaetan_pecqueux_epitech_eu/Documents/POO-700/USER%20STORY.xlsx?d=w15e211d5163348aa9766fac05c952cbf&csf=1&web=1&e=zqac0S)).
 
 **Jira**
 <br>We use Jira to manage tasks, user stories, and bugs.
 <br>You can check the Jira board to follow tasks in progress, assigned, or completed.
-<br>Jira is available at [this address](https://t.ly/Z-HCg).
+<br>Jira is available at [this address]([https://t.ly/Z-HCg](https://michess.atlassian.net/jira/software/projects/TM/boards/34)).
 
 **Communication**
-<br>All external communication materials, such as posters, and any other visual communication material for promoting the project, are stored at [this address](https://t.ly/Aw8h-).
+<br>All external communication materials, such as posters, and any other visual communication material for promoting the project, are stored at [this address]([https://t.ly/Aw8h-](https://epitechfr-my.sharepoint.com/:f:/r/personal/gaetan_pecqueux_epitech_eu/Documents/POO-700/IMG?csf=1&web=1&e=534T88)).
 
 **Figma**
 <br>We use Figma for designing user interfaces and collaborating on design.
-<br>Mockups, interactive prototypes, and designs are shared in our Figma workspace, available at [this address](https://t.ly/xyFaz).
+<br>Mockups, interactive prototypes, and designs are shared in our Figma workspace, available at [this address]([https://t.ly/xyFaz](https://www.figma.com/design/WZ3zAUXBP7L1yQaXWcPhdW/WorkingTimes-Figma?node-id=0-1&t=SCivI4OEmp2uq4sE-1)).
 
 ## 📜 License
 
