@@ -1,7 +1,3 @@
-Here’s an updated README with your instructions incorporated:
-
----
-
 # T-POO-700
 
 ##### V1.0.0
