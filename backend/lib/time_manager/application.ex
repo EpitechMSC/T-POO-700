@@ -20,6 +20,10 @@ defmodule TimeManager.Application do
       TimeManagerWeb.Endpoint
     ]
 
+    :opentelemetry_cowboy.setup()
+    OpentelemetryPhoenix.setup(adapter: :cowboy2)
+    # if using ecto
+    OpentelemetryEcto.setup([:dice_game, :repo])
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: TimeManager.Supervisor]
