@@ -129,7 +129,9 @@
           <p class="py-2 text-xl font-semibold">Your contract</p>
           <p class="text-gray-600">
             You have a contract of
-            <strong>{{ contractDetails ?? '420' }}</strong>
+            <strong>{{
+              contractDetails ? contractDetails.temps : '420'
+            }}</strong>
             hours per week.
           </p>
         </div>
@@ -187,7 +189,7 @@ export default defineComponent({
     const email = ref(user.value?.email || '');
     const isEditingUsername = ref(false);
     const isEditingEmail = ref(false);
-    const contractDetails = ref<number | null>(null);
+    const contractDetails = ref(null);
 
     const toggleEdit = (field: string) => {
       if (field === 'username')
@@ -226,7 +228,24 @@ export default defineComponent({
         await authStore.fetchUser();
         user.value = authStore.getUser;
       }
-      contractDetails.value = user.value?.contract.temps ?? null;
+
+      if (user.value?.contrat) {
+        if (user.value.contrat == 1) {
+          contractDetails.value = {
+            temps: 35,
+          };
+        } else if (user.value.contrat == 2) {
+          contractDetails.value = {
+            temps: 39,
+          };
+        } else if (user.value.contrat == 3) {
+          contractDetails.value = {
+            temps: 42,
+          };
+        } else {
+          contractDetails.value = null;
+        }
+      }
     });
 
     return {
